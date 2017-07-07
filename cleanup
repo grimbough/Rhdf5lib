@@ -1,0 +1,6 @@
+#!/bin/sh
+
+rm -f config.*
+rm -rf src/hdf5
+rm -f src/Makevars
+rm -f src/*.o

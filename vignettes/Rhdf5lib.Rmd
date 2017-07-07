@@ -1,0 +1,69 @@
+---
+title: "Linking to Rhdf5lib"
+author:
+- name: Mike L. Smith
+  affiliation: de.NBI & EMBL Heidelberg
+package: Rhdf5lib
+output:
+  BiocStyle::html_document2
+vignette: |
+  %\VignetteIndexEntry{Linking to Rhdf5lib}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+# Motivation
+
+**Rhdf5lib** provides the C and C++ `HDF5` libraries. It is primarily useful to developers of other R packages who want to make use of the capabilities of the HDF5 library directly in the C or C++ code of their own packages, rather than using a higher level interface such as the [**rhdf5**](http://bioconductor.org/packages/rhdf5/) package.  Using *Rhdf5lib* make life easier for users, as they do not have to worry about installing libraries at a system level, and for developers since they can work with a defined version of the library rather than developing strategies to cope with the potential for multiple versions.
+
+***Rhdf5** is very much inspired by the [**zlibbioc**](http://bioconductor.org/packages/zlibbioc/) and [**Rhtslib**](http://bioconductor.org/packages/Rhtslib/) packages.*
+
+# Usage
+
+There is an example package,
+[**usingRhdf5lib**](https://github.com/grimbough/usingRhdf5lib), that
+demonstrates how packages should link to **Rhdf5lib**.
+
+## Link to the library
+
+To link successfully to the hdf5 library included in **Rhdf5lib** a package must include *both* a `src/Makevars.win` *and* `src/Makevars` file.  *Note*: the contents of `src/Makevars.win` and `src/Makevars` are almost identical, but not quite. Be careful of the differences.
+
+Create a `src/Makevars.win` file with the following lines
+
+    RHDF5_LIBS=$(shell echo 'Rhdf5lib::pkgconfig("PKG_CXX_LIBS")'|\
+        "${R_HOME}/bin/R" --vanilla --slave)  
+    PKG_LIBS=$(RHDF5_LIBS)
+
+
+and a `src/Makevars` file with the following lines
+
+    RHDF5_LIBS=`echo 'Rhdf5lib::pkgconfig("PKG_CXX_LIBS")'|\
+        "${R_HOME}/bin/R" --vanilla --slave`
+    PKG_LIBS=$(RHDF5_LIBS)
+
+The statement for each platfrom modifies the `$PKG_LIBS` variable. If your package needs to add to the `$PKG_LIBS` variable, do so by adding to the `PKG_LIBS=$(RHDF5_LIBS)` line, e.g.,
+
+    PKG_LIBS=$(RHDF5_LIBS) -L/path/to/foolib -lfoo
+
+## Locating the library headers
+
+In order for the C/C++ compiler to find the HDF5 headers during package installation, add **Rhtslib** to the *LinkingTo* field of the DESCRIPTION file of your package, e.g.
+
+    LinkingTo: Rhtslib
+
+In you C or C++ code files, you can then use the standard include techniques, e.g., `#include "hdf5.h"` or `#include "c++/hdf5.h"`. C header files do not need a subfolder specified, while C++ headers are located under *c++*.  You can inspect the header files manually to check their names and declared functions.  To find their location on your system you can use the following code:
+
+```{R headers}
+system.file(package="Rhdf5lib", "include")
+```
+
+# Funding
+
+MLS was supported by the BMBF-funded Heidelberg Center for Human Bioinformatics (HD-HuB) within the German Network for Bioinformatics Infrastructure (de.NBI), Förderkennzeichen #031A537B
+
+![](de.NBI-Logo.PNG){ width=82% }
+
+# Session info {.unnumbered}
+
+```{r sessionInfo, echo=FALSE}
+sessionInfo()
+```

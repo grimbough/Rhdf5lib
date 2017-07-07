@@ -1,0 +1,29 @@
+#!/bin/sh
+
+#untar the lib
+BASEPBNAME="hdf5"
+PBTGZNAME=hdf5small_cxx.tar.gz
+cd src
+if test -d ./${BASEPBNAME}; then 
+	echo 'found ' $BASEPBNAME ' header sources and tar archive;using what is there.'
+else
+	echo "untarring hdf5small_cxx.tar.gz ...";
+	## we'll use Rscript to untar the file
+	"${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" -e "untar('hdf5small_cxx.tar.gz')"
+fi;
+
+#USER_INCLUDE_DIR=${R_PACKAGE_DIR}/include
+#USER_LIB_DIR=${R_PACKAGE_DIR}/lib${R_ARCH}
+
+#echo "$USER_INCLUDE_DIR"
+
+#HDF5_INCLUDE=./hdf5/src
+#HDF5_CXX_INCLUDE=./hdf5/c++/src
+
+#mkdir -p "$USER_LIB_DIR" "$USER_INCLUDE_DIR" "$USER_INCLUDE_DIR/c++"
+#cp "winlib$R_ARCH/libhdf5.a" "$USER_LIB_DIR/libhdf5.a"
+#cp "winlib$R_ARCH/libhdf5_cpp.a" "$USER_LIB_DIR/libhdf5_cpp.a"
+#cp "winlib$R_ARCH/libdl.a" "$USER_LIB_DIR/libdl.a"
+#cp $HDF5_INCLUDE/*.h "$USER_INCLUDE_DIR"
+#cp $HDF5_CXX_INCLUDE/*.h "$USER_INCLUDE_DIR/c++"
+

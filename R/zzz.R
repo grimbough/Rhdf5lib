@@ -32,7 +32,7 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS")) {
                                     sprintf('%s/libhdf5.a', 
                                             patharch)
                                 }, Windows = {
-                                    sprintf('-L%s -lhdf5 -lz -lws2_32 -ldl -lm -lpsapi', 
+                                    sprintf('-L"%s" -lhdf5 -lz -lws2_32 -ldl -lm -lpsapi', 
                                             patharch)
                                 }
                          )
@@ -46,7 +46,7 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS")) {
                                     sprintf('%s/libhdf5_cpp.a %s/libhdf5.a', 
                                             patharch, patharch)
                                 }, Windows = {
-                                    sprintf('-L%s -lhdf5_cpp -lhdf5 -lz -lws2_32 -ldl -lm -lpsapi', 
+                                    sprintf('-L"%s" -lhdf5_cpp -lhdf5 -lz -lws2_32 -ldl -lm -lpsapi', 
                                             patharch)
                                 }
                          )

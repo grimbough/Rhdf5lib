@@ -18,6 +18,7 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS")) {
         arch <- ""
     }
     patharch <- paste0(path, arch)
+
     
     result <- switch(match.arg(opt), 
                     # PKG_CPPFLAGS = {
@@ -32,7 +33,11 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS")) {
                                     sprintf('%s/libhdf5.a', 
                                             patharch)
                                 }, Windows = {
-                                    sprintf('-L"%s" -lhdf5 -lz -lws2_32 -ldl -lm -lpsapi', 
+                                    patharch <- gsub(x = shortPathName(patharch),
+                                                   pattern = "\\",
+                                                   replacement = "/", 
+                                                   fixed = TRUE)
+                                    sprintf('-L%s -lhdf5 -lz -lws2_32 -ldl -lm -lpsapi', 
                                             patharch)
                                 }
                          )
@@ -46,7 +51,13 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS")) {
                                     sprintf('%s/libhdf5_cpp.a %s/libhdf5.a', 
                                             patharch, patharch)
                                 }, Windows = {
-                                    sprintf('-L"%s" -lhdf5_cpp -lhdf5 -lz -lws2_32 -ldl -lm -lpsapi', 
+                                   ## for some reason double quotes aren't always sufficient
+                                   ## so we use the 8+3 form of the path
+                                   patharch <- gsub(x = shortPathName(patharch),
+                                                   pattern = "\\",
+                                                   replacement = "/", 
+                                                   fixed = TRUE)
+                                    sprintf('-L%s -lhdf5_cpp -lhdf5 -lz -ldl -lpsapi', 
                                             patharch)
                                 }
                          )

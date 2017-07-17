@@ -37,7 +37,7 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS")) {
                                                    pattern = "\\",
                                                    replacement = "/", 
                                                    fixed = TRUE)
-                                    sprintf('-L%s -lhdf5 -lz -lws2_32 -ldl -lm -lpsapi', 
+                                    sprintf('-L%s -lhdf5 -lszip -lz -lpsapi', 
                                             patharch)
                                 }
                          )
@@ -57,7 +57,7 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS")) {
                                                    pattern = "\\",
                                                    replacement = "/", 
                                                    fixed = TRUE)
-                                    sprintf('-L%s -lhdf5_cpp -lhdf5 -lz -ldl -lpsapi', 
+                                    sprintf('-L%s -lhdf5_cpp -lhdf5 -lszip -lz -lpsapi', 
                                             patharch)
                                 }
                          )

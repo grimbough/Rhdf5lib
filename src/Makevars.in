@@ -2,14 +2,14 @@ HDF5_INCLUDE=@HDF5_INCLUDE@
 HDF5_CXX_INCLUDE=@HDF5_CXX_INCLUDE@
 HDF5_LIB=@HDF5_LIB@
 HDF5_CXX_LIB=@HDF5_CXX_LIB@
+SZIP_LIB=@SZIP_LIB@
 
 #expose headers in installed package include folder
 USER_INCLUDE = ${R_PACKAGE_DIR}/include
 USER_LIB_DIR = ${R_PACKAGE_DIR}/lib${R_ARCH}/
 
 PKG_CFLAGS = -I${HDF5_INCLUDE} 
-PKG_CXXFLAGS = -I${HDF5_INCLUDE}
-PKG_LIBS = ${HDF5_LIB}
+PKG_LIBS = ${HDF5_LIB} ${SZIP_LIB}
 
 all: copying $(SHLIB)
 
@@ -26,3 +26,4 @@ copying:
 	mkdir -p "${USER_LIB_DIR}"
 	cp ${HDF5_LIB} ${USER_LIB_DIR}
 	cp ${HDF5_CXX_LIB} ${USER_LIB_DIR}
+	cp ${SZIP_LIB} ${USER_LIB_DIR}

@@ -80,6 +80,29 @@ run `automake` in `/`
 --disable-fortran
 ```
 
+# Modifying szip-2.1.1
+
+### Delete files and folders
+  - /autom4te.cache
+  - /test
+  
+### Modify configure.ac  
+
+Remove reference to *test* folder, line 200:
+
+```
+AC_CONFIG_FILES([Makefile
+                 src/Makefile
+                 ])
+```
+  
+### Modify Makefile.in
+
+Remove reference to *test* folder, line 327:
+```
+SUBDIRS = src
+```
+
 # Compiling on Windows
 
 Compiling on Windows while using the Rtools toolchain took a number of attempts.  This is a current 'best memory' of tħe required steps to build the versions of `libhdf5.a` and `libhdf5_cpp.a` shipped with the package.  The instructions should be tested on a clean Windows machine and refined in the future.

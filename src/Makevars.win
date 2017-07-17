@@ -3,11 +3,10 @@
 USER_INCLUDE_DIR=${R_PACKAGE_DIR}/include
 USER_LIB_DIR=${R_PACKAGE_DIR}/lib${R_ARCH}/
 
-HDF5_INCLUDE=./hdf5/src
-HDF5_CXX_INCLUDE=./hdf5/c++/src
+HDF5_INCLUDE=./hdf5/src/winlib/hdf5_headers
+HDF5_CXX_INCLUDE=./hdf5/winlib/hdf5_headers/c++
 
 PKG_CFLAGS = -I${HDF5_INCLUDE}
-PKG_CXXFLAGS = -I${HDF5_INCLUDE}
 PKG_LIBS = winlib${R_ARCH}/libhdf5.a winlib${R_ARCH}/libszip.a -lpsapi -lz
 
 .PHONY: all Rinstall

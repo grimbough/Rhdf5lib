@@ -2,7 +2,7 @@
 # author: Mike Smith (mike.smith@embl.de)
 
 AC_PREREQ([2.65])
-AC_INIT([Rhdf5lib], [0.0.1], [mike.smith@embl.de])
+AC_INIT([Rhdf5lib], [0.99.13], [mike.smith@embl.de])
 AC_CONFIG_SRCDIR([src])
 
 # Check the compiler configured with R
@@ -35,11 +35,18 @@ else
 	gunzip -dc ${PBTGZNAME} | tar xf -;
 fi;
 
+echo "building the szip library...";
+cd ${BASEPBNAME}/szip;
+./configure --with-pic --enable-shared=no \
+    CC="${CC}" CFLAGS="${CFLAGS} -w"
+$MAKE
+
 echo "building the bundled hdf5 library...";
-cd ${BASEPBNAME};
+cd ../;
 ## we add the '-w' flag to suppress all the warnings hdf5 prints
-./configure  --with-pic --enable-shared=no --enable-cxx \
-    CXX="${CXX}" CXXFLAGS="${CXXFLAGS} -w" CC="${CC}" CFLAGS="${CFLAGS} -w" F77="${F77}"
+./configure --with-pic --enable-shared=no --enable-cxx \
+    --with-szlib \
+    CXX="${CXX}" CXFLAGS="${CXXFLAGS} -w" CC="${CC}" CFLAGS="${CFLAGS} -w -L../szip/src/.libs -I../szip/src"
 $MAKE lib
 cd ../../
 
@@ -53,9 +60,12 @@ AC_MSG_NOTICE([   HDF5_CXX_INCLUDE=${HDF5_CXX_INCLUDE}])
 
 HDF5_LIB="${BASEPBNAME}/src/.libs/libhdf5.a"
 HDF5_CXX_LIB="${BASEPBNAME}/c++/src/.libs/libhdf5_cpp.a"
+SZIP_LIB="${BASEPBNAME}/szip/src/.libs/libsz.a"
 AC_SUBST(HDF5_LIB)
 AC_SUBST(HDF5_CXX_LIB)
+AC_SUBST(SZIP_LIB)
 AC_MSG_NOTICE([   HDF5_LIB=${HDF5_LIB}])
 AC_MSG_NOTICE([   HDF5_CXX_LIB=${HDF5_CXX_LIB}])
+AC_MSG_NOTICE([   SZIP_LIB=${SZIP_LIB}])
 AC_CONFIG_FILES([src/Makevars])
 AC_OUTPUT

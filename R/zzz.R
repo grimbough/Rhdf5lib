@@ -27,11 +27,11 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS")) {
                      PKG_C_LIBS = {
                          switch(Sys.info()['sysname'], 
                                 Linux = {
-                                    sprintf('%s/libhdf5.a',
-                                            patharch)
+                                    sprintf('%s/libhdf5.a %s/libsz.a',
+                                            patharch, patharch)
                                 }, Darwin = {
-                                    sprintf('%s/libhdf5.a', 
-                                            patharch)
+                                    sprintf('%s/libhdf5.a %s/libsz.a', 
+                                            patharch, patharch)
                                 }, Windows = {
                                     patharch <- gsub(x = shortPathName(patharch),
                                                    pattern = "\\",
@@ -45,11 +45,11 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS")) {
                      PKG_CXX_LIBS = {
                          switch(Sys.info()['sysname'], 
                                 Linux = {
-                                    sprintf('%s/libhdf5_cpp.a %s/libhdf5.a',
-                                            patharch, patharch)
+                                    sprintf('%s/libhdf5_cpp.a %s/libhdf5.a %s/libsz.a',
+                                            patharch, patharch, patharch)
                                 }, Darwin = {
-                                    sprintf('%s/libhdf5_cpp.a %s/libhdf5.a', 
-                                            patharch, patharch)
+                                    sprintf('%s/libhdf5_cpp.a %s/libhdf5.a %s/libsz.a', 
+                                            patharch, patharch, patharch)
                                 }, Windows = {
                                    ## for some reason double quotes aren't always sufficient
                                    ## so we use the 8+3 form of the path

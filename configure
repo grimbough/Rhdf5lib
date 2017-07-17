@@ -2861,17 +2861,18 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
 #untar the lib
 BASEPBNAME="hdf5"
-PBTGZNAME=hdf5small_cxx.tar.gz
+PBTGZNAME=hdf5small_cxx_1.8.19.tar.gz
 cd src
 if test -d ./${BASEPBNAME}; then
 	echo 'found ' $BASEPBNAME ' header sources and tar archive;using what is there.'
 else
-	echo "untarring hdf5small.tgz ...";
+	echo "untarring $PBTGZNAME ...";
 	gunzip -dc ${PBTGZNAME} | tar xf -;
 fi;
 
 echo "building the bundled hdf5 library...";
 cd ${BASEPBNAME};
+## we add the '-w' flag to suppress all the warnings hdf5 prints
 ./configure  --with-pic --enable-shared=no --enable-cxx \
     CXX="${CXX}" CXXFLAGS="${CXXFLAGS} -w" CC="${CC}" CFLAGS="${CFLAGS} -w" F77="${F77}"
 $MAKE lib

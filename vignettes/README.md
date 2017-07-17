@@ -6,7 +6,6 @@ Instructions for editing the hdf5 source down into a reduced version for inclusi
   - /examples
   - /fortran
   - /hl
-  - /java
   - /release_docs
   - /test
   - /testpar
@@ -16,7 +15,7 @@ Instructions for editing the hdf5 source down into a reduced version for inclusi
 
 ### Modified */configure.ac*
 
-- Remove references to the deleted files.  Replace lines 3355 - 3472 with
+- Remove references to the deleted files.  Replace lines 2924 with
 
 ```
 AC_CONFIG_FILES([src/libhdf5.settings
@@ -71,6 +70,15 @@ DIST_SUBDIRS = src . c++
 #	  done
 ```
 run `automake` in `/`
+
+```{bash}
+../configure  \
+--enable-cxx \
+--enable-static \
+--disable-shared \
+--disable-hl \
+--disable-fortran
+```
 
 # Compiling on Windows
 

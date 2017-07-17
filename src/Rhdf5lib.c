@@ -2,7 +2,12 @@
 
 #include <Rdefines.h>
 #include <R_ext/Error.h>
-#include "hdf5/src/hdf5.h"
+
+#ifdef _WIN32
+    #include "hdf5/hdf5.h"
+#else
+    #include "hdf5/src/hdf5.h"
+#endif
 
 SEXP Rhdf5lib_hdf5_libversion(void)
 {

@@ -11,7 +11,12 @@
 #' pkgconfig("PKG_C_LIBS")
 #' @export
 pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS")) {
-    path <- system.file("lib", package="Rhdf5lib", mustWork=TRUE)
+    
+    path <- Sys.getenv(
+        x = "RHDF5LIB_RPATH",
+        unset = system.file("lib", package="Rhdf5lib", mustWork=TRUE)
+    )
+    
     if (nzchar(.Platform$r_arch)) {
         arch <- sprintf("/%s", .Platform$r_arch)
     } else {
@@ -19,7 +24,6 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS")) {
     }
     patharch <- paste0(path, arch)
 
-    
     result <- switch(match.arg(opt), 
                     # PKG_CPPFLAGS = {
                     #     sprintf('-I"%s"', system.file("include", package="Rhdf5lib"))

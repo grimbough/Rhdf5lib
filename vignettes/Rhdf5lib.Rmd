@@ -43,6 +43,8 @@ and a `src/Makevars` file with the following lines
 The statement for each platfrom modifies the `$PKG_LIBS` variable. If your package needs to add to the `$PKG_LIBS` variable, do so by adding to the `PKG_LIBS=$(RHDF5_LIBS)` line, e.g.,
 
     PKG_LIBS=$(RHDF5_LIBS) -L/path/to/foolib -lfoo
+    
+The default behaviour of `Rhdf5lib::pkgconfig` is to report the location of the shared library as the result of `system.file("lib", package="Rhdf5lib")`.  If this is inappropriate for your system e.g. a cluster with a shared file system, use the environment variable `RHDF5LIB_RPATH` to override this and set an appropriate location for your infrastructure.
 
 ## Locating the library headers
 

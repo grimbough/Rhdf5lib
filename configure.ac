@@ -12,7 +12,7 @@ if test -z "${R_HOME}"; then
   exit 1
 fi
 
-CC=`"${R_HOME}/bin/R" CMD config CC`
+CC="${CC}"
 CFLAGS=`"${R_HOME}/bin/R" CMD config CFLAGS`
 MAKE=`${R_HOME}/bin/R CMD config MAKE`
 CXX="${CXX}"

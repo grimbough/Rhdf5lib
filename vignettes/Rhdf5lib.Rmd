@@ -46,11 +46,11 @@ The statement for each platfrom modifies the `$PKG_LIBS` variable. If your packa
 
 ## Locating the library headers
 
-In order for the C/C++ compiler to find the HDF5 headers during package installation, add **Rhtslib** to the *LinkingTo* field of the DESCRIPTION file of your package, e.g.
+In order for the C/C++ compiler to find the HDF5 headers during package installation, add **Rhdf5lib** to the *LinkingTo* field of the DESCRIPTION file of your package, e.g.
 
-    LinkingTo: Rhtslib
+    LinkingTo: Rhdf5lib
 
-In you C or C++ code files, you can then use the standard include techniques, e.g., `#include "hdf5.h"` or `#include "c++/hdf5.h"`. C header files do not need a subfolder specified, while C++ headers are located under *c++*.  You can inspect the header files manually to check their names and declared functions.  To find their location on your system you can use the following code:
+In you C or C++ code files, you can then use the standard include techniques, e.g., `#include "hdf5.h"` or `#include "c++/H5Cpp.h"`. C header files do not need a subfolder specified, while C++ headers are located under *c++*.  You can inspect the header files manually to check their names and declared functions.  To find their location on your system you can use the following code:
 
 ```{R headers}
 system.file(package="Rhdf5lib", "include")

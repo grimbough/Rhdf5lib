@@ -9,7 +9,8 @@ USER_INCLUDE = ${R_PACKAGE_DIR}/include
 USER_LIB_DIR = ${R_PACKAGE_DIR}/lib${R_ARCH}/
 
 PKG_CFLAGS = -I${HDF5_INCLUDE} 
-PKG_LIBS = ${HDF5_LIB} ${SZIP_LIB}
+#PKG_LIBS = ${HDF5_LIB} ${SZIP_LIB}
+PKG_LIBS = ${USER_LIB_DIR}libhdf5.a ${USER_LIB_DIR}libsz.a
 
 all: copying $(SHLIB)
 

@@ -14,10 +14,10 @@ fi
 
 CC=`"${R_HOME}/bin/R" CMD config CC`
 CFLAGS=`"${R_HOME}/bin/R" CMD config CFLAGS`
-MAKE=`${R_HOME}/bin/R CMD config MAKE`
 CXX=`"${R_HOME}/bin/R" CMD config CXX`
 CXXFLAGS=`"${R_HOME}/bin/R" CMD config CXXFLAGS`
 F77=`"${R_HOME}/bin/R" CMD config F77`
+MAKE=`"${R_HOME}/bin/R" CMD config MAKE`
 AC_LANG(C++)
 
 # Checks for programs.
@@ -40,8 +40,6 @@ cd ${BASEPBNAME}/szip;
 ./configure --with-pic --enable-shared=no \
     CC="${CC}" CFLAGS="${CFLAGS} -w"
 $MAKE
-cp src/.libs/* ../src/.libs/
-cp src/*.h ../src/
 
 echo "building the bundled hdf5 library...";
 cd ../;

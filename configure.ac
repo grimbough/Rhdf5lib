@@ -14,10 +14,10 @@ fi
 
 CC=`"${R_HOME}/bin/R" CMD config CC`
 CFLAGS=`"${R_HOME}/bin/R" CMD config CFLAGS`
-MAKE=`${R_HOME}/bin/R CMD config MAKE`
-CXX="${CXX}"
+CXX=`"${R_HOME}/bin/R" CMD config CXX`
 CXXFLAGS=`"${R_HOME}/bin/R" CMD config CXXFLAGS`
 F77=`"${R_HOME}/bin/R" CMD config F77`
+MAKE=`"${R_HOME}/bin/R" CMD config MAKE`
 AC_LANG(C++)
 
 # Checks for programs.
@@ -46,7 +46,10 @@ cd ../;
 ## we add the '-w' flag to suppress all the warnings hdf5 prints
 ./configure --with-pic --enable-shared=no --enable-cxx \
     --with-szlib \
-    CXX="${CXX}" CXFLAGS="${CXXFLAGS} -w" CC="${CC}" CFLAGS="${CFLAGS} -w -L../szip/src/.libs -I../szip/src"
+    CXX="${CXX}" CXFLAGS="${CXXFLAGS} -w" \
+    CC="${CC}" CFLAGS="${CFLAGS} -w" \
+    LDFLAGS="-L$(readlink -fn ./szip/src/.libs)" \
+    CPPFLAGS="-I$(readlink -fn ./szip/src/)"
 $MAKE lib
 cd ../../
 

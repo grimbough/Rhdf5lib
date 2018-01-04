@@ -5,7 +5,7 @@ author:
   affiliation: de.NBI & EMBL Heidelberg
 package: Rhdf5lib
 output:
-  BiocStyle::html_document2
+  BiocStyle::html_document
 vignette: |
   %\VignetteIndexEntry{Linking to Rhdf5lib}
   %\VignetteEngine{knitr::rmarkdown}
@@ -15,7 +15,7 @@ vignette: |
 
 **Rhdf5lib** provides the C and C++ `HDF5` libraries. It is primarily useful to developers of other R packages who want to make use of the capabilities of the HDF5 library directly in the C or C++ code of their own packages, rather than using a higher level interface such as the [**rhdf5**](http://bioconductor.org/packages/rhdf5/) package.  Using *Rhdf5lib* make life easier for users, as they do not have to worry about installing libraries at a system level, and for developers since they can work with a defined version of the library rather than developing strategies to cope with the potential for multiple versions.
 
-***Rhdf5** is very much inspired by the [**zlibbioc**](http://bioconductor.org/packages/zlibbioc/) and [**Rhtslib**](http://bioconductor.org/packages/Rhtslib/) packages.*
+**Rhdf5lib** is very much inspired by the [**zlibbioc**](http://bioconductor.org/packages/zlibbioc/) and [**Rhtslib**](http://bioconductor.org/packages/Rhtslib/) packages.*
 
 # Usage
 
@@ -25,7 +25,7 @@ demonstrates how packages should link to **Rhdf5lib**.
 
 ## Link to the library
 
-To link successfully to the hdf5 library included in **Rhdf5lib** a package must include *both* a `src/Makevars.win` *and* `src/Makevars` file.  *Note*: the contents of `src/Makevars.win` and `src/Makevars` are almost identical, but not quite. Be careful of the differences.
+To link successfully to the HDF5 library included in **Rhdf5lib** a package must include *both* a `src/Makevars.win` *and* `src/Makevars` file.  *Note*: the contents of `src/Makevars.win` and `src/Makevars` are almost identical, but not quite. Be careful of the differences.
 
 Create a `src/Makevars.win` file with the following lines
 
@@ -40,7 +40,7 @@ and a `src/Makevars` file with the following lines
         "${R_HOME}/bin/R" --vanilla --slave`
     PKG_LIBS=$(RHDF5_LIBS)
 
-The statement for each platfrom modifies the `$PKG_LIBS` variable. If your package needs to add to the `$PKG_LIBS` variable, do so by adding to the `PKG_LIBS=$(RHDF5_LIBS)` line, e.g.,
+The statement for each platform modifies the `$PKG_LIBS` variable. If your package needs to add to the `$PKG_LIBS` variable, do so by adding to the `PKG_LIBS=$(RHDF5_LIBS)` line, e.g.,
 
     PKG_LIBS=$(RHDF5_LIBS) -L/path/to/foolib -lfoo
     

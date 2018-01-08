@@ -9,7 +9,6 @@ USER_INCLUDE = ${R_PACKAGE_DIR}/include
 USER_LIB_DIR = ${R_PACKAGE_DIR}/lib${R_ARCH}/
 
 PKG_CFLAGS = -I${HDF5_INCLUDE} 
-#PKG_LIBS = ${HDF5_LIB} ${SZIP_LIB}
 PKG_LIBS = ${USER_LIB_DIR}libhdf5.a ${USER_LIB_DIR}libsz.a
 
 all: copying $(SHLIB)
@@ -22,8 +21,7 @@ Rhdf5lib.o: copying
 copying:
 	mkdir -p "${USER_INCLUDE}"
 	cp ${HDF5_INCLUDE}/*.h ${USER_INCLUDE}
-	mkdir -p "${USER_INCLUDE}/c++"
-	cp ${HDF5_CXX_INCLUDE}/*.h ${USER_INCLUDE}/c++
+	cp ${HDF5_CXX_INCLUDE}/*.h ${USER_INCLUDE}
 	mkdir -p "${USER_LIB_DIR}"
 	cp ${HDF5_LIB} ${USER_LIB_DIR}
 	cp ${HDF5_CXX_LIB} ${USER_LIB_DIR}

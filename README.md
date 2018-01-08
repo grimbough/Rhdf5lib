@@ -1,6 +1,6 @@
 # Rhdf5lib
 
-This R/Bioconductor package provides a mechanism to install the HDF5 system library via an R pacakge.
+This R/Bioconductor package provides a mechanism to install the HDF5 system library via an R package.
 
 ## Current Status
 

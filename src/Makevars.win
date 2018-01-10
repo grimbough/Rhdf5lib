@@ -23,4 +23,4 @@ Rinstall:
 	cp "winlib$(R_ARCH)/libhdf5_cpp.a" "$(USER_LIB_DIR)libhdf5_cpp.a"
 	cp "winlib$(R_ARCH)/libszip.a" "$(USER_LIB_DIR)libszip.a"
 	cp $(HDF5_INCLUDE)/*.h "$(USER_INCLUDE_DIR)"
-	cp $(HDF5_CXX_INCLUDE)/*.h "$(USER_INCLUDE_DIR)/c++"
+	cp $(HDF5_CXX_INCLUDE)/*.h "$(USER_INCLUDE_DIR)"

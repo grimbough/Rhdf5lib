@@ -1,7 +1,7 @@
 Package: Rhdf5lib
 Type: Package
 Title: hdf5 library as an R package
-Version: 1.1.5
+Version: 1.1.6
 Author: Mike Smith
 Maintainer: Mike Smith <grimbough@gmail.com>
 Description: Provides C and C++ hdf5 libraries.

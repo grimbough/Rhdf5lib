@@ -26,7 +26,7 @@ AC_PROG_CXX
 
 #untar the lib
 BASEPBNAME="hdf5"
-PBTGZNAME=hdf5small_cxx_1.8.19.tar.gz
+PBTGZNAME=hdf5small_cxx_1.10.2.tar.gz
 cd src
 if test -d ./${BASEPBNAME}; then 
 	echo 'found ' $BASEPBNAME ' header sources and tar archive;using what is there.'

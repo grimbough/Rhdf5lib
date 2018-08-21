@@ -192,15 +192,15 @@ CPPFLAGS="-I/c/Rtools/mingw_32/i686-w64-mingw32/include -I/c/Rtools/mingw_32/inc
 ## CMAKE 
 
 ```
-pacman -S mingw-w64-x86_64-toolchain
+pacman -S mingw-w64-x86_64-toolchain mingw-w64-x86_64-cmake
 pacman -S mingw-w64-i686-toolchain mingw32/mingw-w64-i686-cmake
 
 
 export PATH=/c/Rtools/mingw_32/bin:/c/msys64/mingw32/bin:$PATH
 export CPATH=/c/Rtools/mingw_32/i686-w64-mingw32/include:/c/Rtools/mingw_32/include:$CPATH
 export LD_LIBRARY_PATH=/c/Rtools/mingw_32/i686-w64-mingw32/lib:/c/Rtools/mingw_32/lib:$LD_LiBRARY_PATH
-mkdir /c/hdf5_build/cmake/CMake-hdf5-1.8.19/hdf5-1.8.19/build_32
-cd /c/hdf5_build/cmake/CMake-hdf5-1.8.19/hdf5-1.8.19/build_32
+mkdir /c/hdf5_build/CMake-hdf5-1.10.1/hdf5-1.10.1/build_32
+cd /c/hdf5_build/CMake-hdf5-1.10.1/hdf5-1.10.1/build_32
 rm -R *
 cmake ../ -G "MSYS Makefiles" \
 -DSITE_OS_BITS:STRING="32" \
@@ -214,7 +214,7 @@ cmake ../ -G "MSYS Makefiles" \
 -DHDF5_ALLOW_EXTERNAL_SUPPORT:STRING="TGZ" \
 -DZLIB_TGZ_NAME:STRING="ZLib.tar.gz" \
 -DSZIP_TGZ_NAME:STRING="SZip.tar.gz" \
--DTGZPATH:STRING="/c/hdf5_build/cmake/CMake-hdf5-1.8.19/" \
+-DTGZPATH:STRING="/c/hdf5_build/CMake-hdf5-1.10.1/" \
 -DCMAKE_BUILD_TYPE:STRING="Release"
 cmake --build . 2> stderr.txt
 ```
@@ -223,19 +223,22 @@ cmake --build . 2> stderr.txt
 export PATH=/c/Rtools/mingw_64/bin:/c/msys64/mingw64/bin:$PATH
 export CPATH=/c/Rtools/mingw_64/x86_64-w64-mingw32/include:/c/Rtools/mingw_64/include:$CPATH
 export LD_LIBRARY_PATH=/c/Rtools/mingw_64/x86_64-w64-mingw32/lib:/c/Rtools/mingw_64/lib:$LD_LiBRARY_PATH
-cd /c/hdf5_build/cmake/CMake-hdf5-1.8.19/hdf5-1.8.19/build_zlibbioc2
+mkdir /c/hdf5_build/CMake-hdf5-1.10.1/hdf5-1.10.1/build_64
+cd /c/hdf5_build/CMake-hdf5-1.10.1/hdf5-1.10.1/build_64
 rm -R *
 cmake ../ -G "MSYS Makefiles" \
--DCMAKE_C_STANDARD_LIBRARIES="-liberty" \
 -DSITE_OS_BITS:STRING="64" \
+-DCMAKE_C_STANDARD_LIBRARIES="-liberty" \
 -DBUILD_SHARED_LIBS:BOOL=ON \
 -DHDF5_BUILD_HL_LIB:BOOL=OFF \
 -DHDF5_ENABLE_Z_LIB_SUPPORT:BOOL=ON \
--DHDF5_ENABLE_SZIP_SUPPORT:BOOL=OFF \
+-DHDF5_ENABLE_SZIP_SUPPORT:BOOL=ON \
 -DBUILD_TESTING:BOOL=OFF \
 -DHDF5_BUILD_TOOLS:BOOL=OFF \
--DZLIB_LIBRARY:FILEPATH="/c/Users/Mike\ Smith/Documents/R/win-library/3.4/zlibbioc/libs/x64/zlib1bioc.dll" \
--DZLIB_INCLUDE_DIR:PATH="/c/Users/Mike\ Smith/Documents/R/win-library/3.4/zlibbioc/include" \
+-DHDF5_ALLOW_EXTERNAL_SUPPORT:STRING="TGZ" \
+-DZLIB_TGZ_NAME:STRING="ZLib.tar.gz" \
+-DSZIP_TGZ_NAME:STRING="SZip.tar.gz" \
+-DTGZPATH:STRING="/c/hdf5_build/CMake-hdf5-1.10.1/" \
 -DCMAKE_BUILD_TYPE:STRING="Release"
 cmake --build . 2> stderr.txt
 ```

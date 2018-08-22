@@ -114,78 +114,65 @@ Install both of these using the GUI installer provided.  I'm going to assume the
 - Rtools (https://cran.r-project.org/bin/windows/Rtools/)
 - MSYS2 (http://www.msys2.org/)
 
-### Installing *dlfcn.h*
+## CMAKE 
 
-HDF5 has a smal number of calls to functions defined in *dlfcn.h*.  Reading around it seems these don't do anything on Windows, but *configure* doesn't mask them out if you're missing the header and compile fails.  The **Rtools** install doesn't have this library included, so we'll download it in MSYS and copy into our **Rtools** installation.
+I was unable to get `./configure` to successfully build the libraries on Windows.  It seems possible to complete the compilation, but the resulting libraries still don't work as exepcted.  Hence we use `cmake` as suggested in the HDF5 documentation.  The source zip file was obtained from `https://www.hdfgroup.org/downloads/hdf5/source-code/#cmake`
 
-```{bash}
-## install
-pacman -S mingw32/mingw-w64-i686-dlfcn mingw64/mingw-w64-x86_64-dlfcn
-## copy libraries
-cp /c/msys64/mingw64/lib/libdl*.a /c/Rtools/mingw_64/lib/
-cp /c/msys64/mingw32/lib/libdl*.a /c/Rtools/mingw_32/lib/
-## copy headers
-cp /c/msys64/mingw64/include/dlfcn.h /c/Rtools/mingw_64/include/
-cp /c/msys64/mingw32/include/dlfcn.h /c/Rtools/mingw_32/include/
+First, we make sure we have the required tools to build both 32 & 64-bit versions.
+
+```
+pacman -S mingw-w64-x86_64-toolchain mingw-w64-x86_64-cmake
+pacman -S mingw-w64-i686-toolchain mingw32/mingw-w64-i686-cmake
 ```
 
-### Install **perl**
+### Building 32-bit
 
-Running make seems to require **perl** so we'll install that too
-
-```{bash}
-pacman -S perl
+```
+export PATH=/c/Rtools/mingw_32/bin:/c/msys64/mingw32/bin:$PATH
+export CPATH=/c/Rtools/mingw_32/i686-w64-mingw32/include:/c/Rtools/mingw_32/include:$CPATH
+export LD_LIBRARY_PATH=/c/Rtools/mingw_32/i686-w64-mingw32/lib:/c/Rtools/mingw_32/lib:$LD_LiBRARY_PATH
+mkdir /c/hdf5_build/CMake-hdf5-1.10.2/hdf5-1.10.2/build_32
+cd /c/hdf5_build/CMake-hdf5-1.10.2/hdf5-1.10.2/build_32
+rm -R *
+cmake ../ -G "MSYS Makefiles" \
+-DSITE_OS_BITS:STRING="32" \
+-DCMAKE_C_STANDARD_LIBRARIES="-liberty" \
+-DBUILD_SHARED_LIBS:BOOL=ON \
+-DHDF5_BUILD_HL_LIB:BOOL=OFF \
+-DHDF5_ENABLE_Z_LIB_SUPPORT:BOOL=ON \
+-DHDF5_ENABLE_SZIP_SUPPORT:BOOL=ON \
+-DBUILD_TESTING:BOOL=OFF \
+-DHDF5_BUILD_TOOLS:BOOL=OFF \
+-DHDF5_ALLOW_EXTERNAL_SUPPORT:STRING="TGZ" \
+-DZLIB_TGZ_NAME:STRING="ZLib.tar.gz" \
+-DSZIP_TGZ_NAME:STRING="SZip.tar.gz" \
+-DTGZPATH:STRING="/c/hdf5_build/CMake-hdf5-1.10.2/" \
+-DCMAKE_BUILD_TYPE:STRING="Release"
+cmake --build . 2> stderr.txt
 ```
 
-## Compiling
+### Building 64-bit
 
-### 64 bit
-
-```{bash}
-../configure  \
---host=x86_64-w64-mingw32 \
---enable-cxx \
---enable-static \
---disable-shared \
---disable-hl \
---disable-fortran \
---with-zlib=/c/Rtools/mingw_64/x86_64-w64-mingw32/ \
-CC=/c/Rtools/mingw_64/bin/gcc.exe \
-CXX=/c/Rtools/mingw_64/bin/g++.exe \
-CPP=/c/Rtools/mingw_64/bin/cpp.exe \
-RANLIB=/c/Rtools/mingw_64/bin/ranlib.exe \
-AR=/c/Rtools/mingw_64/bin/ar.exe \
-AS=/c/Rtools/mingw_64/bin/as.exe \
-DLLTOOL=/c/Rtools/mingw_64/bin/dlltool.exe \
-DLLWRAP=/c/Rtools/mingw_64/bin/dllwrap.exe \
-LDFLAGS="-liberty" \
-CPPFLAGS="-I/c/Rtools/mingw_64/x86_64-w64-mingw32/include -I/c/Rtools/mingw_64/include -L/c/Rtools/mingw_64/x86_64-w64-mingw32/lib -L/c/Rtools/mingw_64/lib"
-
-/c/Rtools/mingw_64/bin/mingw32-make.exe
 ```
-
-### 32 bit
-
-```{bash}
-../configure  \
---host=i686-w64-mingw32 \
---enable-cxx \
---enable-static \
---disable-shared \
---disable-hl \
---disable-fortran \
---with-zlib=/c/Rtools/mingw_32/i686-w64-mingw32/ \
-CC=/c/Rtools/mingw_32/bin/gcc.exe \
-CXX=/c/Rtools/mingw_32/bin/g++.exe \
-CPP=/c/Rtools/mingw_32/bin/cpp.exe \
-RANLIB=/c/Rtools/mingw_32/bin/ranlib.exe \
-AR=/c/Rtools/mingw_32/bin/ar.exe \
-AS=/c/Rtools/mingw_32/bin/as.exe \
-DLLTOOL=/c/Rtools/mingw_32/bin/dlltool.exe \
-DLLWRAP=/c/Rtools/mingw_32/bin/dllwrap.exe \
-LDFLAGS="-liberty" \
-CPPFLAGS="-I/c/Rtools/mingw_32/i686-w64-mingw32/include -I/c/Rtools/mingw_32/include -L/c/Rtools/mingw_32/i686-w64-mingw32/lib -L/c/Rtools/mingw_32/lib"
-
-/c/Rtools/mingw_32/bin/mingw32-make.exe
+export PATH=/c/Rtools/mingw_64/bin:/c/msys64/mingw64/bin:$PATH
+export CPATH=/c/Rtools/mingw_64/x86_64-w64-mingw32/include:/c/Rtools/mingw_64/include:$CPATH
+export LD_LIBRARY_PATH=/c/Rtools/mingw_64/x86_64-w64-mingw32/lib:/c/Rtools/mingw_64/lib:$LD_LiBRARY_PATH
+mkdir /c/hdf5_build/CMake-hdf5-1.10.2/hdf5-1.10.2/build_64
+cd /c/hdf5_build/CMake-hdf5-1.10.2/hdf5-1.10.2/build_64
+rm -R *
+cmake ../ -G "MSYS Makefiles" \
+-DSITE_OS_BITS:STRING="64" \
+-DCMAKE_C_STANDARD_LIBRARIES="-liberty" \
+-DBUILD_SHARED_LIBS:BOOL=ON \
+-DHDF5_BUILD_HL_LIB:BOOL=OFF \
+-DHDF5_ENABLE_Z_LIB_SUPPORT:BOOL=ON \
+-DHDF5_ENABLE_SZIP_SUPPORT:BOOL=ON \
+-DBUILD_TESTING:BOOL=OFF \
+-DHDF5_BUILD_TOOLS:BOOL=OFF \
+-DHDF5_ALLOW_EXTERNAL_SUPPORT:STRING="TGZ" \
+-DZLIB_TGZ_NAME:STRING="ZLib.tar.gz" \
+-DSZIP_TGZ_NAME:STRING="SZip.tar.gz" \
+-DTGZPATH:STRING="/c/hdf5_build/CMake-hdf5-1.10.2/" \
+-DCMAKE_BUILD_TYPE:STRING="Release"
+cmake --build . 2> stderr.txt
 ```
-

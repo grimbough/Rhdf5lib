@@ -2,7 +2,7 @@
 
 #untar the lib
 BASEPBNAME="hdf5"
-PBTGZNAME=hdf5_headers_1.10.2.tar.gz
+PBTGZNAME=hdf5_headers_1.10.3.tar.gz
 cd src
 if test -d ${BASEPBNAME}; then 
 	echo 'found ' $BASEPBNAME ' header sources; using what is there.'

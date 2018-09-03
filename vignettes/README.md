@@ -121,18 +121,23 @@ I was unable to get `./configure` to successfully build the libraries on Windows
 First, we make sure we have the required tools to build both 32 & 64-bit versions.
 
 ```
-pacman -S mingw-w64-x86_64-toolchain mingw-w64-x86_64-cmake
+pacman -Syu ##upgrade msys, pacman & repos
+pacman -S mingw-w64-x86_64-toolchain mingw64/mingw-w64-x86_64-cmake
 pacman -S mingw-w64-i686-toolchain mingw32/mingw-w64-i686-cmake
+#pacman -U http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-rhash-1.3.6-2-any.pkg.tar.xz
+#pacman -U http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-cmake-3.12.1-1-any.pkg.tar.xz
+#pacman -U http://repo.msys2.org/mingw/i686/mingw-w64-i686-rhash-1.3.6-2-any.pkg.tar.xz
+#pacman -U http://repo.msys2.org/mingw/i686/mingw-w64-i686-cmake-3.12.1-1-any.pkg.tar.xz
 ```
 
 ### Building 32-bit
 
-```
+```{bash}
 export PATH=/c/Rtools/mingw_32/bin:/c/msys64/mingw32/bin:$PATH
 export CPATH=/c/Rtools/mingw_32/i686-w64-mingw32/include:/c/Rtools/mingw_32/include:$CPATH
 export LD_LIBRARY_PATH=/c/Rtools/mingw_32/i686-w64-mingw32/lib:/c/Rtools/mingw_32/lib:$LD_LiBRARY_PATH
-mkdir /c/hdf5_build/CMake-hdf5-1.10.2/hdf5-1.10.2/build_32
-cd /c/hdf5_build/CMake-hdf5-1.10.2/hdf5-1.10.2/build_32
+mkdir /c/hdf5_build/CMake-hdf5-1.10.3/hdf5-1.10.3/build_32
+cd /c/hdf5_build/CMake-hdf5-1.10.3/hdf5-1.10.3/build_32
 rm -R *
 cmake ../ -G "MSYS Makefiles" \
 -DSITE_OS_BITS:STRING="32" \
@@ -146,19 +151,19 @@ cmake ../ -G "MSYS Makefiles" \
 -DHDF5_ALLOW_EXTERNAL_SUPPORT:STRING="TGZ" \
 -DZLIB_TGZ_NAME:STRING="ZLib.tar.gz" \
 -DSZIP_TGZ_NAME:STRING="SZip.tar.gz" \
--DTGZPATH:STRING="/c/hdf5_build/CMake-hdf5-1.10.2/" \
+-DTGZPATH:STRING="/c/hdf5_build/CMake-hdf5-1.10.3/" \
 -DCMAKE_BUILD_TYPE:STRING="Release"
 cmake --build . 2> stderr.txt
 ```
 
 ### Building 64-bit
 
-```
+```{bash}
 export PATH=/c/Rtools/mingw_64/bin:/c/msys64/mingw64/bin:$PATH
 export CPATH=/c/Rtools/mingw_64/x86_64-w64-mingw32/include:/c/Rtools/mingw_64/include:$CPATH
 export LD_LIBRARY_PATH=/c/Rtools/mingw_64/x86_64-w64-mingw32/lib:/c/Rtools/mingw_64/lib:$LD_LiBRARY_PATH
-mkdir /c/hdf5_build/CMake-hdf5-1.10.2/hdf5-1.10.2/build_64
-cd /c/hdf5_build/CMake-hdf5-1.10.2/hdf5-1.10.2/build_64
+mkdir /c/hdf5_build/CMake-hdf5-1.10.3/hdf5-1.10.3/build_64
+cd /c/hdf5_build/CMake-hdf5-1.10.3/hdf5-1.10.3/build_64
 rm -R *
 cmake ../ -G "MSYS Makefiles" \
 -DSITE_OS_BITS:STRING="64" \
@@ -172,7 +177,16 @@ cmake ../ -G "MSYS Makefiles" \
 -DHDF5_ALLOW_EXTERNAL_SUPPORT:STRING="TGZ" \
 -DZLIB_TGZ_NAME:STRING="ZLib.tar.gz" \
 -DSZIP_TGZ_NAME:STRING="SZip.tar.gz" \
--DTGZPATH:STRING="/c/hdf5_build/CMake-hdf5-1.10.2/" \
+-DTGZPATH:STRING="/c/hdf5_build/CMake-hdf5-1.10.3/" \
 -DCMAKE_BUILD_TYPE:STRING="Release"
 cmake --build . 2> stderr.txt
+```
+
+In `src/H5win32defs.h` define `H5open` as `#define HDopen(S,F,M)       _open(S,F|_O_BINARY,M)`
+
+change line 291 from
+
+```{diff}
+- if((fd = HDopen(full_name, O_RDONLY)) < 0)
++ if((fd = HDopen(full_name, O_RDONLY, 0)) < 0)
 ```

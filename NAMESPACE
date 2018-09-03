@@ -2,5 +2,4 @@
 
 export(getHdf5Version)
 export(pkgconfig)
-importFrom(utils,shortPathName)
 useDynLib(Rhdf5lib)

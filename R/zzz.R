@@ -9,7 +9,6 @@
 #' @examples
 #' pkgconfig("PKG_CXX_LIBS")
 #' pkgconfig("PKG_C_LIBS")
-#' @importFrom utils shortPathName
 #' @export
 pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS")) {
     

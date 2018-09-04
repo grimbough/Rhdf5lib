@@ -132,7 +132,7 @@ pacman -S mingw-w64-i686-toolchain mingw32/mingw-w64-i686-cmake
 
 ### Building 32-bit
 
-```{bash}
+```bash
 export PATH=/c/Rtools/mingw_32/bin:/c/msys64/mingw32/bin:$PATH
 export CPATH=/c/Rtools/mingw_32/i686-w64-mingw32/include:/c/Rtools/mingw_32/include:$CPATH
 export LD_LIBRARY_PATH=/c/Rtools/mingw_32/i686-w64-mingw32/lib:/c/Rtools/mingw_32/lib:$LD_LiBRARY_PATH
@@ -158,7 +158,7 @@ cmake --build . 2> stderr.txt
 
 ### Building 64-bit
 
-```{bash}
+```bash
 export PATH=/c/Rtools/mingw_64/bin:/c/msys64/mingw64/bin:$PATH
 export CPATH=/c/Rtools/mingw_64/x86_64-w64-mingw32/include:/c/Rtools/mingw_64/include:$CPATH
 export LD_LIBRARY_PATH=/c/Rtools/mingw_64/x86_64-w64-mingw32/lib:/c/Rtools/mingw_64/lib:$LD_LiBRARY_PATH
@@ -186,7 +186,7 @@ In `src/H5win32defs.h` define `H5open` as `#define HDopen(S,F,M)       _open(S,F
 
 change line 291 from
 
-```{diff}
+```diff
 - if((fd = HDopen(full_name, O_RDONLY)) < 0)
 + if((fd = HDopen(full_name, O_RDONLY, 0)) < 0)
 ```

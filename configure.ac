@@ -46,7 +46,7 @@ cd ../;
 ## we add the '-w' flag to suppress all the warnings hdf5 prints
 ./configure --with-pic --enable-shared=no --enable-cxx \
     --with-szlib \
-    CXX="${CXX}" CXFLAGS="${CXXFLAGS} -w" \
+    CXX="${CXX}" CXXFLAGS="${CXXFLAGS} -w" \
     CC="${CC}" CFLAGS="${CFLAGS} -w" \
     LDFLAGS="-L`pwd -P`/szip/src/.libs" \
     CPPFLAGS="-I`pwd -P`/szip/src/"

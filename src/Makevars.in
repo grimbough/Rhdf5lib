@@ -5,7 +5,7 @@ HDF5_CXX_LIB=@HDF5_CXX_LIB@
 SZIP_LIB=@SZIP_LIB@
 
 #ensure we use c++ compiler that can handle 'long long'
-CXX_STD = CXX11
+#CXX_STD = CXX11
 
 #expose headers in installed package include folder
 USER_INCLUDE = ${R_PACKAGE_DIR}/include

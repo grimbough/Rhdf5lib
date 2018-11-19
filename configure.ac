@@ -46,8 +46,8 @@ cd ../;
 ## we add the '-w' flag to suppress all the warnings hdf5 prints
 ./configure --with-pic --enable-shared=no --enable-cxx \
     --with-szlib \
-    CXX="${CXX}" CXXFLAGS="${CXXFLAGS} -std=c++11 -w" \
-    CC="${CC}" CFLAGS="${CFLAGS} -w" \
+    CXX="${CXX}" CXXFLAGS="${CXXFLAGS} ${CXXPICFLAGS} -w" \
+    CC="${CC}" CFLAGS="${CFLAGS} ${CPICFLAGS} -w" \
     LDFLAGS="-L`pwd -P`/szip/src/.libs" \
     CPPFLAGS="-I`pwd -P`/szip/src/" 
 $MAKE lib

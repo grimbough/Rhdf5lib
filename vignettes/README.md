@@ -1,21 +1,27 @@
-# Creating hdf5small_cxx.tar.gz
+# Creating hdf5small_cxx_hl_1.10.3.tar.gz
 
 Instructions for editing the hdf5 source down into a reduced version for inclusion the package.  The is just a record of the steps I took, and should be automated in the future if possible.
 
 ### Deleted the following folders:
   - /examples
   - /fortran
-  - /hl
+  - /java
   - /release_docs
   - /test
   - /testpar
   - /tools
   - /c++/examples
   - /c++/test
+  - /hl/examples
+  - /hl/fortran
+  - /hl/test
+  - /hl/tools
+  - /hl/c++/examples
+  - /hl/c++/test
 
 ### Modified */configure.ac*
 
-- Remove references to the deleted files.  Replace lines 2924 with
+- Remove references to the deleted files.  Replace lines 3427-3545 with
 
 ```
 AC_CONFIG_FILES([src/libhdf5.settings
@@ -23,18 +29,25 @@ AC_CONFIG_FILES([src/libhdf5.settings
                  src/Makefile
                  c++/Makefile
                  c++/src/Makefile
-                 c++/src/h5c++])
+                 hl/Makefile
+                 hl/src/Makefile
+                 hl/c++/Makefile
+                 hl/c++/src/Makefile])
 ```
-- Comment out lines 3371 - 3379
+- Comment out lines 3556 - 3584
 
 ```
 #chmod 755 tools/src/misc/h5cc
-#
-#if test "X$HDF_FORTRAN" = "Xyes"; then
-#  chmod 755 fortran/src/h5fc
+#if test "X$HDF_CXX" = "Xyes"; then
+#  chmod 755 c++/src/h5c++
+#fi
+...
+#      fi
+#      ;;
+#  esac
 #fi
 ```
-- Comment out reference to *fortran/src/H5config_f.inc* on lines 464 & 465
+- Comment out reference to *fortran/src/H5config_f.inc* on lines 466 & 467
 
 Then run `autoconf` in `/`.
 
@@ -49,13 +62,31 @@ endif
 DIST_SUBDIRS = src
 ```
 
+### Modified */hl/c++/Makefile.am*
+
+- Remove references to *test* and *examples* folders on lines 21 and 22 e.g.
+```
+SUBDIRS=src
+DIST_SUBDIRS=src
+```
+
+### Modified */hl/Makefile.am*
+
+- Remove references to *tools*, *fortran*, and *examples* folders on lines 38 and 40 e.g.
+```
+if BUILD_HDF5_HL_CONDITIONAL
+   SUBDIRS=src $(CXX_DIR)
+endif
+DIST_SUBDIRS=src c++
+```
+
 ### Modified */Makefile.am*
 
 - Remove references to multiple folders that no longer exist on lines 78 - 80 e.g.
 
 ```
-SUBDIRS = src . $(CXX_DIR)
-DIST_SUBDIRS = src . c++
+SUBDIRS = src . $(CXX_DIR) $(HDF5_HL_DIR)
+DIST_SUBDIRS = src . c++ hl
 ```
 
 - Comment out lines for building the tests, lines 99 - 105.
@@ -76,7 +107,6 @@ run `automake` in `/`
 --enable-cxx \
 --enable-static \
 --disable-shared \
---disable-hl \
 --disable-fortran
 ```
 

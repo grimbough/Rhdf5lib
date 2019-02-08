@@ -200,5 +200,6 @@ cp /c/hdf5_build/CMake-hdf5-1.10.4/hdf5-1.10.4/*.h /c/hdf5_build/CMake-hdf5-1.10
 cp /c/hdf5_build/CMake-hdf5-1.10.4/hdf5-1.10.4/src/*.h /c/hdf5_build/CMake-hdf5-1.10.4/hdf5/
 cp /c/hdf5_build/CMake-hdf5-1.10.4/hdf5-1.10.4/c++/src/*.h /c/hdf5_build/CMake-hdf5-1.10.4/hdf5/c++/
 cp /c/hdf5_build/CMake-hdf5-1.10.4/hdf5-1.10.4/hl/src/*.h /c/hdf5_build/CMake-hdf5-1.10.4/hdf5/hl/
+cp /c/hdf5_build/CMake-hdf5-1.10.4/hdf5-1.10.4/build_32/*.h /c/hdf5_build/CMake-hdf5-1.10.4/hdf5/
 tar cf - hdf5 | gzip -6 > hdf5_headers_1.10.4.tar.gz
 ```

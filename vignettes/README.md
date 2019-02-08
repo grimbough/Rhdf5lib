@@ -136,14 +136,14 @@ pacman -S mingw-w64-i686-toolchain mingw32/mingw-w64-i686-cmake
 export PATH=/c/Rtools/mingw_32/bin:/c/msys64/mingw32/bin:$PATH
 export CPATH=/c/Rtools/mingw_32/i686-w64-mingw32/include:/c/Rtools/mingw_32/include:$CPATH
 export LD_LIBRARY_PATH=/c/Rtools/mingw_32/i686-w64-mingw32/lib:/c/Rtools/mingw_32/lib:$LD_LiBRARY_PATH
-mkdir /c/hdf5_build/CMake-hdf5-1.10.3/hdf5-1.10.3/build_32
-cd /c/hdf5_build/CMake-hdf5-1.10.3/hdf5-1.10.3/build_32
+mkdir /c/hdf5_build/CMake-hdf5-1.10.4/hdf5-1.10.4/build_32
+cd /c/hdf5_build/CMake-hdf5-1.10.4/hdf5-1.10.4/build_32
 rm -R *
 cmake ../ -G "MSYS Makefiles" \
 -DSITE_OS_BITS:STRING="32" \
 -DCMAKE_C_STANDARD_LIBRARIES="-liberty" \
 -DBUILD_SHARED_LIBS:BOOL=ON \
--DHDF5_BUILD_HL_LIB:BOOL=OFF \
+-DHDF5_BUILD_HL_LIB:BOOL=ON \
 -DHDF5_ENABLE_Z_LIB_SUPPORT:BOOL=ON \
 -DHDF5_ENABLE_SZIP_SUPPORT:BOOL=ON \
 -DBUILD_TESTING:BOOL=OFF \
@@ -151,7 +151,7 @@ cmake ../ -G "MSYS Makefiles" \
 -DHDF5_ALLOW_EXTERNAL_SUPPORT:STRING="TGZ" \
 -DZLIB_TGZ_NAME:STRING="ZLib.tar.gz" \
 -DSZIP_TGZ_NAME:STRING="SZip.tar.gz" \
--DTGZPATH:STRING="/c/hdf5_build/CMake-hdf5-1.10.3/" \
+-DTGZPATH:STRING="/c/hdf5_build/CMake-hdf5-1.10.4/" \
 -DCMAKE_BUILD_TYPE:STRING="Release"
 cmake --build . 2> stderr.txt
 ```
@@ -162,14 +162,14 @@ cmake --build . 2> stderr.txt
 export PATH=/c/Rtools/mingw_64/bin:/c/msys64/mingw64/bin:$PATH
 export CPATH=/c/Rtools/mingw_64/x86_64-w64-mingw32/include:/c/Rtools/mingw_64/include:$CPATH
 export LD_LIBRARY_PATH=/c/Rtools/mingw_64/x86_64-w64-mingw32/lib:/c/Rtools/mingw_64/lib:$LD_LiBRARY_PATH
-mkdir /c/hdf5_build/CMake-hdf5-1.10.3/hdf5-1.10.3/build_64
-cd /c/hdf5_build/CMake-hdf5-1.10.3/hdf5-1.10.3/build_64
+mkdir /c/hdf5_build/CMake-hdf5-1.10.4/hdf5-1.10.4/build_64
+cd /c/hdf5_build/CMake-hdf5-1.10.4/hdf5-1.10.4/build_64
 rm -R *
 cmake ../ -G "MSYS Makefiles" \
 -DSITE_OS_BITS:STRING="64" \
 -DCMAKE_C_STANDARD_LIBRARIES="-liberty" \
 -DBUILD_SHARED_LIBS:BOOL=ON \
--DHDF5_BUILD_HL_LIB:BOOL=OFF \
+-DHDF5_BUILD_HL_LIB:BOOL=ON \
 -DHDF5_ENABLE_Z_LIB_SUPPORT:BOOL=ON \
 -DHDF5_ENABLE_SZIP_SUPPORT:BOOL=ON \
 -DBUILD_TESTING:BOOL=OFF \
@@ -177,7 +177,7 @@ cmake ../ -G "MSYS Makefiles" \
 -DHDF5_ALLOW_EXTERNAL_SUPPORT:STRING="TGZ" \
 -DZLIB_TGZ_NAME:STRING="ZLib.tar.gz" \
 -DSZIP_TGZ_NAME:STRING="SZip.tar.gz" \
--DTGZPATH:STRING="/c/hdf5_build/CMake-hdf5-1.10.3/" \
+-DTGZPATH:STRING="/c/hdf5_build/CMake-hdf5-1.10.4/" \
 -DCMAKE_BUILD_TYPE:STRING="Release"
 cmake --build . 2> stderr.txt
 ```
@@ -189,4 +189,15 @@ change line 291 from
 ```diff
 - if((fd = HDopen(full_name, O_RDONLY)) < 0)
 + if((fd = HDopen(full_name, O_RDONLY, 0)) < 0)
+```
+
+```
+cd /c/hdf5_build/CMake-hdf5-1.10.4
+mkdir /c/hdf5_build/CMake-hdf5-1.10.4/hdf5
+mkdir /c/hdf5_build/CMake-hdf5-1.10.4/hdf5/c++
+mkdir /c/hdf5_build/CMake-hdf5-1.10.4/hdf5/hl
+cp /c/hdf5_build/CMake-hdf5-1.10.4/hdf5-1.10.4/src/*.h /c/hdf5_build/CMake-hdf5-1.10.4/hdf5/
+cp /c/hdf5_build/CMake-hdf5-1.10.4/hdf5-1.10.4/c++/src/*.h /c/hdf5_build/CMake-hdf5-1.10.4/hdf5/c++/
+cp /c/hdf5_build/CMake-hdf5-1.10.4/hdf5-1.10.4/hl/src/*.h /c/hdf5_build/CMake-hdf5-1.10.4/hdf5/hl/
+tar cf - hdf5 | gzip -6 > hdf5_headers_1.10.4.tar.gz
 ```

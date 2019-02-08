@@ -196,6 +196,7 @@ cd /c/hdf5_build/CMake-hdf5-1.10.4
 mkdir /c/hdf5_build/CMake-hdf5-1.10.4/hdf5
 mkdir /c/hdf5_build/CMake-hdf5-1.10.4/hdf5/c++
 mkdir /c/hdf5_build/CMake-hdf5-1.10.4/hdf5/hl
+cp /c/hdf5_build/CMake-hdf5-1.10.4/hdf5-1.10.4/*.h /c/hdf5_build/CMake-hdf5-1.10.4/hdf5/
 cp /c/hdf5_build/CMake-hdf5-1.10.4/hdf5-1.10.4/src/*.h /c/hdf5_build/CMake-hdf5-1.10.4/hdf5/
 cp /c/hdf5_build/CMake-hdf5-1.10.4/hdf5-1.10.4/c++/src/*.h /c/hdf5_build/CMake-hdf5-1.10.4/hdf5/c++/
 cp /c/hdf5_build/CMake-hdf5-1.10.4/hdf5-1.10.4/hl/src/*.h /c/hdf5_build/CMake-hdf5-1.10.4/hdf5/hl/

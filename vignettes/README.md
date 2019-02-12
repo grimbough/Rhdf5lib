@@ -86,7 +86,7 @@ run `automake` in `/`
   - /autom4te.cache
   - /test
   
-### Modify configure.ac  
+### Modify configure.ac  0
 
 Remove reference to *test* folder, line 200:
 
@@ -102,6 +102,10 @@ Remove reference to *test* folder, line 327:
 ```
 SUBDIRS = src
 ```
+
+### Edit source code
+
+`c++/src/H5Library.cpp` - change line 237 from `exit(-1);` to `std::exit(-1);`
 
 # Compiling on Windows
 

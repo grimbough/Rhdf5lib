@@ -26,7 +26,7 @@ AC_PROG_CXX
 
 #untar the lib
 BASEPBNAME="hdf5"
-PBTGZNAME=hdf5small_cxx_1.10.3.tar.gz
+PBTGZNAME=hdf5small_cxx_hl_1.10.4.tar.gz
 cd src
 if test -d ./${BASEPBNAME}; then 
 	echo 'found ' $BASEPBNAME ' header sources and tar archive;using what is there.'
@@ -45,7 +45,7 @@ echo "building the hdf5 library...";
 cd ../;
 ## we add the '-w' flag to suppress all the warnings hdf5 prints
 ./configure --with-pic --enable-shared=no --enable-cxx \
-    --with-szlib \
+    --with-szlib --enable-hl \
     CXX="${CXX}" CXXFLAGS="${CXXFLAGS} -std=c++11 -w" \
     CC="${CC}" CFLAGS="${CFLAGS} -w" \
     LDFLAGS="-L`pwd -P`/szip/src/.libs" \
@@ -56,19 +56,31 @@ cd ../../
 #update variables in Makevars
 HDF5_INCLUDE="${BASEPBNAME}/src"
 HDF5_CXX_INCLUDE="${BASEPBNAME}/c++/src"
+HDF5_HL_INCLUDE="${BASEPBNAME}/hl/src"
+HDF5_HL_CXX_INCLUDE="${BASEPBNAME}/hl/c++/src"
 AC_SUBST(HDF5_INCLUDE)
 AC_SUBST(HDF5_CXX_INCLUDE)
+AC_SUBST(HDF5_HL_INCLUDE)
+AC_SUBST(HDF5_HL_CXX_INCLUDE)
 AC_MSG_NOTICE([   HDF5_INCLUDE=${HDF5_INCLUDE}])
 AC_MSG_NOTICE([   HDF5_CXX_INCLUDE=${HDF5_CXX_INCLUDE}])
+AC_MSG_NOTICE([   HDF5_HL_INCLUDE=${HDF5_HL_INCLUDE}])
+AC_MSG_NOTICE([   HDF5_HL_CXX_INCLUDE=${HDF5_HL_CXX_INCLUDE}])
 
 HDF5_LIB="${BASEPBNAME}/src/.libs/libhdf5.a"
 HDF5_CXX_LIB="${BASEPBNAME}/c++/src/.libs/libhdf5_cpp.a"
+HDF5_HL_LIB="${BASEPBNAME}/hl/src/.libs/libhdf5_hl.a"
+HDF5_HL_CXX_LIB="${BASEPBNAME}/hl/c++/src/.libs/libhdf5_hl_cpp.a"
 SZIP_LIB="${BASEPBNAME}/szip/src/.libs/libsz.a"
 AC_SUBST(HDF5_LIB)
 AC_SUBST(HDF5_CXX_LIB)
+AC_SUBST(HDF5_HL_LIB)
+AC_SUBST(HDF5_HL_CXX_LIB)
 AC_SUBST(SZIP_LIB)
 AC_MSG_NOTICE([   HDF5_LIB=${HDF5_LIB}])
 AC_MSG_NOTICE([   HDF5_CXX_LIB=${HDF5_CXX_LIB}])
+AC_MSG_NOTICE([   HDF5_HL_LIB=${HDF5_HL_LIB}])
+AC_MSG_NOTICE([   HDF5_HL_CXX_LIB=${HDF5_HL_CXX_LIB}])
 AC_MSG_NOTICE([   SZIP_LIB=${SZIP_LIB}])
 AC_CONFIG_FILES([src/Makevars])
 AC_OUTPUT

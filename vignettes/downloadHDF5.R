@@ -15,7 +15,8 @@ setwd(file.path(tempdir(), "hdf5"))
 
 unlink(x = c("examples", "fortran", "java", "release_docs", "test", "testpar", "tools", 
              "c++/examples", "c++/test", 
-             "hl/fortran", "hl/examples", "hl/tools", "hl/test"),
+             "hl/fortran", "hl/examples", "hl/tools", "hl/test",
+             "hl/c++/examples", "hl/c++/test"),
        recursive = TRUE)
 
 configure_ac <- xfun::read_utf8("configure.ac")
@@ -24,7 +25,7 @@ configure_ac <- xfun::read_utf8("configure.ac")
 start <- which(str_detect(configure_ac, pattern = "AC_CONFIG_FILES"))
 end <- which(str_detect(configure_ac[start:(length(configure_ac))], pattern = "\\)$"))[1] + start - 1
 config_files <- configure_ac[start:end]
-rm_idx <- which(str_detect(config_files, pattern = "test/|testpar/|tools/|examples/|fortran/|java/"))
+rm_idx <- which(str_detect(config_files, pattern = "test/|testpar/|tools/|examples/|fortran/|java/|h5c++"))
 config_files <- config_files[-rm_idx]
 config_files[length(config_files)] <- paste0(tail(config_files, 1), "])")
 configure_ac[start] <- paste(config_files, collapse = "\n")
@@ -44,16 +45,23 @@ xfun::write_utf8(configure_ac, con = "configure.ac")
 ## C++ makefile
 make_cplusplus <- xfun::read_utf8('c++/Makefile.am')
 idx <- str_which(make_cplusplus, "BUILD_CXX_CONDITIONAL")
-make_cplusplus[idx] <- "if BUILD_CXX_CONDITIONAL\n\tSUBDIRS=src\nendif\nDIST_SUBDIRS = src"
-make_cplusplus <- make_cplusplus[-((idx+1):(length(make_cplusplus)-1))] 
+make_cplusplus[idx] <- "if BUILD_CXX_CONDITIONAL\n   SUBDIRS=src\nendif\nDIST_SUBDIRS = src"
+make_cplusplus <- make_cplusplus[-((idx+1):(length(make_cplusplus)-2))] 
 xfun::write_utf8(make_cplusplus, con = "c++/Makefile.am")
 
 ## HL makefile
 make_hl <- xfun::read_utf8('hl/Makefile.am')
 idx <- str_which(make_hl, "BUILD_HDF5_HL_CONDITIONAL")
-make_hl[idx] <- "if BUILD_HDF5_HL_CONDITIONAL\n\tSUBDIRS=src $(CXX_DIR)\nendif\nDIST_SUBDIRS = src c++"
-make_hl <- make_hl[-((idx+1):(length(make_hl)-1))] 
+make_hl[idx] <- "if BUILD_HDF5_HL_CONDITIONAL\n   SUBDIRS=src $(CXX_DIR)\nendif\nDIST_SUBDIRS = src c++"
+make_hl <- make_hl[-((idx+1):(length(make_hl)-2))] 
 xfun::write_utf8(make_hl, con = "hl/Makefile.am")
+
+## HL C++ makefile
+make_hl_cpp <- xfun::read_utf8('hl/c++/Makefile.am')
+idx <- str_which(make_hl_cpp, "^SUBDIRS=src")
+make_hl_cpp[idx] <- "SUBDIRS=src\nDIST_SUBDIRS=src"
+make_hl_cpp <- make_hl_cpp[-((idx+1):(length(make_hl_cpp)-2))] 
+xfun::write_utf8(make_hl_cpp, con = "hl/c++/Makefile.am")
 
 ## Primary makefile
 make <- xfun::read_utf8('Makefile.am')
@@ -66,12 +74,13 @@ make[(idx+1):(idx+6)] <- paste0("##", make[(idx+1):(idx+6)])
 xfun::write_utf8(make, con = "Makefile.am")
 
 system2(command = "autoconf")
-system2("aclocal")
-system2("automake")
+system2(command = "aclocal")
+system2(command = "automake")
 unlink("autom4te.cache", recursive = TRUE)
 
 setwd(tempdir())
 tar("hdf5small_cxx_hl_1.10.4.tar.gz", file = "hdf5", compression = "gzip", compression_level = 7)
 
-
+#file.copy("hdf5small_cxx_hl_1.10.4.tar.gz", to = "~/Projects/Rhdf5lib/src/")
+#unlink(list.files("hdf5", path = tempdir(), full.names = TRUE), recursive = TRUE)
 

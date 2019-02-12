@@ -4,20 +4,26 @@
 \alias{pkgconfig}
 \title{Compiler arguments for using Rhdf5lib}
 \usage{
-pkgconfig(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS"))
+pkgconfig(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS",
+  "PKG_C_HL_LIBS"))
 }
 \arguments{
 \item{opt}{A scalar character from the list of available options; 
-default is \code{PKG_CXX_LIBS}.}
+default is \code{PKG_CXX_LIBS}.  Valid options are \code{PKG_C_LIBS},
+\code{PKG_CXX_LIBS}, \code{PKG_C_HL_LIBS} and \code{PKG_CXX_HL_LIBS}, where
+\code{HL} indicates that you want to include the HDF5 'high-level' API and
+\code{CXX} denotes including the C++ interface.}
 }
 \value{
 \code{NULL}; prints the corresponding value to stdout.
 }
 \description{
-This function returns values for \code{PKG_CXX_LIBS} and
-\code{PKG_CC_FLAGS} variables for use in Makevars files.
+This function returns values for \code{PKG_LIBS} variables for use in 
+Makevars files.
 }
 \examples{
-pkgconfig("PKG_CXX_LIBS")
 pkgconfig("PKG_C_LIBS")
+pkgconfig("PKG_CXX_LIBS")
+pkgconfig("PKG_C_HL_LIBS")
+pkgconfig("PKG_CXX_HL_LIBS")
 }

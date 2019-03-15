@@ -55,15 +55,15 @@ cd ${BASEPBNAME}/szip;
 SZIP_DIR=`pwd -P`
 ./configure --with-pic --enable-shared=no \
     CC="${CC}" CFLAGS="${CFLAGS} ${CPICFLAGS}"
-$MAKE
+$MAKE && $MAKE install
 
 echo "building the hdf5 library...";
 cd ../;
-## we add the '-w' flag to suppress all the warnings hdf5 prints
 ./configure --with-pic --enable-shared=no --enable-cxx \
-    --with-szlib=${SZIP_DIR} --with-zlib \
+    --with-szlib="${SZIP_DIR}/szip" --with-zlib \
     CC="${CC}" CFLAGS="${CFLAGS} ${CPICFLAGS}" \
     CXX="${CXX}" CXXFLAGS="${CXXFLAGS} ${CXXPICFLAGS}"
+
 $MAKE lib
 cd ../../
 

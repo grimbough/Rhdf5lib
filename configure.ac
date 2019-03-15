@@ -4,6 +4,10 @@
 AC_PREREQ([2.65])
 AC_INIT([Rhdf5lib], [0.99.13], [mike.smith@embl.de])
 AC_CONFIG_SRCDIR([src])
+AC_CONFIG_MACRO_DIR([m4])
+
+m4_include([m4/ax_check_zlib.m4])
+m4_include([m4/ax_check_compile_flag.m4])
 
 # Check the compiler configured with R
 : ${R_HOME=`R RHOME`}
@@ -24,6 +28,17 @@ AC_LANG(C++)
 AC_PROG_CC
 AC_PROG_CXX
 
+## check if -w flag is supported
+AX_CHECK_COMPILE_FLAG([-w], 
+  [CFLAGS="$CFLAGS -w"; CXXFLAGS="$CXXFLAGS -w"])
+
+### 'checking for zlib... ';
+have_zlib=true
+AX_CHECK_ZLIB([], [have_zlib=false])
+if ! $have_zlib; then
+	AC_MSG_ERROR([zlib is required but not found])
+fi
+
 #untar the lib
 BASEPBNAME="hdf5"
 PBTGZNAME=hdf5small_cxx_1.10.3.tar.gz
@@ -37,19 +52,18 @@ fi;
 
 echo "building the szip library...";
 cd ${BASEPBNAME}/szip;
+SZIP_DIR=`pwd -P`
 ./configure --with-pic --enable-shared=no \
-    CC="${CC}" CFLAGS="${CFLAGS} -w"
+    CC="${CC}" CFLAGS="${CFLAGS} ${CPICFLAGS}"
 $MAKE
 
 echo "building the hdf5 library...";
 cd ../;
 ## we add the '-w' flag to suppress all the warnings hdf5 prints
 ./configure --with-pic --enable-shared=no --enable-cxx \
-    --with-szlib \
-    CXX="${CXX}" CXXFLAGS="${CXXFLAGS} ${CXXPICFLAGS} -w" \
-    CC="${CC}" CFLAGS="${CFLAGS} ${CPICFLAGS} -w" \
-    LDFLAGS="-L`pwd -P`/szip/src/.libs" \
-    CPPFLAGS="-I`pwd -P`/szip/src/" 
+    --with-szlib=${SZIP_DIR} --with-zlib \
+    CC="${CC}" CFLAGS="${CFLAGS} ${CPICFLAGS}" \
+    CXX="${CXX}" CXXFLAGS="${CXXFLAGS} ${CXXPICFLAGS}"
 $MAKE lib
 cd ../../
 

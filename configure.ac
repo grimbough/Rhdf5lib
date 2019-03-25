@@ -2,9 +2,8 @@
 # author: Mike Smith (mike.smith@embl.de)
 
 AC_PREREQ([2.65])
-AC_INIT([Rhdf5lib], [0.99.13], [mike.smith@embl.de])
+AC_INIT([Rhdf5lib], [1.5.0], [mike.smith@embl.de])
 AC_CONFIG_SRCDIR([src])
-AC_CONFIG_MACRO_DIR([m4])
 
 m4_include([m4/ax_check_zlib.m4])
 m4_include([m4/ax_check_compile_flag.m4])
@@ -28,16 +27,8 @@ AC_LANG(C++)
 AC_PROG_CC
 AC_PROG_CXX
 
-## check if -w flag is supported
-AX_CHECK_COMPILE_FLAG([-w], 
-  [CFLAGS="$CFLAGS -w"; CXXFLAGS="$CXXFLAGS -w"])
-
-### 'checking for zlib... ';
-have_zlib=true
-AX_CHECK_ZLIB([], [have_zlib=false])
-if ! $have_zlib; then
-	AC_MSG_ERROR([zlib is required but not found])
-fi
+## hdf5 spews loads of errors.  Use -w to suppress these if supported
+AX_CHECK_COMPILE_FLAG([-w], [CFLAGS="$CFLAGS -w"; CXXFLAGS="$CXXFLAGS -w"])
 
 #untar the lib
 BASEPBNAME="hdf5"
@@ -52,18 +43,25 @@ fi;
 
 echo "building the szip library...";
 cd ${BASEPBNAME}/szip;
-SZIP_DIR=`pwd -P`
 ./configure --with-pic --enable-shared=no \
     CC="${CC}" CFLAGS="${CFLAGS} ${CPICFLAGS}"
-$MAKE && $MAKE install
+$MAKE
+$MAKE install
+SZIP_HOME=`pwd -P`/szip
+
+### 'checking for zlib... ';
+have_zlib=true
+AX_CHECK_ZLIB([], [have_zlib=false])
+if ! $have_zlib; then
+  AC_MSG_ERROR([zlib is required but not found])
+fi
 
 echo "building the hdf5 library...";
 cd ../;
 ./configure --with-pic --enable-shared=no --enable-cxx \
-    --with-szlib="${SZIP_DIR}/szip" --with-zlib \
-    CC="${CC}" CFLAGS="${CFLAGS} ${CPICFLAGS}" \
-    CXX="${CXX}" CXXFLAGS="${CXXFLAGS} ${CXXPICFLAGS}"
-
+    --with-szlib=${SZIP_HOME} --with-zlib=${ZLIB_HOME} \
+    CXX="${CXX}" CXXFLAGS="${CXXFLAGS} ${CXXPICFLAGS}" \
+    CC="${CC}" CFLAGS="${CFLAGS} ${CPICFLAGS}" 
 $MAKE lib
 cd ../../
 
@@ -78,11 +76,15 @@ AC_MSG_NOTICE([   HDF5_CXX_INCLUDE=${HDF5_CXX_INCLUDE}])
 HDF5_LIB="${BASEPBNAME}/src/.libs/libhdf5.a"
 HDF5_CXX_LIB="${BASEPBNAME}/c++/src/.libs/libhdf5_cpp.a"
 SZIP_LIB="${BASEPBNAME}/szip/src/.libs/libsz.a"
+
 AC_SUBST(HDF5_LIB)
-AC_SUBST(HDF5_CXX_LIB)
-AC_SUBST(SZIP_LIB)
 AC_MSG_NOTICE([   HDF5_LIB=${HDF5_LIB}])
+AC_SUBST(HDF5_CXX_LIB)
 AC_MSG_NOTICE([   HDF5_CXX_LIB=${HDF5_CXX_LIB}])
+AC_SUBST(SZIP_LIB)
 AC_MSG_NOTICE([   SZIP_LIB=${SZIP_LIB}])
+AC_SUBST(ZLIB_HOME)
+AC_MSG_NOTICE([   ZLIB_HOME=${ZLIB_HOME}])
+
 AC_CONFIG_FILES([src/Makevars])
 AC_OUTPUT

@@ -31,7 +31,7 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS")) {
                      PKG_C_LIBS = {
                          switch(Sys.info()['sysname'], 
                                 Windows = {
-                                    patharch <- gsub(x = shortPathName(patharch),
+                                    patharch <- gsub(x = utils::shortPathName(patharch),
                                                    pattern = "\\",
                                                    replacement = "/", 
                                                    fixed = TRUE)
@@ -48,7 +48,7 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS")) {
                                 Windows = {
                                    ## for some reason double quotes aren't always sufficient
                                    ## so we use the 8+3 form of the path
-                                   patharch <- gsub(x = shortPathName(patharch),
+                                   patharch <- gsub(x = utils::shortPathName(patharch),
                                                    pattern = "\\",
                                                    replacement = "/", 
                                                    fixed = TRUE)

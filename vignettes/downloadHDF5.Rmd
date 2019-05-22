@@ -16,10 +16,10 @@ Download the HDF5 source tarball and unpack into a temporary directory.  We rena
 
 ```{r}
 hdf5_source <- tempfile()
-download.file(url = "https://s3.amazonaws.com/hdf-wordpress-1/wp-content/uploads/manual/HDF5/HDF5_1_10_4/hdf5-1.10.4.tar.bz2", 
+download.file(url = "https://s3.amazonaws.com/hdf-wordpress-1/wp-content/uploads/manual/HDF5/HDF5_1_10_5/hdf5-1.10.5.tar.bz2", 
               dest = hdf5_source)
 untar(tarfile = hdf5_source, exdir = tempdir())
-system2("mv", args = c(file.path(tempdir(), "hdf5-1.10.4"), file.path(tempdir(), "hdf5")))
+system2("mv", args = c(file.path(tempdir(), "hdf5-1.10.5"), file.path(tempdir(), "hdf5")))
 ```
 
 
@@ -80,6 +80,14 @@ make[(idx+1):(idx+6)] <- paste0("##", make[(idx+1):(idx+6)])
 xfun::write_utf8(make, con = file.path(hdf5_dir, "Makefile.am"))
 ```
 
+Address problem in source code reported on CRAN Solaris builder.
+
+```{r}
+code <- xfun::read_utf8(file.path(hdf5_dir, 'c++', 'src', 'H5Library.cpp'))
+code <- str_replace(code, '([ ]{1,})(exit\\()', replacement = '\\1std::\\2' )
+xfun::write_utf8(code, con = file.path(hdf5_dir, 'c++', 'src', 'H5Library.cpp'))
+```
+
 Process the modified scripts.
 
 ```{r}
@@ -133,13 +141,13 @@ Move the SZIP source into the HDF5 distribution and create the tarball that will
 
 ```{r, createTarball}
 system2("mv", args = c(szip_dir, file.path(hdf5_dir, "szip")))
-system2("tar", args = c("-C", tempdir(), "-czf", file.path(tempdir(), "hdf5small_cxx_1.10.4.tar.gz"), "hdf5"))
+system2("tar", args = c("-C", tempdir(), "-czf", file.path(tempdir(), "hdf5small_cxx_1.10.5.tar.gz"), "hdf5"))
 ```
 
 Finally copy this to the `/tmp/` so it is easy to find, inspect, and move to the package directory if correct.
 
 ```{r}
-if(file.exists("/tmp/hdf5small_cxx_1.10.4.tar.gz")) { file.remove("/tmp/hdf5small_cxx_1.10.4.tar.gz") }
-file.copy(file.path(tempdir(), "hdf5small_cxx_1.10.4.tar.gz"), to = "/tmp/")
+if(file.exists("/tmp/hdf5small_cxx_1.10.5.tar.gz")) { file.remove("/tmp/hdf5small_cxx_1.10.5.tar.gz") }
+file.copy(file.path(tempdir(), "hdf5small_cxx_1.10.5.tar.gz"), to = "/tmp/")
 ```
 

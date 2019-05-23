@@ -3369,7 +3369,7 @@ fi
 
 #untar the lib
 BASEPBNAME="hdf5"
-PBTGZNAME=hdf5small_cxx_hl_1.10.4.tar.gz
+PBTGZNAME=hdf5small_cxx_hl_1.10.5.tar.gz
 cd src
 if test -d ./${BASEPBNAME}; then
 	echo 'found ' $BASEPBNAME ' header sources and tar archive;using what is there.'
@@ -3999,26 +3999,21 @@ HDF5_HL_CXX_LIB="${BASEPBNAME}/hl/c++/src/.libs/libhdf5_hl_cpp.a"
 SZIP_LIB="${BASEPBNAME}/szip/src/.libs/libsz.a"
 
 
-<<<<<<< HEAD
 
 
 
 
-=======
->>>>>>> master
+
 { $as_echo "$as_me:${as_lineno-$LINENO}:    HDF5_LIB=${HDF5_LIB}" >&5
 $as_echo "$as_me:    HDF5_LIB=${HDF5_LIB}" >&6;}
 
 { $as_echo "$as_me:${as_lineno-$LINENO}:    HDF5_CXX_LIB=${HDF5_CXX_LIB}" >&5
 $as_echo "$as_me:    HDF5_CXX_LIB=${HDF5_CXX_LIB}" >&6;}
-<<<<<<< HEAD
 { $as_echo "$as_me:${as_lineno-$LINENO}:    HDF5_HL_LIB=${HDF5_HL_LIB}" >&5
 $as_echo "$as_me:    HDF5_HL_LIB=${HDF5_HL_LIB}" >&6;}
 { $as_echo "$as_me:${as_lineno-$LINENO}:    HDF5_HL_CXX_LIB=${HDF5_HL_CXX_LIB}" >&5
 $as_echo "$as_me:    HDF5_HL_CXX_LIB=${HDF5_HL_CXX_LIB}" >&6;}
-=======
 
->>>>>>> master
 { $as_echo "$as_me:${as_lineno-$LINENO}:    SZIP_LIB=${SZIP_LIB}" >&5
 $as_echo "$as_me:    SZIP_LIB=${SZIP_LIB}" >&6;}
 

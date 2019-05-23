@@ -32,7 +32,7 @@ AX_CHECK_COMPILE_FLAG([-w], [CFLAGS="$CFLAGS -w"; CXXFLAGS="$CXXFLAGS -w"])
 
 #untar the lib
 BASEPBNAME="hdf5"
-PBTGZNAME=hdf5small_cxx_hl_1.10.4.tar.gz
+PBTGZNAME=hdf5small_cxx_hl_1.10.5.tar.gz
 cd src
 if test -d ./${BASEPBNAME}; then 
 	echo 'found ' $BASEPBNAME ' header sources and tar archive;using what is there.'
@@ -86,22 +86,17 @@ HDF5_HL_CXX_LIB="${BASEPBNAME}/hl/c++/src/.libs/libhdf5_hl_cpp.a"
 SZIP_LIB="${BASEPBNAME}/szip/src/.libs/libsz.a"
 
 AC_SUBST(HDF5_LIB)
-<<<<<<< HEAD
 AC_SUBST(HDF5_CXX_LIB)
 AC_SUBST(HDF5_HL_LIB)
 AC_SUBST(HDF5_HL_CXX_LIB)
 AC_SUBST(SZIP_LIB)
-=======
->>>>>>> master
+
 AC_MSG_NOTICE([   HDF5_LIB=${HDF5_LIB}])
 AC_SUBST(HDF5_CXX_LIB)
 AC_MSG_NOTICE([   HDF5_CXX_LIB=${HDF5_CXX_LIB}])
-<<<<<<< HEAD
 AC_MSG_NOTICE([   HDF5_HL_LIB=${HDF5_HL_LIB}])
 AC_MSG_NOTICE([   HDF5_HL_CXX_LIB=${HDF5_HL_CXX_LIB}])
-=======
 AC_SUBST(SZIP_LIB)
->>>>>>> master
 AC_MSG_NOTICE([   SZIP_LIB=${SZIP_LIB}])
 AC_SUBST(ZLIB_HOME)
 AC_MSG_NOTICE([   ZLIB_HOME=${ZLIB_HOME}])

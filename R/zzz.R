@@ -15,6 +15,7 @@
 #' pkgconfig("PKG_C_HL_LIBS")
 #' pkgconfig("PKG_CXX_HL_LIBS")
 #' @export
+#' @rawNamespace if(tools:::.OStype() == "windows") { importFrom(utils, shortPathName) }
 pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "PKG_C_HL_LIBS")) {
     
     path <- Sys.getenv(

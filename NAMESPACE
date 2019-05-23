@@ -2,4 +2,5 @@
 
 export(getHdf5Version)
 export(pkgconfig)
+if(tools:::.OStype() == "windows") { importFrom(utils, shortPathName) }
 useDynLib(Rhdf5lib)

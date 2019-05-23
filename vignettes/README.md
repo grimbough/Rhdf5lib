@@ -35,8 +35,8 @@ pacman -S mingw-w64-i686-toolchain mingw32/mingw-w64-i686-cmake
 export PATH=/c/Rtools/mingw_32/bin:/c/msys64/mingw32/bin:$PATH
 export CPATH=/c/Rtools/mingw_32/i686-w64-mingw32/include:/c/Rtools/mingw_32/include:$CPATH
 export LD_LIBRARY_PATH=/c/Rtools/mingw_32/i686-w64-mingw32/lib:/c/Rtools/mingw_32/lib:$LD_LiBRARY_PATH
-mkdir /c/hdf5_build/CMake-hdf5-1.10.4/hdf5-1.10.4/build_32
-cd /c/hdf5_build/CMake-hdf5-1.10.4/hdf5-1.10.4/build_32
+mkdir /c/hdf5_build/CMake-hdf5-1.10.5/hdf5-1.10.5/build_32
+cd /c/hdf5_build/CMake-hdf5-1.10.5/hdf5-1.10.5/build_32
 rm -R *
 cmake ../ -G "MSYS Makefiles" \
 -DSITE_OS_BITS:STRING="32" \
@@ -50,7 +50,7 @@ cmake ../ -G "MSYS Makefiles" \
 -DHDF5_ALLOW_EXTERNAL_SUPPORT:STRING="TGZ" \
 -DZLIB_TGZ_NAME:STRING="ZLib.tar.gz" \
 -DSZIP_TGZ_NAME:STRING="SZip.tar.gz" \
--DTGZPATH:STRING="/c/hdf5_build/CMake-hdf5-1.10.4/" \
+-DTGZPATH:STRING="/c/hdf5_build/CMake-hdf5-1.10.5/" \
 -DCMAKE_BUILD_TYPE:STRING="Release"
 cmake --build . 2> stderr.txt
 ```
@@ -61,8 +61,8 @@ cmake --build . 2> stderr.txt
 export PATH=/c/Rtools/mingw_64/bin:/c/msys64/mingw64/bin:$PATH
 export CPATH=/c/Rtools/mingw_64/x86_64-w64-mingw32/include:/c/Rtools/mingw_64/include:$CPATH
 export LD_LIBRARY_PATH=/c/Rtools/mingw_64/x86_64-w64-mingw32/lib:/c/Rtools/mingw_64/lib:$LD_LiBRARY_PATH
-mkdir /c/hdf5_build/CMake-hdf5-1.10.4/hdf5-1.10.4/build_64
-cd /c/hdf5_build/CMake-hdf5-1.10.4/hdf5-1.10.4/build_64
+mkdir /c/hdf5_build/CMake-hdf5-1.10.5/hdf5-1.10.5/build_64
+cd /c/hdf5_build/CMake-hdf5-1.10.5/hdf5-1.10.5/build_64
 rm -R *
 cmake ../ -G "MSYS Makefiles" \
 -DSITE_OS_BITS:STRING="64" \
@@ -76,14 +76,14 @@ cmake ../ -G "MSYS Makefiles" \
 -DHDF5_ALLOW_EXTERNAL_SUPPORT:STRING="TGZ" \
 -DZLIB_TGZ_NAME:STRING="ZLib.tar.gz" \
 -DSZIP_TGZ_NAME:STRING="SZip.tar.gz" \
--DTGZPATH:STRING="/c/hdf5_build/CMake-hdf5-1.10.4/" \
+-DTGZPATH:STRING="/c/hdf5_build/CMake-hdf5-1.10.5/" \
 -DCMAKE_BUILD_TYPE:STRING="Release"
 cmake --build . 2> stderr.txt
 ```
 
 In `src/H5win32defs.h` define `H5open` as `#define HDopen(S,F,M)       _open(S,F|_O_BINARY,M)`
 
-change line 291 from
+change line 291 H5Defl.h from
 
 ```diff
 - if((fd = HDopen(full_name, O_RDONLY)) < 0)
@@ -91,14 +91,28 @@ change line 291 from
 ```
 
 ```
-cd /c/hdf5_build/CMake-hdf5-1.10.4
-mkdir /c/hdf5_build/CMake-hdf5-1.10.4/hdf5
-mkdir /c/hdf5_build/CMake-hdf5-1.10.4/hdf5/c++
-mkdir /c/hdf5_build/CMake-hdf5-1.10.4/hdf5/hl
-cp /c/hdf5_build/CMake-hdf5-1.10.4/hdf5-1.10.4/*.h /c/hdf5_build/CMake-hdf5-1.10.4/hdf5/
-cp /c/hdf5_build/CMake-hdf5-1.10.4/hdf5-1.10.4/src/*.h /c/hdf5_build/CMake-hdf5-1.10.4/hdf5/
-cp /c/hdf5_build/CMake-hdf5-1.10.4/hdf5-1.10.4/c++/src/*.h /c/hdf5_build/CMake-hdf5-1.10.4/hdf5/c++/
-cp /c/hdf5_build/CMake-hdf5-1.10.4/hdf5-1.10.4/hl/src/*.h /c/hdf5_build/CMake-hdf5-1.10.4/hdf5/hl/
-cp /c/hdf5_build/CMake-hdf5-1.10.4/hdf5-1.10.4/build_32/*.h /c/hdf5_build/CMake-hdf5-1.10.4/hdf5/
-tar cf - hdf5 | gzip -6 > hdf5_headers_1.10.4.tar.gz
+version=1.10.5
+cd /c/hdf5_build/CMake-hdf5-${version}
+mkdir /c/hdf5_build/CMake-hdf5-${version}/hdf5
+mkdir /c/hdf5_build/CMake-hdf5-${version}/hdf5/c++
+mkdir /c/hdf5_build/CMake-hdf5-${version}/hdf5/hl
+cp /c/hdf5_build/CMake-hdf5-${version}/hdf5-${version}/src/*.h /c/hdf5_build/CMake-hdf5-${version}/hdf5/
+cp /c/hdf5_build/CMake-hdf5-${version}/hdf5-${version}/c++/src/*.h /c/hdf5_build/CMake-hdf5-${version}/hdf5/c++/
+cp /c/hdf5_build/CMake-hdf5-${version}/hdf5-${version}/hl/src/*.h /c/hdf5_build/CMake-hdf5-${version}/hdf5/hl/
+cp /c/hdf5_build/CMake-hdf5-${version}/hdf5-${version}/hl/c++/src/*.h /c/hdf5_build/CMake-hdf5-${version}/hdf5/hl/
+cp /c/hdf5_build/CMake-hdf5-${version}/hdf5-${version}/build_32/*.h /c/hdf5_build/CMake-hdf5-${version}/hdf5/
+tar cf - hdf5 | gzip -6 > hdf5_headers_${version}.tar.gz
 ```
+
+```
+DIR32="${HOME}/Code/bioconductor/Rhdf5lib/src/winlib/i386/"
+cp /c/hdf5_build/CMake-hdf5-1.10.5/hdf5-1.10.5/build_32/bin/liblibhdf5.a "${DIR32}"libhdf5.a 
+cp /c/hdf5_build/CMake-hdf5-1.10.5/hdf5-1.10.5/build_32/bin/liblibhdf5_cpp.a "${DIR32}"libhdf5_cpp.a
+cp /c/hdf5_build/CMake-hdf5-1.10.5/hdf5-1.10.5/build_32/bin/liblibhdf5_hl.a "${DIR32}"libhdf5_hl.a
+cp /c/hdf5_build/CMake-hdf5-1.10.5/hdf5-1.10.5/build_32/bin/liblibhdf5_hl_cpp.a "${DIR32}"libhdf5_hl_cpp.a
+
+DIR64="${HOME}/Code/bioconductor/Rhdf5lib/src/winlib/x64/"
+cp /c/hdf5_build/CMake-hdf5-1.10.5/hdf5-1.10.5/build_64/bin/liblibhdf5.a "${DIR64}"libhdf5.a 
+cp /c/hdf5_build/CMake-hdf5-1.10.5/hdf5-1.10.5/build_64/bin/liblibhdf5_cpp.a "${DIR64}"libhdf5_cpp.a
+cp /c/hdf5_build/CMake-hdf5-1.10.5/hdf5-1.10.5/build_64/bin/liblibhdf5_hl.a "${DIR64}"libhdf5_hl.a
+cp /c/hdf5_build/CMake-hdf5-1.10.5/hdf5-1.10.5/build_64/bin/liblibhdf5_hl_cpp.a "${DIR64}"libhdf5_hl_cpp.a

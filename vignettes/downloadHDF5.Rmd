@@ -1,8 +1,18 @@
 ---
-output: html_document
-editor_options: 
-  chunk_output_type: console
+title: "Creating this HDF5 distribution"
+author:
+- name: Mike L. Smith
+  affiliation: de.NBI & EMBL Heidelberg
+package: Rhdf5lib
+output:
+  BiocStyle::html_document
+vignette: |
+  %\VignetteIndexEntry{Creating this HDF5 distribution}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
+
+Here we describe the steps taken to process the original HDF5 source code to produce the modified version distributed with this package.  This is for record keeping only, users of the **Rhdf5lib** package are not expected to follow any of the steps detailed here.
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(eval = FALSE)

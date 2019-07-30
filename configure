@@ -3607,7 +3607,7 @@ if test "x$ac_cv_header_zlib_h" = xyes; then :
   cat >>confdefs.h <<_ACEOF
 #define HAVE_ZLIB_H 1
 _ACEOF
- HAVE_ZLIB_H="yes"
+ ZLIB_HOME="yes"
 else
   unset HAVE_ZLIB
 fi

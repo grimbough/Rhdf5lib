@@ -40,7 +40,7 @@ AC_ARG_WITH([zlib],
 case $withval in
   yes)
     HAVE_ZLIB="yes"
-    AC_CHECK_HEADERS([zlib.h], [HAVE_ZLIB_H="yes"], [unset HAVE_ZLIB])
+    AC_CHECK_HEADERS([zlib.h], [ZLIB_HOME="yes"], [unset HAVE_ZLIB])
     if test -z "$HAVE_ZLIB"; then
         AC_MSG_ERROR([couldn't find zlib library.  
         Please specify a location using --with-zlib=/path/to/zlib])

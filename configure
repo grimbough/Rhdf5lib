@@ -3624,6 +3624,7 @@ done
     ;;
   *)
     HAVE_ZLIB="yes"
+    ## return FALSE if $withval is empty
     if test -n "$withval"; then
       ZLIB_HOME="$withval"
       if test ! -f "${ZLIB_HOME}/include/zlib.h"; then

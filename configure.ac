@@ -34,7 +34,8 @@ AX_CHECK_COMPILE_FLAG([-w], [CFLAGS="$CFLAGS -w"; CXXFLAGS="$CXXFLAGS -w"])
 AC_ARG_WITH([zlib],
             [AS_HELP_STRING([--with-zlib=DIR],
                             [Use zlib library for external deflate I/O
-                             filter [default=yes]])],,
+                             filter [default=yes]])],
+            [],
             [withval=yes])
 
 case $withval in
@@ -51,6 +52,7 @@ case $withval in
     ;;
   *)
     HAVE_ZLIB="yes"
+    ## return FALSE if $withval is empty
     if test -n "$withval"; then
       ZLIB_HOME="$withval"
       if test ! -f "${ZLIB_HOME}/include/zlib.h"; then

@@ -30,6 +30,40 @@ AC_PROG_CXX
 ## hdf5 spews loads of errors.  Use -w to suppress these if supported
 AX_CHECK_COMPILE_FLAG([-w], [CFLAGS="$CFLAGS -w"; CXXFLAGS="$CXXFLAGS -w"])
 
+### 'checking for zlib... ';
+AC_ARG_WITH([zlib],
+            [AS_HELP_STRING([--with-zlib=DIR],
+                            [Use zlib library for external deflate I/O
+                             filter [default=yes]])],
+            [],
+            [withval=yes])
+
+case $withval in
+  yes)
+    HAVE_ZLIB="yes"
+    AC_CHECK_HEADERS([zlib.h], [ZLIB_HOME="yes"], [unset HAVE_ZLIB])
+    if test -z "$HAVE_ZLIB"; then
+        AC_MSG_ERROR([couldn't find zlib library.  
+        Please specify a location using --with-zlib=/path/to/zlib])
+    fi
+    ;;
+  no)
+    AC_MSG_ERROR([zlib is required for Rhdf5lib])
+    ;;
+  *)
+    HAVE_ZLIB="yes"
+    ## return FALSE if $withval is empty
+    if test -n "$withval"; then
+      ZLIB_HOME="$withval"
+      if test ! -f "${ZLIB_HOME}/include/zlib.h"; then
+        AC_MSG_ERROR([zlib is required but not found in ${ZLIB_HOME}])
+      fi
+    else
+      AC_MSG_ERROR([zlib is required but no path specified])
+    fi
+    ;;
+esac
+
 #untar the lib
 BASEPBNAME="hdf5"
 PBTGZNAME=hdf5small_cxx_1.10.3.tar.gz
@@ -49,12 +83,6 @@ $MAKE
 $MAKE install
 SZIP_HOME=`pwd -P`/szip
 
-### 'checking for zlib... ';
-have_zlib=true
-AX_CHECK_ZLIB([], [have_zlib=false])
-if ! $have_zlib; then
-  AC_MSG_ERROR([zlib is required but not found])
-fi
 
 echo "building the hdf5 library...";
 cd ../;

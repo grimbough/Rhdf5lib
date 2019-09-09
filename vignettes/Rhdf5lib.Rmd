@@ -58,6 +58,14 @@ In you C or C++ code files, you can then use the standard include techniques, e.
 system.file(package="Rhdf5lib", "include")
 ```
 
+# Non-standard ZLIB location
+
+*Rhdf5lib* requires the ZLIB compression library to be installed on non-Windows platforms.  If installation fails due with a message reporting that **zlib.h** can not be found, it is possible to provide the appropriate path explicitly during installation via the `configure.args` argument e.g. 
+
+```{r, zlib-path, eval = FALSE}
+BiocManager::install('Rhdf5lib', configure.args = "--with-zlib='/path/to/zlib/'")
+```
+
 # Funding
 
 MLS was supported by the BMBF-funded Heidelberg Center for Human Bioinformatics (HD-HuB) within the German Network for Bioinformatics Infrastructure (de.NBI), Förderkennzeichen #031A537B

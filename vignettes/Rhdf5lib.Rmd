@@ -68,6 +68,8 @@ system.file(package="Rhdf5lib", "include")
 BiocManager::install('Rhdf5lib', configure.args = "--with-zlib='/path/to/zlib/'")
 ```
 
+Here `/path/to/zlib` should be the directory that contains both `include/zlib.h` and `lib/libz.a`.  For example, on a typical Ubuntu installation this may be `/usr/` while for libraries installed via **miniconda** this location could be `/home/<USER>/miniconda3/`.
+
 # Funding
 
 MLS was supported by the BMBF-funded Heidelberg Center for Human Bioinformatics (HD-HuB) within the German Network for Bioinformatics Infrastructure (de.NBI), Förderkennzeichen #031A537B

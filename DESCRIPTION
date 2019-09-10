@@ -1,7 +1,7 @@
 Package: Rhdf5lib
 Type: Package
 Title: hdf5 library as an R package
-Version: 1.7.4
+Version: 1.7.5
 Author: Mike Smith
 Maintainer: Mike Smith <grimbough@gmail.com>
 Description: Provides C and C++ hdf5 libraries.
@@ -10,6 +10,7 @@ Copyright: src/hdf5/COPYING
 LazyLoad: true
 VignetteBuilder: knitr
 Suggests: BiocStyle, knitr, rmarkdown
+URL: https://github.com/grimbough/Rhdf5lib
 BugReports: https://github.com/grimbough/Rhdf5lib
 SystemRequirements: GNU make
 Encoding: UTF-8

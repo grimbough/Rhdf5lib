@@ -3696,19 +3696,17 @@ SZIP_LIB="${BASEPBNAME}/szip/src/.libs/libsz.a"
 
 
 
+
 { $as_echo "$as_me:${as_lineno-$LINENO}:    HDF5_LIB=${HDF5_LIB}" >&5
 $as_echo "$as_me:    HDF5_LIB=${HDF5_LIB}" >&6;}
-
 { $as_echo "$as_me:${as_lineno-$LINENO}:    HDF5_CXX_LIB=${HDF5_CXX_LIB}" >&5
 $as_echo "$as_me:    HDF5_CXX_LIB=${HDF5_CXX_LIB}" >&6;}
 { $as_echo "$as_me:${as_lineno-$LINENO}:    HDF5_HL_LIB=${HDF5_HL_LIB}" >&5
 $as_echo "$as_me:    HDF5_HL_LIB=${HDF5_HL_LIB}" >&6;}
 { $as_echo "$as_me:${as_lineno-$LINENO}:    HDF5_HL_CXX_LIB=${HDF5_HL_CXX_LIB}" >&5
 $as_echo "$as_me:    HDF5_HL_CXX_LIB=${HDF5_HL_CXX_LIB}" >&6;}
-
 { $as_echo "$as_me:${as_lineno-$LINENO}:    SZIP_LIB=${SZIP_LIB}" >&5
 $as_echo "$as_me:    SZIP_LIB=${SZIP_LIB}" >&6;}
-
 { $as_echo "$as_me:${as_lineno-$LINENO}:    ZLIB_HOME=${ZLIB_HOME}" >&5
 $as_echo "$as_me:    ZLIB_HOME=${ZLIB_HOME}" >&6;}
 

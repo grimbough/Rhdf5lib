@@ -1,3 +1,16 @@
+Version 1.8
+
+=============
+
+New features:
+
+  o Updated internal version of HDF5 to 1.10.5
+
+Bug fixes:
+  
+  o Quote paths reported by pkgconfig() to allow installation in librarys 
+  with whitespace in the path.
+  
 Version 1.0
 
 =============

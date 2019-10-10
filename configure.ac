@@ -66,7 +66,6 @@ case $withval in
     ;;
 esac
 
-
 #untar the lib
 BASEPBNAME="hdf5"
 PBTGZNAME=hdf5small_cxx_hl_1.10.5.tar.gz

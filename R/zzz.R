@@ -29,6 +29,7 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "
         arch <- ""
     }
     patharch <- paste0(path, arch)
+    #patharch <- gsub(x = patharch, pattern = " ", replacement = "\\ ", fixed = TRUE)
 
     result <- switch(match.arg(opt), 
                      PKG_C_LIBS = {
@@ -41,7 +42,7 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "
                                     sprintf('-L%s -lhdf5 -lszip -lz -lpsapi', 
                                             patharch)
                                 }, {
-                                    sprintf('%s/libhdf5.a %s/libsz.a -lz', 
+                                    sprintf('"%s/libhdf5.a" "%s/libsz.a" -lz', 
                                             patharch, patharch)
                                 }
                          )
@@ -58,7 +59,7 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "
                                     sprintf('-L%s -lhdf5_cpp -lhdf5 -lszip -lz -lpsapi', 
                                             patharch)
                                 }, {
-                                    sprintf('%s/libhdf5_cpp.a %s/libhdf5.a %s/libsz.a -lz',
+                                    sprintf('"%s/libhdf5_cpp.a" "%s/libhdf5.a" "%s/libsz.a" -lz',
                                             patharch, patharch, patharch)
                                 }
                          )

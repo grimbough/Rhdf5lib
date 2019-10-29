@@ -5,7 +5,6 @@ AC_PREREQ([2.65])
 AC_INIT([Rhdf5lib], [1.5.0], [mike.smith@embl.de])
 AC_CONFIG_SRCDIR([src])
 
-#m4_include([m4/ax_check_zlib.m4])
 m4_include([m4/ax_check_compile_flag.m4])
 
 # Check the compiler configured with R
@@ -43,7 +42,7 @@ AC_ARG_WITH([zlib],
 case $withval in
   yes)
     HAVE_ZLIB="yes"
-    AC_CHECK_HEADERS([zlib.h], [ZLIB_HOME="yes"], [unset HAVE_ZLIB])
+    AC_CHECK_HEADERS([zlib.h], [ZLIB_HOME="yes"], [unset HAVE_ZLIB], [AC_INCLUDES_DEFAULT $CFLAGS $CXXFLAGS])
     if test -z "$HAVE_ZLIB"; then
         AC_MSG_ERROR([couldn't find zlib library.  
         Please specify a location using --with-zlib=/path/to/zlib])

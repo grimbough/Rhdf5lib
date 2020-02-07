@@ -7,8 +7,10 @@ HDF5_INCLUDE=./hdf5
 HDF5_CXX_INCLUDE=./hdf5/c++
 HDF5_HL_INCLUDE=./hdf5/hl
 
+COMPILER=${subst gcc ,-,${R_COMPILED_BY}}
+
 PKG_CFLAGS = -I${HDF5_INCLUDE}
-PKG_LIBS = winlib${R_ARCH}/libhdf5.a winlib${R_ARCH}/libszip.a -lpsapi -lz
+PKG_LIBS = winlib${COMPILER}/${R_ARCH}/libhdf5.a winlib${COMPILER}/${R_ARCH}/libszip.a -lpsapi -lz
 
 .PHONY: all Rinstall
 
@@ -20,11 +22,11 @@ Rhdf5lib.o: Rinstall
 
 Rinstall:
 	mkdir -p "$(USER_LIB_DIR)" "$(USER_INCLUDE_DIR)"
-	cp "winlib$(R_ARCH)/libhdf5.a" "$(USER_LIB_DIR)libhdf5.a"
-	cp "winlib$(R_ARCH)/libhdf5_cpp.a" "$(USER_LIB_DIR)libhdf5_cpp.a"
-	cp "winlib$(R_ARCH)/libhdf5_hl.a" "$(USER_LIB_DIR)libhdf5_hl.a"
-	cp "winlib$(R_ARCH)/libhdf5_hl_cpp.a" "$(USER_LIB_DIR)libhdf5_hl_cpp.a"
-	cp "winlib$(R_ARCH)/libszip.a" "$(USER_LIB_DIR)libszip.a"
+	cp "winlib$(COMPILER)$(R_ARCH)/libhdf5.a" "$(USER_LIB_DIR)libhdf5.a"
+	cp "winlib$(COMPILER)$(R_ARCH)/libhdf5_cpp.a" "$(USER_LIB_DIR)libhdf5_cpp.a"
+	cp "winlib$(COMPILER)$(R_ARCH)/libhdf5_hl.a" "$(USER_LIB_DIR)libhdf5_hl.a"
+	cp "winlib$(COMPILER)$(R_ARCH)/libhdf5_hl_cpp.a" "$(USER_LIB_DIR)libhdf5_hl_cpp.a"
+	cp "winlib$(COMPILER)$(R_ARCH)/libszip.a" "$(USER_LIB_DIR)libszip.a"
 	cp $(HDF5_INCLUDE)/*.h "$(USER_INCLUDE_DIR)"
 	cp $(HDF5_CXX_INCLUDE)/*.h "$(USER_INCLUDE_DIR)"
 	cp $(HDF5_HL_INCLUDE)/*.h "$(USER_INCLUDE_DIR)"

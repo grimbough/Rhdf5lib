@@ -9,7 +9,7 @@ if test -d ${BASEPBNAME}; then
 else
 	echo "untarring $PBTGZNAME ...";
 	## we'll use Rscript to untar the file
-	"${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" -e "untar('winlib/$PBTGZNAME')"
+	"${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" -e "untar('wininclude/$PBTGZNAME')"
 fi;
 
 

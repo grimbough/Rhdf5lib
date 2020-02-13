@@ -624,6 +624,8 @@ ac_includes_default="\
 
 ac_subst_vars='LTLIBOBJS
 LIBOBJS
+ZLIB_INCLUDE
+ZLIB_LIB
 ZLIB_HOME
 SZIP_LIB
 HDF5_HL_CXX_LIB
@@ -1956,7 +1958,6 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 
-#m4_include([m4/ax_check_zlib.m4])
 # ===========================================================================
 #  https://www.gnu.org/software/autoconf-archive/ax_check_compile_flag.html
 # ===========================================================================
@@ -3530,6 +3531,8 @@ done
         as_fn_error $? "couldn't find zlib library.
         Please specify a location using --with-zlib=/path/to/zlib" "$LINENO" 5
     fi
+    ZLIB_LIB=""
+    ZLIB_INCLUDE=""
     ;;
   no)
     as_fn_error $? "zlib is required for Rhdf5lib" "$LINENO" 5
@@ -3545,6 +3548,8 @@ done
     else
       as_fn_error $? "zlib is required but no path specified" "$LINENO" 5
     fi
+    ZLIB_LIB="-L${ZLIB_HOME}/lib/"
+    ZLIB_INCLUDE="-I${ZLIB_HOME}/include/"
     ;;
 esac
 
@@ -3608,6 +3613,8 @@ SZIP_LIB="${BASEPBNAME}/szip/src/.libs/libsz.a"
 
 
 
+
+
 { $as_echo "$as_me:${as_lineno-$LINENO}:    HDF5_LIB=${HDF5_LIB}" >&5
 $as_echo "$as_me:    HDF5_LIB=${HDF5_LIB}" >&6;}
 { $as_echo "$as_me:${as_lineno-$LINENO}:    HDF5_CXX_LIB=${HDF5_CXX_LIB}" >&5
@@ -3618,8 +3625,6 @@ $as_echo "$as_me:    HDF5_HL_LIB=${HDF5_HL_LIB}" >&6;}
 $as_echo "$as_me:    HDF5_HL_CXX_LIB=${HDF5_HL_CXX_LIB}" >&6;}
 { $as_echo "$as_me:${as_lineno-$LINENO}:    SZIP_LIB=${SZIP_LIB}" >&5
 $as_echo "$as_me:    SZIP_LIB=${SZIP_LIB}" >&6;}
-{ $as_echo "$as_me:${as_lineno-$LINENO}:    ZLIB_HOME=${ZLIB_HOME}" >&5
-$as_echo "$as_me:    ZLIB_HOME=${ZLIB_HOME}" >&6;}
 
 ac_config_files="$ac_config_files src/Makevars"
 

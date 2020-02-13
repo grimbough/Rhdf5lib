@@ -47,6 +47,8 @@ case $withval in
         AC_MSG_ERROR([couldn't find zlib library.  
         Please specify a location using --with-zlib=/path/to/zlib])
     fi
+    ZLIB_LIB=""
+    ZLIB_INCLUDE=""
     ;;
   no)
     AC_MSG_ERROR([zlib is required for Rhdf5lib])
@@ -62,6 +64,8 @@ case $withval in
     else
       AC_MSG_ERROR([zlib is required but no path specified])
     fi
+    ZLIB_LIB="-L${ZLIB_HOME}/lib/"
+    ZLIB_INCLUDE="-I${ZLIB_HOME}/include/"
     ;;
 esac
 
@@ -120,13 +124,14 @@ AC_SUBST(HDF5_HL_LIB)
 AC_SUBST(HDF5_HL_CXX_LIB)
 AC_SUBST(SZIP_LIB)
 AC_SUBST(ZLIB_HOME)
+AC_SUBST(ZLIB_LIB)
+AC_SUBST(ZLIB_INCLUDE)
 
 AC_MSG_NOTICE([   HDF5_LIB=${HDF5_LIB}])
 AC_MSG_NOTICE([   HDF5_CXX_LIB=${HDF5_CXX_LIB}])
 AC_MSG_NOTICE([   HDF5_HL_LIB=${HDF5_HL_LIB}])
 AC_MSG_NOTICE([   HDF5_HL_CXX_LIB=${HDF5_HL_CXX_LIB}])
 AC_MSG_NOTICE([   SZIP_LIB=${SZIP_LIB}])
-AC_MSG_NOTICE([   ZLIB_HOME=${ZLIB_HOME}])
 
 AC_CONFIG_FILES([src/Makevars])
 AC_OUTPUT

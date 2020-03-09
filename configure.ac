@@ -91,7 +91,7 @@ SZIP_HOME=`pwd -P`/szip
 
 echo "building the hdf5 library...";
 cd ../;
-./configure --with-pic --enable-shared=no --enable-cxx --enable-hl \
+./configure --enable-ros3-vfd --with-pic --enable-shared=no --enable-cxx --enable-hl \
     --with-szlib=${SZIP_HOME} --with-zlib=${ZLIB_HOME} \
     CXX="${CXX}" CXXFLAGS="${CXXFLAGS} ${CXXPICFLAGS}" \
     CC="${CC}" CFLAGS="${CFLAGS} ${CPICFLAGS}" 

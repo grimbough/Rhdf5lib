@@ -3555,7 +3555,7 @@ esac
 
 #untar the lib
 BASEPBNAME="hdf5"
-PBTGZNAME=hdf5small_cxx_hl_1.10.5.tar.gz
+PBTGZNAME=hdf5small_cxx_hl_1.12.0.tar.gz
 cd src
 if test -d ./${BASEPBNAME}; then
 	echo 'found ' $BASEPBNAME ' header sources and tar archive;using what is there.'

@@ -3,7 +3,6 @@
 \docType{package}
 \name{Rhdf5lib}
 \alias{Rhdf5lib}
-\alias{Rhdf5lib-package}
 \title{Rhdf5lib: A version of the HDF5 library built into an R package.}
 \description{
 This package provides a compiled version of the HDF5 library bundled within

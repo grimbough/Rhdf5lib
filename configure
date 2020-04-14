@@ -3555,7 +3555,7 @@ esac
 
 #untar the lib
 BASEPBNAME="hdf5"
-PBTGZNAME=hdf5small_cxx_hl_1.10.5.tar.gz
+PBTGZNAME=hdf5small_cxx_hl_1.10.6.tar.gz
 cd src
 if test -d ./${BASEPBNAME}; then
 	echo 'found ' $BASEPBNAME ' header sources and tar archive;using what is there.'
@@ -3577,6 +3577,7 @@ echo "building the hdf5 library...";
 cd ../;
 ./configure --with-pic --enable-shared=no --enable-cxx --enable-hl \
     --with-szlib=${SZIP_HOME} --with-zlib=${ZLIB_HOME} \
+    --enable-ros3-vfd \
     CXX="${CXX}" CXXFLAGS="${CXXFLAGS} ${CXXPICFLAGS}" \
     CC="${CC}" CFLAGS="${CFLAGS} ${CPICFLAGS}"
 $MAKE lib

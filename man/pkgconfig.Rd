@@ -4,8 +4,9 @@
 \alias{pkgconfig}
 \title{Compiler arguments for using Rhdf5lib}
 \usage{
-pkgconfig(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS",
-  "PKG_C_HL_LIBS"))
+pkgconfig(
+  opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "PKG_C_HL_LIBS")
+)
 }
 \arguments{
 \item{opt}{A scalar character from the list of available options; 

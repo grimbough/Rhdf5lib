@@ -69,9 +69,26 @@ case $withval in
     ;;
 esac
 
+ROS3_VFD=yes
+if test "X$ROS3_VFD" = "Xyes"; then
+    AC_CHECK_HEADERS([curl/curl.h],, [unset ROS3_VFD])
+    AC_CHECK_HEADERS([openssl/evp.h],, [unset ROS3_VFD])
+    AC_CHECK_HEADERS([openssl/hmac.h],, [unset ROS3_VFD])
+    AC_CHECK_HEADERS([openssl/sha.h],, [unset ROS3_VFD])
+    if test "X$ROS3_VFD" = "Xyes"; then
+        AC_CHECK_LIB([curl], [curl_global_init],, [unset ROS3_VFD])
+        AC_CHECK_LIB([crypto], [EVP_sha256],, [unset ROS3_VFD])
+    fi
+    if test "X$ROS3_VFD" = "Xyes"; then
+        WITH_S3_VFD="--enable-ros3-vfd"
+    else
+        WITH_S3_VFD="--enable-ros3-vfd=no"
+    fi
+fi
+
 #untar the lib
 BASEPBNAME="hdf5"
-PBTGZNAME=hdf5small_cxx_hl_1.10.5.tar.gz
+PBTGZNAME=hdf5small_cxx_hl_1.10.6.tar.gz
 cd src
 if test -d ./${BASEPBNAME}; then 
 	echo 'found ' $BASEPBNAME ' header sources and tar archive;using what is there.'
@@ -93,6 +110,7 @@ echo "building the hdf5 library...";
 cd ../;
 ./configure --with-pic --enable-shared=no --enable-cxx --enable-hl \
     --with-szlib=${SZIP_HOME} --with-zlib=${ZLIB_HOME} \
+    ${WITH_S3_VFD} \
     CXX="${CXX}" CXXFLAGS="${CXXFLAGS} ${CXXPICFLAGS}" \
     CC="${CC}" CFLAGS="${CFLAGS} ${CPICFLAGS}" 
 $MAKE lib

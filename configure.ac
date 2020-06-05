@@ -85,6 +85,7 @@ if test "X$ROS3_VFD" = "Xyes"; then
         WITH_S3_VFD="--enable-ros3-vfd=no"
     fi
 fi
+echo "S3_VFD=${WITH_S3_VFD}"
 
 #untar the lib
 BASEPBNAME="hdf5"

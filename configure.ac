@@ -81,8 +81,10 @@ if test "X$ROS3_VFD" = "Xyes"; then
     fi
     if test "X$ROS3_VFD" = "Xyes"; then
         WITH_S3_VFD="--enable-ros3-vfd"
+        CURL_LIBS="-lcrypto -lcurl"
     else
         WITH_S3_VFD="--enable-ros3-vfd=no"
+        CURL_LIBS=""
     fi
 fi
 echo "S3_VFD=${WITH_S3_VFD}"
@@ -153,4 +155,9 @@ AC_MSG_NOTICE([   HDF5_HL_CXX_LIB=${HDF5_HL_CXX_LIB}])
 AC_MSG_NOTICE([   SZIP_LIB=${SZIP_LIB}])
 
 AC_CONFIG_FILES([src/Makevars])
+
+## update linker in R code
+AC_SUBST(CURL_LIBS)
+AC_CONFIG_FILES([R/zzz.R])
+
 AC_OUTPUT

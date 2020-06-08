@@ -53,6 +53,12 @@ jobs:
           Rscript -e "BiocManager::install(version = 'devel', ask = FALSE, update = FALSE)"
           Rscript -e "BiocManager::install(c('rcmdcheck', 'BiocStyle', 'tinytest'), version = 'devel', ask = FALSE, update = FALSE)"
 
-      - name: Check
+      - name: Non-windows check
+        if: ${{ matrix.config.os != 'windows-latest' }}
         run: |
-          Rscript -e "rcmdcheck::rcmdcheck(args = c('--no-manual', '--force-multiarch', '--install-args=\\\"--force-biarch\\\"'), error_on = 'warning', check_dir = 'check')"
+          Rscript -e "rcmdcheck::rcmdcheck(args = c('--no-manual'), error_on = 'warning', check_dir = 'check')"
+          
+      - name: Windows check
+        if: ${{ matrix.config.os == 'windows-latest' }}
+        run: |
+          Rscript -e "rcmdcheck::rcmdcheck(args = c('--no-manual', '--force-multiarch', '--install-args=`"--force-biarch`"'), error_on = 'warning', check_dir = 'check')"

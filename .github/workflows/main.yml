@@ -54,4 +54,5 @@ jobs:
           Rscript -e "BiocManager::install(c('rcmdcheck', 'BiocStyle', 'tinytest'), version = 'devel', ask = FALSE, update = FALSE)"
 
       - name: Check
-        run: Rscript -e "rcmdcheck::rcmdcheck(args = c('--no-manual', '--force-multiarch', '--install-args=\"--force-biarch\"'), error_on = 'warning', check_dir = 'check')"
+        run: |
+          Rscript -e "rcmdcheck::rcmdcheck(args = c('--no-manual', '--force-multiarch', '--install-args=\'--force-biarch\''), error_on = 'warning', check_dir = 'check')"

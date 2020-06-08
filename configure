@@ -624,7 +624,6 @@ ac_includes_default="\
 
 ac_subst_vars='LTLIBOBJS
 LIBOBJS
-CURL_LIBS
 ZLIB_INCLUDE
 ZLIB_LIB
 ZLIB_HOME
@@ -3932,11 +3931,6 @@ $as_echo "$as_me:    SZIP_LIB=${SZIP_LIB}" >&6;}
 ac_config_files="$ac_config_files src/Makevars"
 
 
-## update linker in R code
-
-ac_config_files="$ac_config_files R/zzz.R"
-
-
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -4643,7 +4637,6 @@ for ac_config_target in $ac_config_targets
 do
   case $ac_config_target in
     "src/Makevars") CONFIG_FILES="$CONFIG_FILES src/Makevars" ;;
-    "R/zzz.R") CONFIG_FILES="$CONFIG_FILES R/zzz.R" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;
   esac

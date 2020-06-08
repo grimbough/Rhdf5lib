@@ -41,8 +41,8 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "
                                     sprintf('-L%s -lhdf5 -lszip -lz -lpsapi', 
                                             patharch)
                                 }, {
-                                    sprintf('"%s/libhdf5.a" "%s/libsz.a" @CURL_LIBS@ -lz', 
-                                            patharch, patharch)
+                                    sprintf('"%s/libhdf5.a" "%s/libsz.a" %s', 
+                                            patharch, patharch, .getDynamicLinks())
                                 }
                          )
                      }, 
@@ -58,8 +58,8 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "
                                     sprintf('-L%s -lhdf5_cpp -lhdf5 -lszip -lz -lpsapi', 
                                             patharch)
                                 }, {
-                                    sprintf('"%s/libhdf5_cpp.a" "%s/libhdf5.a" "%s/libsz.a" @CURL_LIBS@ -lz',
-                                            patharch, patharch, patharch)
+                                    sprintf('"%s/libhdf5_cpp.a" "%s/libhdf5.a" "%s/libsz.a" %s',
+                                            patharch, patharch, patharch, .getDynamicLinks())
                                 }
                          )
                      },
@@ -73,8 +73,8 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "
                                 sprintf('-L%s -lhdf5_hl -lhdf5 -lszip -lz -lpsapi', 
                                         patharch)
                               }, {
-                                sprintf('%s/libhdf5_hl.a %s/libhdf5.a %s/libsz.a @CURL_LIBS@ -lz', 
-                                        patharch, patharch, patharch)
+                                sprintf('%s/libhdf5_hl.a %s/libhdf5.a %s/libsz.a %s', 
+                                        patharch, patharch, patharch, .getDynamicLinks())
                               }
                        )
                      }, 
@@ -90,8 +90,8 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "
                                 sprintf('-L%s -lhdf5_hl_cpp -lhdf5_hl -lhdf5_cpp -lhdf5 -lszip -lz -lpsapi', 
                                         patharch)
                               }, {
-                                sprintf('%s/libhdf5_hl_cpp.a %s/libhdf5_hl.a %s/libhdf5_cpp.a %s/libhdf5.a %s/libsz.a @CURL_LIBS@ -lz',
-                                        patharch, patharch, patharch, patharch, patharch)
+                                sprintf('%s/libhdf5_hl_cpp.a %s/libhdf5_hl.a %s/libhdf5_cpp.a %s/libhdf5.a %s/libsz.a %s',
+                                        patharch, patharch, patharch, patharch, patharch, .getDynamicLinks())
                               }
                        )
                      }
@@ -116,4 +116,27 @@ getHdf5Version <- function() {
         PACKAGE = "Rhdf5lib")
   versionNum <- paste(cReturn, collapse = ".")
   return(versionNum)
+}
+
+#' Determine whether libcurl and libcrypto were found during package 
+#' installation
+#' 
+#' @keywords internal
+.curlStatus <- function() {
+  settings_file <- system.file('include', 'libhdf5.settings', package = "Rhdf5lib")
+  libhdf5_settings <- readLines(settings_file)
+  line <- grep("Extra libraries", x = libhdf5_settings)
+  return(grepl(pattern = "-lcurl", x = line))
+}
+
+.getDynamicLinks <- function() {
+  
+  if(isTRUE(.curlStatus)) {
+    links <- "-lcrypto -lcurl -lz"
+  } else {
+    links <- "-lz"
+  }
+  
+  return(links)
+  
 }

@@ -34,6 +34,7 @@ copying:
 	cp "${HDF5_CXX_INCLUDE}/"*.h "${USER_INCLUDE}"
 	cp "${HDF5_HL_INCLUDE}/"*.h "${USER_INCLUDE}"
 	cp "${HDF5_HL_CXX_INCLUDE}/"*.h "${USER_INCLUDE}"
+	cp "${HDF5_INCLUDE}/"libhdf5.settings "${USER_INCLUDE}"
 	mkdir -p "${USER_LIB_DIR}"
 	cp "${HDF5_LIB}" "${USER_LIB_DIR}"
 	cp "${HDF5_CXX_LIB}" "${USER_LIB_DIR}"

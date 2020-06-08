@@ -126,12 +126,12 @@ getHdf5Version <- function() {
   settings_file <- system.file('include', 'libhdf5.settings', package = "Rhdf5lib")
   libhdf5_settings <- readLines(settings_file)
   line <- grep("Extra libraries", x = libhdf5_settings)
-  return(grepl(pattern = "-lcurl", x = line))
+  return(grepl(pattern = "-lcurl", x = libhdf5_settings[line]))
 }
 
 .getDynamicLinks <- function() {
   
-  if(isTRUE(.curlStatus)) {
+  if(isTRUE(.curlStatus())) {
     links <- "-lcrypto -lcurl -lz"
   } else {
     links <- "-lz"

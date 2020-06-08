@@ -23,7 +23,7 @@ $(SHLIB): Rhdf5lib.o
 Rhdf5lib.o: Rinstall rwinlibs
 
 rwinlibs: Rinstall 
-	"${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" "../tools/winlibs.R" $(CURL_VERSION) $(R_ARCH) $(USER_LIB_DIR)
+	"${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" "../tools/winlibs.R" ${CURL_VERSION} ${USER_LIB_DIR}
 
 Rinstall:
 	mkdir -p "$(USER_LIB_DIR)" "$(USER_INCLUDE_DIR)"

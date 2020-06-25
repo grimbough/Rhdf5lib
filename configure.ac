@@ -69,25 +69,33 @@ case $withval in
     ;;
 esac
 
-ROS3_VFD=yes
-if test "X$ROS3_VFD" = "Xyes"; then
-    AC_CHECK_HEADERS([curl/curl.h],, [unset ROS3_VFD])
-    AC_CHECK_HEADERS([openssl/evp.h],, [unset ROS3_VFD])
-    AC_CHECK_HEADERS([openssl/hmac.h],, [unset ROS3_VFD])
-    AC_CHECK_HEADERS([openssl/sha.h],, [unset ROS3_VFD])
-    if test "X$ROS3_VFD" = "Xyes"; then
-        AC_CHECK_LIB([curl], [curl_global_init],, [unset ROS3_VFD])
-        AC_CHECK_LIB([crypto], [EVP_sha256],, [unset ROS3_VFD])
-    fi
-    if test "X$ROS3_VFD" = "Xyes"; then
-        WITH_S3_VFD="--enable-ros3-vfd"
-        CURL_LIBS="-lcrypto -lcurl"
-    else
-        WITH_S3_VFD="--enable-ros3-vfd=no"
-        CURL_LIBS=""
-    fi
-fi
+
+AC_ARG_ENABLE([ros3-vfd],
+    AS_HELP_STRING([--disable-ros3-vfd], [Disable read-only S3 virtual file driver]),
+    [ if test "X$enableval" != "Xno" ; then
+        ROS3_VFD=yes
+        if test "X$ROS3_VFD" = "Xyes" ; then
+          AC_CHECK_HEADERS([curl/curl.h],, [unset ROS3_VFD])
+          AC_CHECK_HEADERS([openssl/evp.h],, [unset ROS3_VFD])
+          AC_CHECK_HEADERS([openssl/hmac.h],, [unset ROS3_VFD])
+          AC_CHECK_HEADERS([openssl/sha.h],, [unset ROS3_VFD])
+          if test "X$ROS3_VFD" = "Xyes"; then
+              AC_CHECK_LIB([curl], [curl_global_init],, [unset ROS3_VFD])
+              AC_CHECK_LIB([crypto], [EVP_sha256],, [unset ROS3_VFD])
+          fi
+          if test "X$ROS3_VFD" = "Xyes"; then
+              WITH_S3_VFD="--enable-ros3-vfd"
+              CURL_LIBS="-lcrypto -lcurl"
+          else
+              WITH_S3_VFD="--enable-ros3-vfd=no"
+              CURL_LIBS=""
+          fi
+        fi
+      fi
+    ])
+
 echo "S3_VFD=${WITH_S3_VFD}"
+
 
 #untar the lib
 BASEPBNAME="hdf5"

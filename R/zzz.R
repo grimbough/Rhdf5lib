@@ -73,7 +73,7 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "
                                 sprintf('-L%s -lhdf5_hl -lhdf5 -lcurl -lssh2 -lssl -lcrypto -lwldap32 -lws2_32 -lcrypt32 -lwldap32 -lws2_32 -lcrypt32 -lszip -lz -lpsapi', 
                                         patharch)
                               }, {
-                                sprintf('%s/libhdf5_hl.a %s/libhdf5.a %s/libsz.a %s', 
+                                sprintf('"%s/libhdf5_hl.a" "%s/libhdf5.a" "%s/libsz.a" %s', 
                                         patharch, patharch, patharch, .getDynamicLinks())
                               }
                        )
@@ -90,7 +90,7 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "
                                 sprintf('-L%s -lhdf5_hl_cpp -lhdf5_hl -lhdf5_cpp -lhdf5 -lcrypto -lcurl -lszip -lz -lpsapi', 
                                         patharch)
                               }, {
-                                sprintf('%s/libhdf5_hl_cpp.a %s/libhdf5_hl.a %s/libhdf5_cpp.a %s/libhdf5.a %s/libsz.a %s',
+                                sprintf('"%s/libhdf5_hl_cpp.a" "%s/libhdf5_hl.a" "%s/libhdf5_cpp.a" "%s/libhdf5.a" "%s/libsz.a" %s',
                                         patharch, patharch, patharch, patharch, patharch, .getDynamicLinks())
                               }
                        )

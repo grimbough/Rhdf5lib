@@ -2139,7 +2139,6 @@ CXXPICFLAGS=`"${R_HOME}/bin/R" CMD config CXXPICFLAGS`
 F77=`"${R_HOME}/bin/R" CMD config F77`
 MAKE=`"${R_HOME}/bin/R" CMD config MAKE`
 LDFLAGS=`"${R_HOME}/bin/R" CMD config LDFLAGS`
-LDFLAGS+=' -mlinker-version=305'
 ac_ext=cpp
 ac_cpp='$CXXCPP $CPPFLAGS'
 ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'

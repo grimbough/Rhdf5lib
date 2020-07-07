@@ -19,7 +19,6 @@ USER_LIB_DIR = ${R_PACKAGE_DIR}/lib${R_ARCH}/
 
 PKG_CPPFLAGS = -I${HDF5_INCLUDE} ${ZLIB_INCLUDE}
 PKG_CFLAGS = ${ZLIB_LIB}
-PKG_LDFLAGS = -mlinker-version=305
 PKG_LIBS = "${USER_LIB_DIR}libhdf5.a" "${USER_LIB_DIR}libsz.a" -lz
 
 all: copying $(SHLIB)

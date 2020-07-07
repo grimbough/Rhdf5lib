@@ -23,7 +23,6 @@ CXXPICFLAGS=`"${R_HOME}/bin/R" CMD config CXXPICFLAGS`
 F77=`"${R_HOME}/bin/R" CMD config F77`
 MAKE=`"${R_HOME}/bin/R" CMD config MAKE`
 LDFLAGS=`"${R_HOME}/bin/R" CMD config LDFLAGS`
-LDFLAGS+=' -mlinker-version=305'
 AC_LANG(C++)
 
 # Checks for programs.

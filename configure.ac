@@ -116,7 +116,8 @@ cd ../;
     --with-szlib=${SZIP_HOME} --with-zlib=${ZLIB_HOME} \
     ${WITH_S3_VFD} \
     CXX="${CXX}" CXXFLAGS="${CXXFLAGS} ${CXXPICFLAGS}" \
-    CC="${CC}" CFLAGS="${CFLAGS} ${CPICFLAGS}" 
+    CC="${CC}" CFLAGS="${CFLAGS} ${CPICFLAGS}" \
+    LDFLAGS="${LDFLAGS}"
 $MAKE lib
 cd ../../
 

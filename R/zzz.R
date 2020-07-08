@@ -74,7 +74,7 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "
                                 sprintf('-L%s -lhdf5_hl -lhdf5 -lszip -lz -lpsapi', 
                                         patharch)
                               }, {
-                                sprintf('%s/libhdf5_hl.a %s/libhdf5.a %s/libsz.a -lz', 
+                                sprintf('"%s/libhdf5_hl.a" "%s/libhdf5.a" "%s/libsz.a" -lz', 
                                         patharch, patharch, patharch)
                               }
                        )
@@ -91,7 +91,7 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "
                                 sprintf('-L%s -lhdf5_hl_cpp -lhdf5_hl -lhdf5_cpp -lhdf5 -lszip -lz -lpsapi', 
                                         patharch)
                               }, {
-                                sprintf('%s/libhdf5_hl_cpp.a %s/libhdf5_hl.a %s/libhdf5_cpp.a %s/libhdf5.a %s/libsz.a -lz',
+                                sprintf('"%s/libhdf5_hl_cpp.a" "%s/libhdf5_hl.a" "%s/libhdf5_cpp.a" "%s/libhdf5.a" "%s/libsz.a" -lz',
                                         patharch, patharch, patharch, patharch, patharch)
                               }
                        )

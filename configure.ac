@@ -2,7 +2,7 @@
 # author: Mike Smith (mike.smith@embl.de)
 
 AC_PREREQ([2.65])
-AC_INIT([Rhdf5lib], [1.5.0], [mike.smith@embl.de])
+AC_INIT([Rhdf5lib], [1.10.1], [mike.smith@embl.de])
 AC_CONFIG_SRCDIR([src])
 
 m4_include([m4/ax_check_compile_flag.m4])
@@ -22,6 +22,7 @@ CXXFLAGS=`"${R_HOME}/bin/R" CMD config CXXFLAGS`
 CXXPICFLAGS=`"${R_HOME}/bin/R" CMD config CXXPICFLAGS`
 F77=`"${R_HOME}/bin/R" CMD config F77`
 MAKE=`"${R_HOME}/bin/R" CMD config MAKE`
+LDFLAGS=`"${R_HOME}/bin/R" CMD config LDFLAGS`
 AC_LANG(C++)
 
 # Checks for programs.
@@ -112,7 +113,8 @@ cd ../;
     --with-szlib=${SZIP_HOME} --with-zlib=${ZLIB_HOME} \
     ${WITH_S3_VFD} \
     CXX="${CXX}" CXXFLAGS="${CXXFLAGS} ${CXXPICFLAGS}" \
-    CC="${CC}" CFLAGS="${CFLAGS} ${CPICFLAGS}" 
+    CC="${CC}" CFLAGS="${CFLAGS} ${CPICFLAGS}" \
+    LDFLAGS="${LDFLAGS}"
 $MAKE lib
 cd ../../
 

@@ -20,8 +20,10 @@ CPICFLAGS=`"${R_HOME}/bin/R" CMD config CPICFLAGS`
 CXX=`"${R_HOME}/bin/R" CMD config CXX`
 CXXFLAGS=`"${R_HOME}/bin/R" CMD config CXXFLAGS`
 CXXPICFLAGS=`"${R_HOME}/bin/R" CMD config CXXPICFLAGS`
+CPPFLAGS=`"${R_HOME}/bin/R" CMD config CPPFLAGS`
 F77=`"${R_HOME}/bin/R" CMD config F77`
 MAKE=`"${R_HOME}/bin/R" CMD config MAKE`
+LDFLAGS=`"${R_HOME}/bin/R" CMD config LDFLAGS`
 AC_LANG(C++)
 
 # Checks for programs.
@@ -111,7 +113,7 @@ fi;
 echo "building the szip library...";
 cd ${BASEPBNAME}/szip;
 ./configure --with-pic --enable-shared=no \
-    CC="${CC}" CFLAGS="${CFLAGS} ${CPICFLAGS}"
+    CC="${CC}" CFLAGS="${CFLAGS} ${CPICFLAGS}" CPPFLAGS="${CPPFLAGS}"
 $MAKE
 $MAKE install
 SZIP_HOME=`pwd -P`/szip
@@ -123,7 +125,8 @@ cd ../;
     --with-szlib=${SZIP_HOME} --with-zlib=${ZLIB_HOME} \
     ${WITH_S3_VFD} \
     CXX="${CXX}" CXXFLAGS="${CXXFLAGS} ${CXXPICFLAGS}" \
-    CC="${CC}" CFLAGS="${CFLAGS} ${CPICFLAGS}" 
+    CC="${CC}" CFLAGS="${CFLAGS} ${CPICFLAGS}" \
+    CPPFLAGS="${CPPFLAGS}" LDFLAGS="${LDFLAGS}"
 $MAKE lib
 cd ../../
 

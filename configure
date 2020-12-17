@@ -3207,42 +3207,7 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
 
 ## hdf5 spews loads of errors.  Use -w to suppress these if supported
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -w" >&5
-$as_echo_n "checking whether C++ compiler accepts -w... " >&6; }
-if ${ax_cv_check_cxxflags___w+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-
-  ax_check_save_flags=$CXXFLAGS
-  CXXFLAGS="$CXXFLAGS  -w"
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main ()
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_compile "$LINENO"; then :
-  ax_cv_check_cxxflags___w=yes
-else
-  ax_cv_check_cxxflags___w=no
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-  CXXFLAGS=$ax_check_save_flags
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___w" >&5
-$as_echo "$ax_cv_check_cxxflags___w" >&6; }
-if test "x$ax_cv_check_cxxflags___w" = xyes; then :
-  CFLAGS="$CFLAGS -w"; CXXFLAGS="$CXXFLAGS -w"
-else
-  :
-fi
-
+## AX_CHECK_COMPILE_FLAG([-w], [CFLAGS="$CFLAGS -w"; CXXFLAGS="$CXXFLAGS -w"])
 
 ### 'checking for zlib... ';
 
@@ -3257,7 +3222,8 @@ fi
 case $withval in
   yes)
     HAVE_ZLIB="yes"
-    ac_ext=cpp
+
+ac_ext=cpp
 ac_cpp='$CXXCPP $CPPFLAGS'
 ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
@@ -3853,6 +3819,7 @@ fi
         CURL_LIBS=""
     fi
 fi
+
 echo "S3_VFD=${WITH_S3_VFD}"
 
 #untar the lib
@@ -3884,6 +3851,9 @@ cd ../;
     CC="${CC}" CFLAGS="${CFLAGS} ${CPICFLAGS}" \
     LDFLAGS="${LDFLAGS}"
 $MAKE lib
+if  $? -ne 0  ; then
+  as_fn_error $? "\"Failed to compiled the HDF5 library\"" "$LINENO" 5
+fi
 cd ../../
 
 #update variables in Makevars

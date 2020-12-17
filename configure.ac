@@ -30,7 +30,7 @@ AC_PROG_CC
 AC_PROG_CXX
 
 ## hdf5 spews loads of errors.  Use -w to suppress these if supported
-AX_CHECK_COMPILE_FLAG([-w], [CFLAGS="$CFLAGS -w"; CXXFLAGS="$CXXFLAGS -w"])
+## AX_CHECK_COMPILE_FLAG([-w], [CFLAGS="$CFLAGS -w"; CXXFLAGS="$CXXFLAGS -w"])
 
 ### 'checking for zlib... ';
 AC_ARG_WITH([zlib],
@@ -119,6 +119,9 @@ cd ../;
     CC="${CC}" CFLAGS="${CFLAGS} ${CPICFLAGS}" \
     LDFLAGS="${LDFLAGS}"
 $MAKE lib
+if [ $? -ne 0 ] ; then
+  AC_MSG_ERROR("Failed to compiled the HDF5 library")
+fi
 cd ../../
 
 #update variables in Makevars

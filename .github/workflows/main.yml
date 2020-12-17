@@ -2,6 +2,7 @@ on:
   push:
     branches:
       - master
+	  - implicit-func
   pull_request:
     branches:
       - master

@@ -3884,6 +3884,9 @@ cd ../;
     CC="${CC}" CFLAGS="${CFLAGS} ${CPICFLAGS}" \
     LDFLAGS="${LDFLAGS}"
 $MAKE lib
+if  $? -ne 0  ; then
+  as_fn_error $? "\"Failed to compiled the HDF5 library\"" "$LINENO" 5
+fi
 cd ../../
 
 #update variables in Makevars

@@ -119,6 +119,9 @@ cd ../;
     CC="${CC}" CFLAGS="${CFLAGS} ${CPICFLAGS}" \
     LDFLAGS="${LDFLAGS}"
 $MAKE lib
+if [ $? -ne 0 ] ; then
+  AC_MSG_ERROR("Failed to compiled the HDF5 library")
+fi
 cd ../../
 
 #update variables in Makevars

@@ -1,3 +1,12 @@
+Version 1.14
+
+=============
+
+Bug fixes:
+  
+  o Minor changes to HDF5 library code to fix issues with implict function
+  declarations thrown by Apple compilers.
+
 Version 1.8
 
 =============

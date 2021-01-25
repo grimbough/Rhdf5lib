@@ -10,7 +10,7 @@ This R/Bioconductor package provides a mechanism to install the HDF5 system libr
 
 ## Contact
 
-For bug reports, please register an [issue](https://github.com/grimbough/Rhdf5lib/issues) here on Github. For usage queries please post a question on the [Bioconductor Support Forum](https://support.bioconductor.org/p/new/post/?tag_val=Rhdf5lib).
+For bug reports, please register an [issue](https://github.com/grimbough/Rhdf5lib/issues) here on Github. For usage queries please post a question on the [Bioconductor Support Forum](https://support.bioconductor.org/new/post/) with the **Rhdf5lib** tag.
 
 
 ## Funding 

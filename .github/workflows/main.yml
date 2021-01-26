@@ -50,10 +50,10 @@ jobs:
 
       - name: Install dependencies
         run: |
-          install.packages(c('BiocManager', 'remotes'))
+          install.packages(c('BiocManager', 'remotes', 'rcmdcheck'))
           BiocManager::install(version = 'devel', ask = FALSE, update = FALSE)
           library(remotes)
-          update(dev_package_deps())
+          update(dev_package_deps(dependencies = TRUE))
         shell: Rscript {0}
         
       - name: Non-windows check

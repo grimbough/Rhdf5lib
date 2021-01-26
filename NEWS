@@ -4,6 +4,7 @@ Version 1.14
 
 Bug fixes:
   
+  o CPPFLAGS used to build R are now used during HDF compilation.
   o Minor changes to HDF5 library code to fix issues with implict function
   declarations thrown by Apple compilers.
 
@@ -17,7 +18,7 @@ New features:
 
 Bug fixes:
   
-  o Quote paths reported by pkgconfig() to allow installation in librarys 
+  o Quote paths reported by pkgconfig() to allow installation in libraries 
   with whitespace in the path.
   
 Version 1.0

@@ -50,10 +50,12 @@ jobs:
 
       - name: Install dependencies
         run: |
-          Rscript -e "install.packages(c('BiocManager', 'remotes'))"
-          Rscript -e "BiocManager::install(version = 'devel', ask = FALSE, update = FALSE)"
-          Rscript -e "BiocManager::install(c('rcmdcheck', 'BiocStyle', 'tinytest'), version = 'devel', ask = FALSE, update = FALSE)"
-
+          install.packages(c('BiocManager', 'remotes'))
+          BiocManager::install(version = 'devel', ask = FALSE, update = FALSE)
+          library(remotes)
+          update(dev_package_deps())
+        shell: Rscript {0}
+        
       - name: Non-windows check
         if: ${{ matrix.config.os != 'windows-latest' }}
         run: |

@@ -48,7 +48,7 @@ jobs:
         run: |
           Rscript -e "install.packages(c('BiocManager', 'remotes'))"
           Rscript -e "BiocManager::install(version = '3.12', ask = FALSE, update = FALSE)"
-          Rscript -e "BiocManager::install(c('rcmdcheck', 'BiocStyle', 'tinytest'), version = 'devel', ask = FALSE, update = FALSE)"
+          Rscript -e "BiocManager::install(c('rcmdcheck', 'BiocStyle', 'tinytest'), ask = FALSE, update = FALSE)"
 
       - name: Non-windows check
         if: ${{ matrix.config.os != 'windows-latest' }}

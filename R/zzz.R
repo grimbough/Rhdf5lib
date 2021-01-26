@@ -17,87 +17,77 @@
 #' @export
 #' @rawNamespace if(tools:::.OStype() == "windows") { importFrom(utils, shortPathName) }
 pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "PKG_C_HL_LIBS")) {
-    
-    path <- Sys.getenv(
-        x = "RHDF5LIB_RPATH",
-        unset = system.file("lib", package="Rhdf5lib", mustWork=TRUE)
-    )
-    
-    if (nzchar(.Platform$r_arch)) {
-        arch <- sprintf("/%s", .Platform$r_arch)
-    } else {
-        arch <- ""
-    }
-    patharch <- paste0(path, arch)
-
-    result <- switch(match.arg(opt), 
-                     PKG_C_LIBS = {
-                         switch(Sys.info()['sysname'], 
-                                Windows = {
-                                    patharch <- gsub(x = utils::shortPathName(patharch),
-                                                   pattern = "\\",
-                                                   replacement = "/", 
-                                                   fixed = TRUE)
-                                    sprintf('-L%s -lhdf5 -lcurl -lssh2 -lssl -lcrypto -lwldap32 -lws2_32 -lcrypt32 -lszip -lz -lpsapi', 
-                                            patharch)
-                                }, {
-                                    sprintf('"%s/libhdf5.a" "%s/libsz.a" %s', 
-                                            patharch, patharch, .getDynamicLinks())
-                                }
-                         )
-                     }, 
-                     PKG_CXX_LIBS = {
-                         switch(Sys.info()['sysname'], 
-                                Windows = {
-                                   ## for some reason double quotes aren't always sufficient
-                                   ## so we use the 8+3 form of the path
-                                   patharch <- gsub(x = utils::shortPathName(patharch),
-                                                   pattern = "\\",
-                                                   replacement = "/", 
-                                                   fixed = TRUE)
-                                    sprintf('-L%s -lhdf5_cpp -lhdf5 -lcurl -lssh2 -lssl -lcrypto -lwldap32 -lws2_32 -lcrypt32 -lszip -lz -lpsapi', 
-                                            patharch)
-                                }, {
-                                    sprintf('"%s/libhdf5_cpp.a" "%s/libhdf5.a" "%s/libsz.a" %s',
-                                            patharch, patharch, patharch, .getDynamicLinks())
-                                }
-                         )
-                     },
-                     PKG_C_HL_LIBS = {
-                       switch(Sys.info()['sysname'], 
-                              Windows = {
-                                patharch <- gsub(x = shortPathName(patharch),
-                                                 pattern = "\\",
-                                                 replacement = "/", 
-                                                 fixed = TRUE)
-                                sprintf('-L%s -lhdf5_hl -lhdf5 -lcurl -lssh2 -lssl -lcrypto -lwldap32 -lws2_32 -lcrypt32 -lwldap32 -lws2_32 -lcrypt32 -lszip -lz -lpsapi', 
-                                        patharch)
-                              }, {
-                                sprintf('"%s/libhdf5_hl.a" "%s/libhdf5.a" "%s/libsz.a" %s', 
-                                        patharch, patharch, patharch, .getDynamicLinks())
-                              }
-                       )
-                     }, 
-                     PKG_CXX_HL_LIBS = {
-                       switch(Sys.info()['sysname'], 
-                              Windows = {
-                                ## for some reason double quotes aren't always sufficient
-                                ## so we use the 8+3 form of the path
-                                patharch <- gsub(x = shortPathName(patharch),
-                                                 pattern = "\\",
-                                                 replacement = "/", 
-                                                 fixed = TRUE)
-                                sprintf('-L%s -lhdf5_hl_cpp -lhdf5_hl -lhdf5_cpp -lhdf5 -lcrypto -lcurl -lszip -lz -lpsapi', 
-                                        patharch)
-                              }, {
-                                sprintf('"%s/libhdf5_hl_cpp.a" "%s/libhdf5_hl.a" "%s/libhdf5_cpp.a" "%s/libhdf5.a" "%s/libsz.a" %s',
-                                        patharch, patharch, patharch, patharch, patharch, .getDynamicLinks())
-                              }
-                       )
-                     }
-    )
-    
-    cat(result)
+  
+  path <- Sys.getenv(
+    x = "RHDF5LIB_RPATH",
+    unset = system.file("lib", package="Rhdf5lib", mustWork=TRUE)
+  )
+  
+  if (nzchar(.Platform$r_arch)) {
+    arch <- sprintf("/%s", .Platform$r_arch)
+  } else {
+    arch <- ""
+  }
+  patharch <- paste0(path, arch)
+  
+  sysname <- Sys.info()['sysname']
+  if(sysname == "Windows") {
+    ## for some reason double quotes aren't always sufficient on Windows
+    ## so we use the 8+3 form of the path and replace slashes
+    patharch <- gsub(x = utils::shortPathName(patharch),
+                     pattern = "\\",
+                     replacement = "/", 
+                     fixed = TRUE)
+  }
+  
+  result <- switch(match.arg(opt), 
+                   PKG_C_LIBS = {
+                     switch(sysname, 
+                            Windows = {
+                              sprintf('-L%s -lhdf5 -lcurl -lssh2 -lssl -lcrypto -lwldap32 -lws2_32 -lcrypt32 -lszip -lz -lpsapi', 
+                                      patharch)
+                            }, {
+                              sprintf('"%s/libhdf5.a" "%s/libsz.a" %s', 
+                                      patharch, patharch, .getDynamicLinks())
+                            }
+                     )
+                   }, 
+                   PKG_CXX_LIBS = {
+                     switch(sysname, 
+                            Windows = {
+                              sprintf('-L%s -lhdf5_cpp -lhdf5 -lcurl -lssh2 -lssl -lcrypto -lwldap32 -lws2_32 -lcrypt32 -lszip -lz -lpsapi', 
+                                      patharch)
+                            }, {
+                              sprintf('"%s/libhdf5_cpp.a" "%s/libhdf5.a" "%s/libsz.a" %s',
+                                      patharch, patharch, patharch, .getDynamicLinks())
+                            }
+                     )
+                   },
+                   PKG_C_HL_LIBS = {
+                     switch(sysname, 
+                            Windows = {
+                              sprintf('-L%s -lhdf5_hl -lhdf5 -lcurl -lssh2 -lssl -lcrypto -lwldap32 -lws2_32 -lcrypt32 -lwldap32 -lws2_32 -lcrypt32 -lszip -lz -lpsapi', 
+                                      patharch)
+                            }, {
+                              sprintf('"%s/libhdf5_hl.a" "%s/libhdf5.a" "%s/libsz.a" %s', 
+                                      patharch, patharch, patharch, .getDynamicLinks())
+                            }
+                     )
+                   }, 
+                   PKG_CXX_HL_LIBS = {
+                     switch(sysname, 
+                            Windows = {
+                              sprintf('-L%s -lhdf5_hl_cpp -lhdf5_hl -lhdf5_cpp -lhdf5 -lcrypto -lcurl -lszip -lz -lpsapi', 
+                                      patharch)
+                            }, {
+                              sprintf('"%s/libhdf5_hl_cpp.a" "%s/libhdf5_hl.a" "%s/libhdf5_cpp.a" "%s/libhdf5.a" "%s/libsz.a" %s',
+                                      patharch, patharch, patharch, patharch, patharch, .getDynamicLinks())
+                            }
+                     )
+                   }
+  )
+  
+  cat(result)
 }
 
 #' Report the version of HDF5 distributed with this package
@@ -129,6 +119,10 @@ getHdf5Version <- function() {
   return(grepl(pattern = "-lcurl", x = libhdf5_settings[line]))
 }
 
+#' Return the link flags depending upon the status of curl
+#' determined during package installation
+#' 
+#' @keywords internal
 .getDynamicLinks <- function() {
   
   if(isTRUE(.curlStatus())) {
@@ -138,5 +132,4 @@ getHdf5Version <- function() {
   }
   
   return(links)
-  
 }

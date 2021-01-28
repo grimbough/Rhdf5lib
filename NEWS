@@ -7,6 +7,8 @@ Bug fixes:
   o CPPFLAGS used to build R are now used during HDF compilation.
   o Minor changes to HDF5 library code to fix issues with implict function
   declarations thrown by Apple compilers.
+  o Package configure script will now stop if it encounters errors when 
+  compiling HDF5.  This should make diagnosing issues easier.
 
 Version 1.8
 

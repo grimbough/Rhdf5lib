@@ -3210,14 +3210,17 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 ## hdf5 spews loads of errors.  Use -w to suppress these if supported
 #AX_CHECK_COMPILE_FLAG([-w], [CFLAGS="$CFLAGS -w"; CXXFLAGS="$CXXFLAGS -w"])
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -Wno-unused-variable" >&5
-$as_echo_n "checking whether C++ compiler accepts -Wno-unused-variable... " >&6; }
-if ${ax_cv_check_cxxflags___Wno_unused_variable+:} false; then :
+## we supress C warnings that trigger a WARNING from R CMD check
+## we aren't going to edit the HDF5 source code much
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -Wno-unused-variable -Wno-unused-parameter" >&5
+$as_echo_n "checking whether C++ compiler accepts -Wno-unused-variable -Wno-unused-parameter... " >&6; }
+if ${ax_cv_check_cxxflags___Wno_unused_variable__Wno_unused_parameter+:} false; then :
   $as_echo_n "(cached) " >&6
 else
 
   ax_check_save_flags=$CXXFLAGS
-  CXXFLAGS="$CXXFLAGS  -Wno-unused-variable"
+  CXXFLAGS="$CXXFLAGS  -Wno-unused-variable -Wno-unused-parameter"
   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -3230,17 +3233,17 @@ main ()
 }
 _ACEOF
 if ac_fn_cxx_try_compile "$LINENO"; then :
-  ax_cv_check_cxxflags___Wno_unused_variable=yes
+  ax_cv_check_cxxflags___Wno_unused_variable__Wno_unused_parameter=yes
 else
-  ax_cv_check_cxxflags___Wno_unused_variable=no
+  ax_cv_check_cxxflags___Wno_unused_variable__Wno_unused_parameter=no
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
   CXXFLAGS=$ax_check_save_flags
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___Wno_unused_variable" >&5
-$as_echo "$ax_cv_check_cxxflags___Wno_unused_variable" >&6; }
-if test "x$ax_cv_check_cxxflags___Wno_unused_variable" = xyes; then :
-  CFLAGS="$CFLAGS -Wno-unused-variable"; CXXFLAGS="$CXXFLAGS -Wno-unused-variable"
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___Wno_unused_variable__Wno_unused_parameter" >&5
+$as_echo "$ax_cv_check_cxxflags___Wno_unused_variable__Wno_unused_parameter" >&6; }
+if test "x$ax_cv_check_cxxflags___Wno_unused_variable__Wno_unused_parameter" = xyes; then :
+  CFLAGS="$CFLAGS -Wno-unused-variable -Wno-unused-parameter"
 else
   :
 fi
@@ -3275,19 +3278,19 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___Wno_cast_qual" >&5
 $as_echo "$ax_cv_check_cxxflags___Wno_cast_qual" >&6; }
 if test "x$ax_cv_check_cxxflags___Wno_cast_qual" = xyes; then :
-  CFLAGS="$CFLAGS -Wno-cast-qual"; CXXFLAGS="$CXXFLAGS -Wno-cast-qual"
+  CFLAGS="$CFLAGS -Wno-cast-qual"
 else
   :
 fi
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -Wno-unused-parameter" >&5
-$as_echo_n "checking whether C++ compiler accepts -Wno-unused-parameter... " >&6; }
-if ${ax_cv_check_cxxflags___Wno_unused_parameter+:} false; then :
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -Wno-pedantic -Wno-extra" >&5
+$as_echo_n "checking whether C++ compiler accepts -Wno-pedantic -Wno-extra... " >&6; }
+if ${ax_cv_check_cxxflags___Wno_pedantic__Wno_extra+:} false; then :
   $as_echo_n "(cached) " >&6
 else
 
   ax_check_save_flags=$CXXFLAGS
-  CXXFLAGS="$CXXFLAGS  -Wno-unused-parameter"
+  CXXFLAGS="$CXXFLAGS  -Wno-pedantic -Wno-extra"
   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -3300,17 +3303,87 @@ main ()
 }
 _ACEOF
 if ac_fn_cxx_try_compile "$LINENO"; then :
-  ax_cv_check_cxxflags___Wno_unused_parameter=yes
+  ax_cv_check_cxxflags___Wno_pedantic__Wno_extra=yes
 else
-  ax_cv_check_cxxflags___Wno_unused_parameter=no
+  ax_cv_check_cxxflags___Wno_pedantic__Wno_extra=no
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
   CXXFLAGS=$ax_check_save_flags
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___Wno_unused_parameter" >&5
-$as_echo "$ax_cv_check_cxxflags___Wno_unused_parameter" >&6; }
-if test "x$ax_cv_check_cxxflags___Wno_unused_parameter" = xyes; then :
-  CFLAGS="$CFLAGS -Wno-unused-parameter"; CXXFLAGS="$CXXFLAGS -Wno-unused-parameter"
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___Wno_pedantic__Wno_extra" >&5
+$as_echo "$ax_cv_check_cxxflags___Wno_pedantic__Wno_extra" >&6; }
+if test "x$ax_cv_check_cxxflags___Wno_pedantic__Wno_extra" = xyes; then :
+  CFLAGS="$CFLAGS -Wno-pedantic -Wno-extra"
+else
+  :
+fi
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -Wno-format-overflow -Wno-format-truncation" >&5
+$as_echo_n "checking whether C++ compiler accepts -Wno-format-overflow -Wno-format-truncation... " >&6; }
+if ${ax_cv_check_cxxflags___Wno_format_overflow__Wno_format_truncation+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+  ax_check_save_flags=$CXXFLAGS
+  CXXFLAGS="$CXXFLAGS  -Wno-format-overflow -Wno-format-truncation"
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"; then :
+  ax_cv_check_cxxflags___Wno_format_overflow__Wno_format_truncation=yes
+else
+  ax_cv_check_cxxflags___Wno_format_overflow__Wno_format_truncation=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+  CXXFLAGS=$ax_check_save_flags
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___Wno_format_overflow__Wno_format_truncation" >&5
+$as_echo "$ax_cv_check_cxxflags___Wno_format_overflow__Wno_format_truncation" >&6; }
+if test "x$ax_cv_check_cxxflags___Wno_format_overflow__Wno_format_truncation" = xyes; then :
+  CFLAGS="$CFLAGS -Wno-format-overflow -Wno-format-truncation"
+else
+  :
+fi
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -Wno-stringop-overflow -Wno-overlength-strings -Wno-stringop-truncation" >&5
+$as_echo_n "checking whether C++ compiler accepts -Wno-stringop-overflow -Wno-overlength-strings -Wno-stringop-truncation... " >&6; }
+if ${ax_cv_check_cxxflags___Wno_stringop_overflow__Wno_overlength_strings__Wno_stringop_truncation+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+  ax_check_save_flags=$CXXFLAGS
+  CXXFLAGS="$CXXFLAGS  -Wno-stringop-overflow -Wno-overlength-strings -Wno-stringop-truncation"
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"; then :
+  ax_cv_check_cxxflags___Wno_stringop_overflow__Wno_overlength_strings__Wno_stringop_truncation=yes
+else
+  ax_cv_check_cxxflags___Wno_stringop_overflow__Wno_overlength_strings__Wno_stringop_truncation=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+  CXXFLAGS=$ax_check_save_flags
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___Wno_stringop_overflow__Wno_overlength_strings__Wno_stringop_truncation" >&5
+$as_echo "$ax_cv_check_cxxflags___Wno_stringop_overflow__Wno_overlength_strings__Wno_stringop_truncation" >&6; }
+if test "x$ax_cv_check_cxxflags___Wno_stringop_overflow__Wno_overlength_strings__Wno_stringop_truncation" = xyes; then :
+  CFLAGS="$CFLAGS -Wno-stringop-overflow -Wno-overlength-strings -Wno-stringop-truncation"
 else
   :
 fi

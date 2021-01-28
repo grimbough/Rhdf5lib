@@ -31,7 +31,14 @@ AC_PROG_CC
 AC_PROG_CXX
 
 ## hdf5 spews loads of errors.  Use -w to suppress these if supported
-AX_CHECK_COMPILE_FLAG([-w], [CFLAGS="$CFLAGS -w"; CXXFLAGS="$CXXFLAGS -w"])
+#AX_CHECK_COMPILE_FLAG([-w], [CFLAGS="$CFLAGS -w"; CXXFLAGS="$CXXFLAGS -w"])
+AX_CHECK_COMPILE_FLAG([-Wno-unused-variable], 
+                      [CFLAGS="$CFLAGS -Wno-unused-variable"; CXXFLAGS="$CXXFLAGS -Wno-unused-variable"])
+AX_CHECK_COMPILE_FLAG([-Wno-cast-qual], 
+                      [CFLAGS="$CFLAGS -Wno-cast-qual"; CXXFLAGS="$CXXFLAGS -Wno-cast-qual"])
+AX_CHECK_COMPILE_FLAG([-Wno-unused-parameter], 
+                      [CFLAGS="$CFLAGS -Wno-unused-parameter"; CXXFLAGS="$CXXFLAGS -Wno-unused-parameter"])
+
 
 ### 'checking for zlib... ';
 AC_ARG_WITH([zlib],
@@ -120,9 +127,10 @@ cd ../;
     CC="${CC}" CFLAGS="${CFLAGS} ${CPICFLAGS}" \
     CPPFLAGS="${CPPFLAGS}" LDFLAGS="${LDFLAGS}"
 $MAKE lib
-if [ $? -ne 0 ] ; then
-  AC_MSG_ERROR("Failed to compiled the HDF5 library")
-fi
+#echo "Make return value: $?"
+AS_IF([ test "$?" != 0 ], 
+      [AC_MSG_ERROR("Failed to compiled the HDF5 library")], 
+      [echo test passed])
 cd ../../
 
 #update variables in Makevars

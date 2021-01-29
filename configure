@@ -3207,11 +3207,25 @@ ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ex
 ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
 
+cc_version="`$CC $CFLAGS -v 2>&1 | grep -v 'PathScale' |\
+    grep -v 'icc version' |\
+    grep 'gcc version' | sed 's/.*gcc version \([-a-z0-9\.]*\).*/\1/'`"
+echo $cc_version
+cc_vendor=`echo $cc_version |sed 's/\([a-z]*\).*/\1/'`
+cc_version=`echo $cc_version |sed 's/[-a-z]//g'`
+if test X = "X$cc_vendor" -a X != "X$cc_version"; then
+    cc_vendor=gcc
+fi
+if test "-" != "$cc_vendor-$cc_version"; then
+    echo "compiler '$CC' is GNU $cc_vendor-$cc_version"
+fi
+
 ## hdf5 spews loads of errors.  Use -w to suppress these if supported
 #AX_CHECK_COMPILE_FLAG([-w], [CFLAGS="$CFLAGS -w"; CXXFLAGS="$CXXFLAGS -w"])
 
-## we supress C warnings that trigger a WARNING from R CMD check
-## we aren't going to edit the HDF5 source code much
+if test "X-gcc" = "X-$cc_vendor"; then
+  ## we supress C warnings that trigger a WARNING from R CMD check
+  ## we aren't going to edit the HDF5 source code much
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -Wno-unused-variable -Wno-unused-parameter" >&5
 $as_echo_n "checking whether C++ compiler accepts -Wno-unused-variable -Wno-unused-parameter... " >&6; }
@@ -3248,7 +3262,7 @@ else
   :
 fi
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -Wno-cast-qual" >&5
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -Wno-cast-qual" >&5
 $as_echo_n "checking whether C++ compiler accepts -Wno-cast-qual... " >&6; }
 if ${ax_cv_check_cxxflags___Wno_cast_qual+:} false; then :
   $as_echo_n "(cached) " >&6
@@ -3283,7 +3297,7 @@ else
   :
 fi
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -Wno-pedantic -Wno-extra" >&5
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -Wno-pedantic -Wno-extra" >&5
 $as_echo_n "checking whether C++ compiler accepts -Wno-pedantic -Wno-extra... " >&6; }
 if ${ax_cv_check_cxxflags___Wno_pedantic__Wno_extra+:} false; then :
   $as_echo_n "(cached) " >&6
@@ -3318,7 +3332,7 @@ else
   :
 fi
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -Wno-format-overflow -Wno-format-truncation" >&5
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -Wno-format-overflow -Wno-format-truncation" >&5
 $as_echo_n "checking whether C++ compiler accepts -Wno-format-overflow -Wno-format-truncation... " >&6; }
 if ${ax_cv_check_cxxflags___Wno_format_overflow__Wno_format_truncation+:} false; then :
   $as_echo_n "(cached) " >&6
@@ -3353,7 +3367,7 @@ else
   :
 fi
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -Wno-stringop-overflow -Wno-overlength-strings -Wno-stringop-truncation" >&5
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -Wno-stringop-overflow -Wno-overlength-strings -Wno-stringop-truncation" >&5
 $as_echo_n "checking whether C++ compiler accepts -Wno-stringop-overflow -Wno-overlength-strings -Wno-stringop-truncation... " >&6; }
 if ${ax_cv_check_cxxflags___Wno_stringop_overflow__Wno_overlength_strings__Wno_stringop_truncation+:} false; then :
   $as_echo_n "(cached) " >&6
@@ -3388,6 +3402,7 @@ else
   :
 fi
 
+fi
 
 
 ### 'checking for zlib... ';

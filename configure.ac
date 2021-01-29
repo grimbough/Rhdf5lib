@@ -30,21 +30,36 @@ AC_LANG(C++)
 AC_PROG_CC
 AC_PROG_CXX
 
+cc_version="`$CC $CFLAGS -v 2>&1 | grep -v 'PathScale' |\
+    grep -v 'icc version' |\
+    grep 'gcc version' | sed 's/.*gcc version \([[-a-z0-9\.]]*\).*/\1/'`"
+echo $cc_version
+cc_vendor=`echo $cc_version |sed 's/\([[a-z]]*\).*/\1/'`
+cc_version=`echo $cc_version |sed 's/[[-a-z]]//g'`
+if test X = "X$cc_vendor" -a X != "X$cc_version"; then
+    cc_vendor=gcc
+fi
+if test "-" != "$cc_vendor-$cc_version"; then
+    echo "compiler '$CC' is GNU $cc_vendor-$cc_version"
+fi
+
 ## hdf5 spews loads of errors.  Use -w to suppress these if supported
 #AX_CHECK_COMPILE_FLAG([-w], [CFLAGS="$CFLAGS -w"; CXXFLAGS="$CXXFLAGS -w"])
 
-## we supress C warnings that trigger a WARNING from R CMD check 
-## we aren't going to edit the HDF5 source code much
-AX_CHECK_COMPILE_FLAG([-Wno-unused-variable -Wno-unused-parameter], 
-                      [CFLAGS="$CFLAGS -Wno-unused-variable -Wno-unused-parameter"])
-AX_CHECK_COMPILE_FLAG([-Wno-cast-qual], 
-                      [CFLAGS="$CFLAGS -Wno-cast-qual"])
-AX_CHECK_COMPILE_FLAG([-Wno-pedantic -Wno-extra], 
-                      [CFLAGS="$CFLAGS -Wno-pedantic -Wno-extra"])
-AX_CHECK_COMPILE_FLAG([-Wno-format-overflow -Wno-format-truncation], 
-                      [CFLAGS="$CFLAGS -Wno-format-overflow -Wno-format-truncation"])
-AX_CHECK_COMPILE_FLAG([-Wno-stringop-overflow -Wno-overlength-strings -Wno-stringop-truncation], 
-                      [CFLAGS="$CFLAGS -Wno-stringop-overflow -Wno-overlength-strings -Wno-stringop-truncation"])                     
+if test "X-gcc" = "X-$cc_vendor"; then
+  ## we supress C warnings that trigger a WARNING from R CMD check 
+  ## we aren't going to edit the HDF5 source code much
+  AX_CHECK_COMPILE_FLAG([-Wno-unused-variable -Wno-unused-parameter], 
+                        [CFLAGS="$CFLAGS -Wno-unused-variable -Wno-unused-parameter"])
+  AX_CHECK_COMPILE_FLAG([-Wno-cast-qual], 
+                        [CFLAGS="$CFLAGS -Wno-cast-qual"])
+  AX_CHECK_COMPILE_FLAG([-Wno-pedantic -Wno-extra], 
+                        [CFLAGS="$CFLAGS -Wno-pedantic -Wno-extra"])
+  AX_CHECK_COMPILE_FLAG([-Wno-format-overflow -Wno-format-truncation], 
+                        [CFLAGS="$CFLAGS -Wno-format-overflow -Wno-format-truncation"])
+  AX_CHECK_COMPILE_FLAG([-Wno-stringop-overflow -Wno-overlength-strings -Wno-stringop-truncation], 
+                        [CFLAGS="$CFLAGS -Wno-stringop-overflow -Wno-overlength-strings -Wno-stringop-truncation"])
+fi
 
 
 ### 'checking for zlib... ';

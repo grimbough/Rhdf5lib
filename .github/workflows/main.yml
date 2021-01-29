@@ -2,7 +2,7 @@ on:
   push:
     branches:
       - master
-      - implicit-func
+      - 1-10-7
   pull_request:
     branches:
       - master
@@ -52,7 +52,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          install.packages(c('BiocManager', 'remotes', 'rcmdcheck'))
+          install.packages(c('BiocManager', 'remotes', 'rcmdcheck', 'devtools', 'testthat'))
           BiocManager::install(version = 'devel', ask = FALSE, update = FALSE)
           library(remotes)
           update(dev_package_deps(dependencies = TRUE))
@@ -81,3 +81,18 @@ jobs:
         with:
           name: ${{ matrix.config.os }}-r-${{ matrix.config.r }}-results
           path: check/*.Rcheck/00install.out
+          
+      - name: Install package 
+        if: always()
+        run: |
+          devtools::install()
+        shell: Rscript {0}
+        
+              - name: Test dependent packages 
+        if: always()
+        run: |
+          BiocManager::install('grimbough/rhdf5', ref = "1-10-7", INSTALL_opts="--install-tests")
+          BiocManager::install(c('mbkmeans'), INSTALL_opts="--install-tests")
+          testthat::test_package('rhdf5')
+          testthat::test_package('mbkmeans')
+        shell: Rscript {0}

@@ -26,9 +26,9 @@ Download the HDF5 source tarball and unpack into a temporary directory.  We rena
 
 ```{r}
 hdf5_source <- tempfile()
-download.file(url = "https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.10/hdf5-1.10.6/src/hdf5-1.10.6.tar.bz2", dest = hdf5_source)
+download.file(url = "https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.10/hdf5-1.10.7/src/hdf5-1.10.7.tar.bz2", dest = hdf5_source)
 untar(tarfile = hdf5_source, exdir = tempdir())
-system2("mv", args = c(file.path(tempdir(), "hdf5-1.10.6"), file.path(tempdir(), "hdf5")))
+system2("mv", args = c(file.path(tempdir(), "hdf5-1.10.7"), file.path(tempdir(), "hdf5")))
 ```
 
 
@@ -166,13 +166,13 @@ Move the SZIP source into the HDF5 distribution and create the tarball that will
 
 ```{r, createTarball}
 system2("mv", args = c(szip_dir, file.path(hdf5_dir, "szip")))
-system2("tar", args = c("-C", tempdir(), "-czf", file.path(tempdir(), "hdf5small_cxx_hl_1.10.6.tar.gz"), "hdf5"))
+system2("tar", args = c("-C", tempdir(), "-czf", file.path(tempdir(), "hdf5small_cxx_hl_1.10.7.tar.gz"), "hdf5"))
 ```
 
 Finally copy this to the `/tmp/` so it is easy to find, inspect, and move to the package directory if correct.
 
 ```{r}
-if(file.exists("/tmp/hdf5small_cxx_hl_1.10.6.tar.gz")) { file.remove("/tmp/hdf5small_cxx_hl_1.10.6.tar.gz") }
-file.copy(file.path(tempdir(), "hdf5small_cxx_hl_1.10.6.tar.gz"), to = "/tmp/")
+if(file.exists("/tmp/hdf5small_cxx_hl_1.10.7.tar.gz")) { file.remove("/tmp/hdf5small_cxx_hl_1.10.7.tar.gz") }
+file.copy(file.path(tempdir(), "hdf5small_cxx_hl_1.10.7.tar.gz"), to = "/tmp/")
 ```
 

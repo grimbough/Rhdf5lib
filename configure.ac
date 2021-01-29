@@ -2,7 +2,7 @@
 # author: Mike Smith (mike.smith@embl.de)
 
 AC_PREREQ([2.65])
-AC_INIT([Rhdf5lib], [1.5.0], [mike.smith@embl.de])
+AC_INIT([Rhdf5lib], [1.13], [mike.smith@embl.de])
 AC_CONFIG_SRCDIR([src])
 
 m4_include([m4/ax_check_compile_flag.m4])
@@ -33,7 +33,6 @@ AC_PROG_CXX
 cc_version="`$CC $CFLAGS -v 2>&1 | grep -v 'PathScale' |\
     grep -v 'icc version' |\
     grep 'gcc version' | sed 's/.*gcc version \([[-a-z0-9\.]]*\).*/\1/'`"
-echo $cc_version
 cc_vendor=`echo $cc_version |sed 's/\([[a-z]]*\).*/\1/'`
 cc_version=`echo $cc_version |sed 's/[[-a-z]]//g'`
 if test X = "X$cc_vendor" -a X != "X$cc_version"; then
@@ -122,7 +121,7 @@ echo "S3_VFD=${WITH_S3_VFD}"
 
 #untar the lib
 BASEPBNAME="hdf5"
-PBTGZNAME=hdf5small_cxx_hl_1.10.6.tar.gz
+PBTGZNAME=hdf5small_cxx_hl_1.10.7.tar.gz
 cd src
 if test -d ./${BASEPBNAME}; then 
 	echo 'found ' $BASEPBNAME ' header sources and tar archive;using what is there.'

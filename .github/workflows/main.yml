@@ -44,7 +44,7 @@ jobs:
       - name: Install Mac system libraries
         if: ${{ matrix.config.os == 'macOS-latest' }}
         run: |
-          brew install openssl
+          brew install openssl libgit2
           
       - uses: actions/checkout@v1
           
@@ -57,10 +57,10 @@ jobs:
 
       - name: Install dependencies
         run: |
-          install.packages(c('BiocManager', 'remotes', 'rcmdcheck', 'devtools', 'testthat'))
+          install.packages(c('BiocManager', 'remotes', 'rcmdcheck', 'devtools', 'testthat'), quiet = TRUE)
           BiocManager::install(version = 'devel', ask = FALSE, update = FALSE)
           library(remotes)
-          update(dev_package_deps(dependencies = TRUE))
+          update(dev_package_deps(dependencies = TRUE), quiet = TRUE)
         shell: Rscript {0}
         
       - name: Non-windows check
@@ -96,8 +96,8 @@ jobs:
       - name: Test dependent packages 
         if: always()
         run: |
-          BiocManager::install('grimbough/rhdf5', ref = "1-10-7", INSTALL_opts="--install-tests", ask = FALSE, dependencies = TRUE)
-          BiocManager::install(c('mbkmeans'), INSTALL_opts="--install-tests", ask = FALSE, dependencies = TRUE)
+          BiocManager::install('grimbough/rhdf5', ref = "1-10-7", INSTALL_opts="--install-tests", ask = FALSE, quiet = TRUE)
+          BiocManager::install(c('mbkmeans'), INSTALL_opts="--install-tests", ask = FALSE, quiet = TRUE)
           testthat::test_package('rhdf5')
           testthat::test_package('mbkmeans')
         shell: Rscript {0}

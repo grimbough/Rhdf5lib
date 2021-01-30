@@ -97,7 +97,7 @@ jobs:
         if: always()
         run: |
           BiocManager::install('grimbough/rhdf5', ref = "1-10-7", INSTALL_opts="--install-tests", ask = FALSE, quiet = TRUE, dependencies = TRUE)
-          BiocManager::install(c('mbkmeans'), INSTALL_opts="--install-tests", ask = FALSE, quiet = TRUE)
+          BiocManager::install(c('mbkmeans'), INSTALL_opts="--install-tests", ask = FALSE, quiet = TRUE, dependencies = TRUE)
           testthat::test_package('rhdf5')
           testthat::test_package('mbkmeans')
         shell: Rscript {0}

@@ -10,7 +10,7 @@ License: Artistic-2.0
 Copyright: src/hdf5/COPYING
 LazyLoad: true
 VignetteBuilder: knitr
-Depends: R (>= 3.3.0)
+Depends: R (>= 4.1.0)
 Suggests: BiocStyle, knitr, rmarkdown, tinytest, mockery
 URL: https://github.com/grimbough/Rhdf5lib
 BugReports: https://github.com/grimbough/Rhdf5lib

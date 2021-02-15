@@ -3207,22 +3207,25 @@ ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ex
 ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
 
-cc_version="`$CC $CFLAGS -v 2>&1 | grep -v 'PathScale' |\
-    grep -v 'icc version' |\
-    grep 'gcc version' | sed 's/.*gcc version \([-a-z0-9\.]*\).*/\1/'`"
-cc_vendor=`echo $cc_version |sed 's/\([a-z]*\).*/\1/'`
-cc_version=`echo $cc_version |sed 's/[-a-z]//g'`
-if test X = "X$cc_vendor" -a X != "X$cc_version"; then
-    cc_vendor=gcc
-fi
-if test "-" != "$cc_vendor-$cc_version"; then
-    echo "compiler '$CC' is GNU $cc_vendor-$cc_version"
-fi
+#cc_version="`$CC $CFLAGS -v 2>&1 | grep -v 'PathScale' |\
+#    grep -v 'icc version' |\
+#    grep 'gcc version' | sed 's/.*gcc version \([[-a-z0-9\.]]*\).*/\1/'`"
+#cc_vendor=`echo $cc_version |sed 's/\([[a-z]]*\).*/\1/'`
+#cc_version=`echo $cc_version |sed 's/[[-a-z]]//g'`
+#if test X = "X$cc_vendor" -a X != "X$cc_version"; then
+#    cc_vendor=gcc
+#fi
+#if test "-" != "$cc_vendor-$cc_version"; then
+#    echo "compiler '$CC' is GNU $cc_vendor-$cc_version"
+#fi
+
+CC_BASENAME="`echo $CC | cut -f1 -d' '`"
 
 ## hdf5 spews loads of errors.  Use -w to suppress these if supported
 #AX_CHECK_COMPILE_FLAG([-w], [CFLAGS="$CFLAGS -w"; CXXFLAGS="$CXXFLAGS -w"])
 
-if test "X-gcc" = "X-$cc_vendor"; then
+if test "X$CC_BASENAME" = "Xgcc"; then
+  echo "COMPILER = $CC_BASENAME"
   ## we supress C warnings that trigger a WARNING from R CMD check
   ## we aren't going to edit the HDF5 source code much
 
@@ -3403,7 +3406,9 @@ fi
 
 fi
 
-if test "X-clang" = "X-$cc_vendor"; then
+
+if test "X$CC_BASENAME" = "Xclang"; then
+  echo "COMPILER = $CC_BASENAME"
   { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -Wno-self-assign" >&5
 $as_echo_n "checking whether C++ compiler accepts -Wno-self-assign... " >&6; }
 if ${ax_cv_check_cxxflags___Wno_self_assign+:} false; then :

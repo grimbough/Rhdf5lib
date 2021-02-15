@@ -1,8 +1,8 @@
 # Process this file with autoconf to produce a configure script.
-# author: Mike Smith (mike.smith@embl.de)
+# author: Mike L. Smith (grimbough@gmail.com)
 
 AC_PREREQ([2.65])
-AC_INIT([Rhdf5lib], [1.13], [mike.smith@embl.de])
+AC_INIT([Rhdf5lib], [1.13], [grimbough@gmail.com])
 AC_CONFIG_SRCDIR([src])
 
 m4_include([m4/ax_check_compile_flag.m4])
@@ -60,6 +60,10 @@ if test "X-gcc" = "X-$cc_vendor"; then
                         [CFLAGS="$CFLAGS -Wno-stringop-overflow -Wno-overlength-strings -Wno-stringop-truncation"])
 fi
 
+if test "X-clang" = "X-$cc_vendor"; then
+  AX_CHECK_COMPILE_FLAG([-Wno-self-assign], 
+                        [CFLAGS="$CFLAGS -Wno-self-assign"])
+fi
 
 ### 'checking for zlib... ';
 AC_ARG_WITH([zlib],

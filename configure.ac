@@ -1,8 +1,8 @@
 # Process this file with autoconf to produce a configure script.
-# author: Mike Smith (mike.smith@embl.de)
+# author: Mike L. Smith (grimbough@gmail.com)
 
 AC_PREREQ([2.65])
-AC_INIT([Rhdf5lib], [1.13], [mike.smith@embl.de])
+AC_INIT([Rhdf5lib], [1.13], [grimbough@gmail.com])
 AC_CONFIG_SRCDIR([src])
 
 m4_include([m4/ax_check_compile_flag.m4])
@@ -30,22 +30,25 @@ AC_LANG(C++)
 AC_PROG_CC
 AC_PROG_CXX
 
-cc_version="`$CC $CFLAGS -v 2>&1 | grep -v 'PathScale' |\
-    grep -v 'icc version' |\
-    grep 'gcc version' | sed 's/.*gcc version \([[-a-z0-9\.]]*\).*/\1/'`"
-cc_vendor=`echo $cc_version |sed 's/\([[a-z]]*\).*/\1/'`
-cc_version=`echo $cc_version |sed 's/[[-a-z]]//g'`
-if test X = "X$cc_vendor" -a X != "X$cc_version"; then
-    cc_vendor=gcc
-fi
-if test "-" != "$cc_vendor-$cc_version"; then
-    echo "compiler '$CC' is GNU $cc_vendor-$cc_version"
-fi
+#cc_version="`$CC $CFLAGS -v 2>&1 | grep -v 'PathScale' |\
+#    grep -v 'icc version' |\
+#    grep 'gcc version' | sed 's/.*gcc version \([[-a-z0-9\.]]*\).*/\1/'`"
+#cc_vendor=`echo $cc_version |sed 's/\([[a-z]]*\).*/\1/'`
+#cc_version=`echo $cc_version |sed 's/[[-a-z]]//g'`
+#if test X = "X$cc_vendor" -a X != "X$cc_version"; then
+#    cc_vendor=gcc
+#fi
+#if test "-" != "$cc_vendor-$cc_version"; then
+#    echo "compiler '$CC' is GNU $cc_vendor-$cc_version"
+#fi
+
+CC_BASENAME="`echo $CC | cut -f1 -d' '`"
 
 ## hdf5 spews loads of errors.  Use -w to suppress these if supported
 #AX_CHECK_COMPILE_FLAG([-w], [CFLAGS="$CFLAGS -w"; CXXFLAGS="$CXXFLAGS -w"])
 
-if test "X-gcc" = "X-$cc_vendor"; then
+if test "X$CC_BASENAME" = "Xgcc"; then
+  echo "COMPILER = $CC_BASENAME"
   ## we supress C warnings that trigger a WARNING from R CMD check 
   ## we aren't going to edit the HDF5 source code much
   AX_CHECK_COMPILE_FLAG([-Wno-unused-variable -Wno-unused-parameter], 
@@ -60,6 +63,12 @@ if test "X-gcc" = "X-$cc_vendor"; then
                         [CFLAGS="$CFLAGS -Wno-stringop-overflow -Wno-overlength-strings -Wno-stringop-truncation"])
 fi
 
+
+if test "X$CC_BASENAME" = "Xclang"; then
+  echo "COMPILER = $CC_BASENAME"
+  AX_CHECK_COMPILE_FLAG([-Wno-self-assign], 
+                        [CFLAGS="$CFLAGS -Wno-self-assign"])
+fi
 
 ### 'checking for zlib... ';
 AC_ARG_WITH([zlib],

@@ -26,27 +26,16 @@ MAKE=`"${R_HOME}/bin/R" CMD config MAKE`
 LDFLAGS=`"${R_HOME}/bin/R" CMD config LDFLAGS`
 AC_LANG(C++)
 
-# Checks for programs.
+dnl Checks for programs.
 AC_PROG_CC
 AC_PROG_CXX
 
-#cc_version="`$CC $CFLAGS -v 2>&1 | grep -v 'PathScale' |\
-#    grep -v 'icc version' |\
-#    grep 'gcc version' | sed 's/.*gcc version \([[-a-z0-9\.]]*\).*/\1/'`"
-#cc_vendor=`echo $cc_version |sed 's/\([[a-z]]*\).*/\1/'`
-#cc_version=`echo $cc_version |sed 's/[[-a-z]]//g'`
-#if test X = "X$cc_vendor" -a X != "X$cc_version"; then
-#    cc_vendor=gcc
-#fi
-#if test "-" != "$cc_vendor-$cc_version"; then
-#    echo "compiler '$CC' is GNU $cc_vendor-$cc_version"
-#fi
-
 CC_BASENAME="`echo $CC | cut -f1 -d' '`"
 
-## hdf5 spews loads of errors.  Use -w to suppress these if supported
+dnl hdf5 spews loads of errors.  Use -w to suppress these if supported
 #AX_CHECK_COMPILE_FLAG([-w], [CFLAGS="$CFLAGS -w"; CXXFLAGS="$CXXFLAGS -w"])
 
+dnl specifically suppress warnings R decides are "Significant" and produces warnings in R CMD check
 if test "X$CC_BASENAME" = "Xgcc"; then
   echo "COMPILER = $CC_BASENAME"
   ## we supress C warnings that trigger a WARNING from R CMD check 
@@ -62,7 +51,6 @@ if test "X$CC_BASENAME" = "Xgcc"; then
   AX_CHECK_COMPILE_FLAG([-Wno-stringop-overflow -Wno-overlength-strings -Wno-stringop-truncation], 
                         [CFLAGS="$CFLAGS -Wno-stringop-overflow -Wno-overlength-strings -Wno-stringop-truncation"])
 fi
-
 
 if test "X$CC_BASENAME" = "Xclang"; then
   echo "COMPILER = $CC_BASENAME"

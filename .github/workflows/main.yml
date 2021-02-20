@@ -61,6 +61,7 @@ jobs:
       - name: Create Makevars
         if: ${{ matrix.config.os == 'macOS-latest' }}
         run: |
+          mkdir $HOME/.R
           echo 'LDFLAGS="-L/usr/local/opt/openssl@1.1/lib"' > $HOME/.R/Makevars
           echo 'CPPFLAGS="-I/usr/local/opt/openssl@1.1/include"' >> $HOME/.R/Makevars
 

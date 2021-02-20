@@ -56,7 +56,7 @@ jobs:
           
       - name: Set R options
         run: |
-          echo "options(Ncpus = 2, options = 600)" > $HOME/.Rprofile
+          echo "options(Ncpus = 2, options = 600)" >> $HOME/.Rprofile
           
       - name: Create Makevars
         if: ${{ matrix.config.os == 'macOS-latest' }}

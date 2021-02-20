@@ -54,11 +54,15 @@ jobs:
         with:
           r-version: ${{ matrix.config.r }}
           
+      - name: Set R options
+        run: |
+          echo "options(Ncpus = 2, options = 600)" > $HOME/.Rprofile
+          
       - name: Create Makevars
+        if: ${{ matrix.config.os == 'macOS-latest' }}
         run: |
           echo 'LDFLAGS="-L/usr/local/opt/openssl@1.1/lib"' > $HOME/.R/Makevars
           echo 'CPPFLAGS="-I/usr/local/opt/openssl@1.1/include"' >> $HOME/.R/Makevars
-          echo "options(Ncpus = 2, options = 600)" > $HOME/.Rprofile
 
       - uses: r-lib/actions/setup-pandoc@master
 

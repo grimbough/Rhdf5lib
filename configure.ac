@@ -102,8 +102,6 @@ AC_ARG_ENABLE(ros3-vfd,
 
 echo "S3_VFD=${WITH_S3_VFD}"
 
-exit
-
 #untar the lib
 BASEPBNAME="hdf5"
 PBTGZNAME=hdf5small_cxx_hl_1.10.6.tar.gz

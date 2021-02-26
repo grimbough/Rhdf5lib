@@ -692,6 +692,7 @@ ac_subst_files=''
 ac_user_opts='
 enable_option_checking
 with_zlib
+enable_ros3_vfd
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1320,6 +1321,12 @@ if test -n "$ac_init_help"; then
      short | recursive ) echo "Configuration of Rhdf5lib 1.5.0:";;
    esac
   cat <<\_ACEOF
+
+Optional Features:
+  --disable-option-checking  ignore unrecognized --enable/--with options
+  --disable-FEATURE       do not include FEATURE (same as --enable-FEATURE=no)
+  --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
+  --disable-ros3-vfd      Disable read-only S3 virtual file driver
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
@@ -3692,9 +3699,12 @@ done
     ;;
 esac
 
-ROS3_VFD=yes
-if test "X$ROS3_VFD" = "Xyes"; then
-    for ac_header in curl/curl.h
+# Check whether --enable-ros3-vfd was given.
+if test "${enable_ros3_vfd+set}" = set; then :
+  enableval=$enable_ros3_vfd;  if test "X$enableval" != "Xno" ; then
+        ROS3_VFD=yes
+        if test "X$ROS3_VFD" = "Xyes" ; then
+          for ac_header in curl/curl.h
 do :
   ac_fn_cxx_check_header_mongrel "$LINENO" "curl/curl.h" "ac_cv_header_curl_curl_h" "$ac_includes_default"
 if test "x$ac_cv_header_curl_curl_h" = xyes; then :
@@ -3708,7 +3718,7 @@ fi
 
 done
 
-    for ac_header in openssl/evp.h
+          for ac_header in openssl/evp.h
 do :
   ac_fn_cxx_check_header_mongrel "$LINENO" "openssl/evp.h" "ac_cv_header_openssl_evp_h" "$ac_includes_default"
 if test "x$ac_cv_header_openssl_evp_h" = xyes; then :
@@ -3722,7 +3732,7 @@ fi
 
 done
 
-    for ac_header in openssl/hmac.h
+          for ac_header in openssl/hmac.h
 do :
   ac_fn_cxx_check_header_mongrel "$LINENO" "openssl/hmac.h" "ac_cv_header_openssl_hmac_h" "$ac_includes_default"
 if test "x$ac_cv_header_openssl_hmac_h" = xyes; then :
@@ -3736,7 +3746,7 @@ fi
 
 done
 
-    for ac_header in openssl/sha.h
+          for ac_header in openssl/sha.h
 do :
   ac_fn_cxx_check_header_mongrel "$LINENO" "openssl/sha.h" "ac_cv_header_openssl_sha_h" "$ac_includes_default"
 if test "x$ac_cv_header_openssl_sha_h" = xyes; then :
@@ -3750,8 +3760,8 @@ fi
 
 done
 
-    if test "X$ROS3_VFD" = "Xyes"; then
-        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for curl_global_init in -lcurl" >&5
+          if test "X$ROS3_VFD" = "Xyes"; then
+              { $as_echo "$as_me:${as_lineno-$LINENO}: checking for curl_global_init in -lcurl" >&5
 $as_echo_n "checking for curl_global_init in -lcurl... " >&6; }
 if ${ac_cv_lib_curl_curl_global_init+:} false; then :
   $as_echo_n "(cached) " >&6
@@ -3798,7 +3808,7 @@ else
   unset ROS3_VFD
 fi
 
-        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for EVP_sha256 in -lcrypto" >&5
+              { $as_echo "$as_me:${as_lineno-$LINENO}: checking for EVP_sha256 in -lcrypto" >&5
 $as_echo_n "checking for EVP_sha256 in -lcrypto... " >&6; }
 if ${ac_cv_lib_crypto_EVP_sha256+:} false; then :
   $as_echo_n "(cached) " >&6
@@ -3845,15 +3855,20 @@ else
   unset ROS3_VFD
 fi
 
-    fi
-    if test "X$ROS3_VFD" = "Xyes"; then
-        WITH_S3_VFD="--enable-ros3-vfd"
-        CURL_LIBS="-lcrypto -lcurl"
-    else
-        WITH_S3_VFD="--enable-ros3-vfd=no"
-        CURL_LIBS=""
-    fi
+          fi
+          if test "X$ROS3_VFD" = "Xyes"; then
+              WITH_S3_VFD="--enable-ros3-vfd"
+              CURL_LIBS="-lcrypto -lcurl"
+          else
+              WITH_S3_VFD="--enable-ros3-vfd=no"
+              CURL_LIBS=""
+          fi
+        fi
+      fi
+
 fi
+
+
 echo "S3_VFD=${WITH_S3_VFD}"
 
 #untar the lib

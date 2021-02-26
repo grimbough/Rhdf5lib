@@ -71,10 +71,13 @@ case $withval in
     ;;
 esac
 
-AC_ARG_ENABLE([ros3-vfd],
-    AS_HELP_STRING([--disable-ros3-vfd], [Disable read-only S3 virtual file driver]),
+WITH_S3_VFD="--enable-ros3-vfd"
+
+AC_ARG_ENABLE(ros3-vfd,
+    [AS_HELP_STRING([--disable-ros3-vfd], [Disable read-only S3 virtual file driver])],
     [ if test "X$enableval" != "Xno" ; then
-        ROS3_VFD=yes
+        dnl If ros3 is requested, check the required libraries are present
+        dnl Turn it off if they're not found
         if test "X$ROS3_VFD" = "Xyes" ; then
           AC_CHECK_HEADERS([curl/curl.h],, [unset ROS3_VFD])
           AC_CHECK_HEADERS([openssl/evp.h],, [unset ROS3_VFD])
@@ -92,10 +95,14 @@ AC_ARG_ENABLE([ros3-vfd],
               CURL_LIBS=""
           fi
         fi
+      else
+        WITH_S3_VFD="--enable-ros3-vfd=no"
       fi
     ])
 
 echo "S3_VFD=${WITH_S3_VFD}"
+
+exit
 
 #untar the lib
 BASEPBNAME="hdf5"

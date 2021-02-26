@@ -3699,11 +3699,12 @@ done
     ;;
 esac
 
+WITH_S3_VFD="--enable-ros3-vfd"
+
 # Check whether --enable-ros3-vfd was given.
 if test "${enable_ros3_vfd+set}" = set; then :
   enableval=$enable_ros3_vfd;  if test "X$enableval" != "Xno" ; then
-        ROS3_VFD=yes
-        if test "X$ROS3_VFD" = "Xyes" ; then
+                        if test "X$ROS3_VFD" = "Xyes" ; then
           for ac_header in curl/curl.h
 do :
   ac_fn_cxx_check_header_mongrel "$LINENO" "curl/curl.h" "ac_cv_header_curl_curl_h" "$ac_includes_default"
@@ -3864,12 +3865,16 @@ fi
               CURL_LIBS=""
           fi
         fi
+      else
+        WITH_S3_VFD="--enable-ros3-vfd=no"
       fi
 
 fi
 
 
 echo "S3_VFD=${WITH_S3_VFD}"
+
+exit
 
 #untar the lib
 BASEPBNAME="hdf5"

@@ -2,6 +2,7 @@ on:
   push:
     branches:
       - RELEASE_3_12
+      - TEST_3_12
 
 name: R-CMD-check
 
@@ -15,9 +16,11 @@ jobs:
       fail-fast: false
       matrix:
         config:
-        - { os: windows-latest, r: '4.0'}
-        - { os: macOS-latest, r: '4.0'}
-        - { os: ubuntu-18.04, r: '4.0', rspm: "https://demo.rstudiopm.com/all/__linux__/bionic/latest"}
+        - { os: windows-latest, r: 'devel'}
+        - { os: macOS-latest, r: 'devel'}
+        - { os: ubuntu-16.04, r: 'devel', cran: "https://packagemanager.rstudio.com/all/__linux__/xenial/latest"}
+        - { os: ubuntu-18.04, r: 'devel', cran: "https://packagemanager.rstudio.com/all/__linux__/bionic/latest"}
+        - { os: ubuntu-20.04, r: 'devel', cran: "https://packagemanager.rstudio.com/all/__linux__/focal/latest"}
 
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
@@ -30,10 +33,16 @@ jobs:
           git config --global user.email "ghau@example.com"
           git config --global user.name "GitHub Actions User"
           
-      - name: Install system libraries
-        if: ${{ matrix.config.os == 'ubuntu-18.04' }}
+      - name: Install Linux system libraries
+        if: ${{ runner.os == 'Linux' }}
         run: |
           sudo apt-get install libcurl4-openssl-dev
+          
+      - name: Install Mac system libraries
+        if: ${{ matrix.config.os == 'macOS-latest' }}
+        run: |
+          brew install openssl libgit2
+          brew link openssl
           
       - uses: actions/checkout@v1
           
@@ -41,15 +50,27 @@ jobs:
         uses: r-lib/actions/setup-r@master
         with:
           r-version: ${{ matrix.config.r }}
-
+          
+      - name: Set R options
+        run: |
+          echo "options(Ncpus = 2, options = 600)" >> $HOME/.Rprofile
+          
+      - name: Create Makevars
+        if: ${{ matrix.config.os == 'macOS-latest' }}
+        run: |
+          mkdir $HOME/.R
+          echo 'LDFLAGS="-L/usr/local/opt/openssl@1.1/lib"' > $HOME/.R/Makevars
+          echo 'CPPFLAGS="-I/usr/local/opt/openssl@1.1/include"' >> $HOME/.R/Makevars
       - uses: r-lib/actions/setup-pandoc@master
 
       - name: Install dependencies
         run: |
-          Rscript -e "install.packages(c('BiocManager', 'remotes'))"
-          Rscript -e "BiocManager::install(version = '3.12', ask = FALSE, update = FALSE)"
-          Rscript -e "BiocManager::install(c('rcmdcheck', 'BiocStyle', 'tinytest'), ask = FALSE, update = FALSE)"
-
+          install.packages(c('BiocManager', 'remotes', 'rcmdcheck', 'devtools', 'testthat'), quiet = TRUE)
+          BiocManager::install(version = 'devel', ask = FALSE, update = FALSE)
+          library(remotes)
+          update(dev_package_deps(dependencies = TRUE), quiet = TRUE)
+        shell: Rscript {0}
+        
       - name: Non-windows check
         if: ${{ matrix.config.os != 'windows-latest' }}
         run: |
@@ -59,3 +80,24 @@ jobs:
         if: ${{ matrix.config.os == 'windows-latest' }}
         run: |
           Rscript -e "rcmdcheck::rcmdcheck(args = c('--no-manual', '--force-multiarch', '--install-args=`"--force-biarch`"'), error_on = 'warning', check_dir = 'check')"
+          
+      - name: Test coverage
+        if: ${{ matrix.config.os == 'ubuntu-20.04' }}
+        run: |
+          BiocManager::install('covr', update = FALSE, ask = FALSE)
+          covr::codecov()
+        shell: Rscript {0}
+        
+      - name: Upload check results
+        if: always()
+        uses: actions/upload-artifact@master
+        with:
+          name: ${{ matrix.config.os }}-r-${{ matrix.config.r }}-results
+          path: check/*.Rcheck/00install.out
+          
+      - name: Install package 
+        if: always()
+        run: |
+          devtools::install(args = "--configure-args=--disable-ros3-vfd")
+        shell: Rscript {0}
+        

@@ -3699,13 +3699,23 @@ done
     ;;
 esac
 
+ROS3_VFD="yes"
 WITH_S3_VFD="--enable-ros3-vfd"
 
 # Check whether --enable-ros3-vfd was given.
 if test "${enable_ros3_vfd+set}" = set; then :
-  enableval=$enable_ros3_vfd;  if test "X$enableval" != "Xno" ; then
-                        if test "X$ROS3_VFD" = "Xyes" ; then
-          for ac_header in curl/curl.h
+  enableval=$enable_ros3_vfd;  if test "X$enableval" = "Xno" ; then
+        WITH_S3_VFD="--enable-ros3-vfd=no"
+        ROS3_VFD="no"
+      fi
+
+fi
+
+
+if test "x$ROS3_VFD" = "xyes"; then :
+   ## If ros3 is requested, check the required libraries are present
+        ## Turn it off if they're not found
+        for ac_header in curl/curl.h
 do :
   ac_fn_cxx_check_header_mongrel "$LINENO" "curl/curl.h" "ac_cv_header_curl_curl_h" "$ac_includes_default"
 if test "x$ac_cv_header_curl_curl_h" = xyes; then :
@@ -3714,12 +3724,12 @@ if test "x$ac_cv_header_curl_curl_h" = xyes; then :
 _ACEOF
 
 else
-  unset ROS3_VFD
+  ROS3_VFD="no"
 fi
 
 done
 
-          for ac_header in openssl/evp.h
+        for ac_header in openssl/evp.h
 do :
   ac_fn_cxx_check_header_mongrel "$LINENO" "openssl/evp.h" "ac_cv_header_openssl_evp_h" "$ac_includes_default"
 if test "x$ac_cv_header_openssl_evp_h" = xyes; then :
@@ -3728,12 +3738,12 @@ if test "x$ac_cv_header_openssl_evp_h" = xyes; then :
 _ACEOF
 
 else
-  unset ROS3_VFD
+  ROS3_VFD="no"
 fi
 
 done
 
-          for ac_header in openssl/hmac.h
+        for ac_header in openssl/hmac.h
 do :
   ac_fn_cxx_check_header_mongrel "$LINENO" "openssl/hmac.h" "ac_cv_header_openssl_hmac_h" "$ac_includes_default"
 if test "x$ac_cv_header_openssl_hmac_h" = xyes; then :
@@ -3742,12 +3752,12 @@ if test "x$ac_cv_header_openssl_hmac_h" = xyes; then :
 _ACEOF
 
 else
-  unset ROS3_VFD
+  ROS3_VFD="no"
 fi
 
 done
 
-          for ac_header in openssl/sha.h
+        for ac_header in openssl/sha.h
 do :
   ac_fn_cxx_check_header_mongrel "$LINENO" "openssl/sha.h" "ac_cv_header_openssl_sha_h" "$ac_includes_default"
 if test "x$ac_cv_header_openssl_sha_h" = xyes; then :
@@ -3756,19 +3766,18 @@ if test "x$ac_cv_header_openssl_sha_h" = xyes; then :
 _ACEOF
 
 else
-  unset ROS3_VFD
+  ROS3_VFD="no"
 fi
 
 done
 
-          if test "X$ROS3_VFD" = "Xyes"; then
-              { $as_echo "$as_me:${as_lineno-$LINENO}: checking for curl_global_init in -lcurl" >&5
-$as_echo_n "checking for curl_global_init in -lcurl... " >&6; }
-if ${ac_cv_lib_curl_curl_global_init+:} false; then :
+        if test "X$ROS3_VFD" = "Xyes"; then
+              { $as_echo "$as_me:${as_lineno-$LINENO}: checking for library containing curl_global_init" >&5
+$as_echo_n "checking for library containing curl_global_init... " >&6; }
+if ${ac_cv_search_curl_global_init+:} false; then :
   $as_echo_n "(cached) " >&6
 else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lcurl  $LIBS"
+  ac_func_search_save_LIBS=$LIBS
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -3787,35 +3796,46 @@ return curl_global_init ();
   return 0;
 }
 _ACEOF
-if ac_fn_cxx_try_link "$LINENO"; then :
-  ac_cv_lib_curl_curl_global_init=yes
-else
-  ac_cv_lib_curl_curl_global_init=no
+for ac_lib in '' curl; do
+  if test -z "$ac_lib"; then
+    ac_res="none required"
+  else
+    ac_res=-l$ac_lib
+    LIBS="-l$ac_lib  $ac_func_search_save_LIBS"
+  fi
+  if ac_fn_cxx_try_link "$LINENO"; then :
+  ac_cv_search_curl_global_init=$ac_res
 fi
 rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
+    conftest$ac_exeext
+  if ${ac_cv_search_curl_global_init+:} false; then :
+  break
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_curl_curl_global_init" >&5
-$as_echo "$ac_cv_lib_curl_curl_global_init" >&6; }
-if test "x$ac_cv_lib_curl_curl_global_init" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBCURL 1
-_ACEOF
-
-  LIBS="-lcurl $LIBS"
+done
+if ${ac_cv_search_curl_global_init+:} false; then :
 
 else
-  unset ROS3_VFD
+  ac_cv_search_curl_global_init=no
+fi
+rm conftest.$ac_ext
+LIBS=$ac_func_search_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_search_curl_global_init" >&5
+$as_echo "$ac_cv_search_curl_global_init" >&6; }
+ac_res=$ac_cv_search_curl_global_init
+if test "$ac_res" != no; then :
+  test "$ac_res" = "none required" || LIBS="$ac_res $LIBS"
+
+else
+  ROS3_VFD="no"
 fi
 
-              { $as_echo "$as_me:${as_lineno-$LINENO}: checking for EVP_sha256 in -lcrypto" >&5
-$as_echo_n "checking for EVP_sha256 in -lcrypto... " >&6; }
-if ${ac_cv_lib_crypto_EVP_sha256+:} false; then :
+              { $as_echo "$as_me:${as_lineno-$LINENO}: checking for library containing EVP_sha256" >&5
+$as_echo_n "checking for library containing EVP_sha256... " >&6; }
+if ${ac_cv_search_EVP_sha256+:} false; then :
   $as_echo_n "(cached) " >&6
 else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lcrypto  $LIBS"
+  ac_func_search_save_LIBS=$LIBS
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -3834,43 +3854,98 @@ return EVP_sha256 ();
   return 0;
 }
 _ACEOF
-if ac_fn_cxx_try_link "$LINENO"; then :
-  ac_cv_lib_crypto_EVP_sha256=yes
+for ac_lib in '' crypto; do
+  if test -z "$ac_lib"; then
+    ac_res="none required"
+  else
+    ac_res=-l$ac_lib
+    LIBS="-l$ac_lib  $ac_func_search_save_LIBS"
+  fi
+  if ac_fn_cxx_try_link "$LINENO"; then :
+  ac_cv_search_EVP_sha256=$ac_res
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext
+  if ${ac_cv_search_EVP_sha256+:} false; then :
+  break
+fi
+done
+if ${ac_cv_search_EVP_sha256+:} false; then :
+
 else
-  ac_cv_lib_crypto_EVP_sha256=no
+  ac_cv_search_EVP_sha256=no
+fi
+rm conftest.$ac_ext
+LIBS=$ac_func_search_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_search_EVP_sha256" >&5
+$as_echo "$ac_cv_search_EVP_sha256" >&6; }
+ac_res=$ac_cv_search_EVP_sha256
+if test "$ac_res" != no; then :
+  test "$ac_res" = "none required" || LIBS="$ac_res $LIBS"
+
+else
+  ROS3_VFD="no"
+fi
+
+
+              echo "#######################################"
+              echo $LIBS
+
+              { $as_echo "$as_me:${as_lineno-$LINENO}: checking if linking to libcurl works" >&5
+$as_echo_n "checking if linking to libcurl works... " >&6; }
+              cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+
+                    #include <curl/curl.h>
+                    #include <openssl/evp.h>
+                    #include <openssl/hmac.h>
+                    #include <openssl/sha.h>
+
+int
+main ()
+{
+
+                    unsigned char key1[SHA256_DIGEST_LENGTH];
+                    unsigned char key2[SHA256_DIGEST_LENGTH];
+                    HMAC(EVP_sha256(),
+                        (const unsigned char *)key1,
+                        SHA256_DIGEST_LENGTH,
+                        (const unsigned char *)"s3",
+                        2,
+                        key2,
+                        NULL);
+                    curl_global_init(CURL_GLOBAL_DEFAULT);
+
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_link "$LINENO"; then :
+
+                  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+
+else
+
+                  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+                  ROS3_VFD="no"
+
 fi
 rm -f core conftest.err conftest.$ac_objext \
     conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_crypto_EVP_sha256" >&5
-$as_echo "$ac_cv_lib_crypto_EVP_sha256" >&6; }
-if test "x$ac_cv_lib_crypto_EVP_sha256" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBCRYPTO 1
-_ACEOF
-
-  LIBS="-lcrypto $LIBS"
-
-else
-  unset ROS3_VFD
-fi
-
-          fi
-          if test "X$ROS3_VFD" = "Xyes"; then
-              WITH_S3_VFD="--enable-ros3-vfd"
-              CURL_LIBS="-lcrypto -lcurl"
-          else
-              WITH_S3_VFD="--enable-ros3-vfd=no"
-              CURL_LIBS=""
-          fi
         fi
-      else
-        WITH_S3_VFD="--enable-ros3-vfd=no"
-      fi
+        if test "X$ROS3_VFD" = "Xyes"; then
+              WITH_S3_VFD="--enable-ros3-vfd"
+        else
+              WITH_S3_VFD="--enable-ros3-vfd=no"
+        fi
+        echo "#######################################"
 
 fi
-
 
 echo "S3_VFD=${WITH_S3_VFD}"
 

@@ -71,34 +71,68 @@ case $withval in
     ;;
 esac
 
+ROS3_VFD="yes"
 WITH_S3_VFD="--enable-ros3-vfd"
 
 AC_ARG_ENABLE(ros3-vfd,
     [AS_HELP_STRING([--disable-ros3-vfd], [Disable read-only S3 virtual file driver])],
-    [ if test "X$enableval" != "Xno" ; then
-        dnl If ros3 is requested, check the required libraries are present
-        dnl Turn it off if they're not found
-        if test "X$ROS3_VFD" = "Xyes" ; then
-          AC_CHECK_HEADERS([curl/curl.h],, [unset ROS3_VFD])
-          AC_CHECK_HEADERS([openssl/evp.h],, [unset ROS3_VFD])
-          AC_CHECK_HEADERS([openssl/hmac.h],, [unset ROS3_VFD])
-          AC_CHECK_HEADERS([openssl/sha.h],, [unset ROS3_VFD])
-          if test "X$ROS3_VFD" = "Xyes"; then
-              AC_CHECK_LIB([curl], [curl_global_init],, [unset ROS3_VFD])
-              AC_CHECK_LIB([crypto], [EVP_sha256],, [unset ROS3_VFD])
-          fi
-          if test "X$ROS3_VFD" = "Xyes"; then
-              WITH_S3_VFD="--enable-ros3-vfd"
-              CURL_LIBS="-lcrypto -lcurl"
-          else
-              WITH_S3_VFD="--enable-ros3-vfd=no"
-              CURL_LIBS=""
-          fi
-        fi
-      else
+    [ if test "X$enableval" = "Xno" ; then
         WITH_S3_VFD="--enable-ros3-vfd=no"
+        ROS3_VFD="no"
       fi
     ])
+
+AS_IF([test "x$ROS3_VFD" = "xyes"],
+      [ ## If ros3 is requested, check the required libraries are present
+        ## Turn it off if they're not found
+        AC_CHECK_HEADERS([curl/curl.h],, [ROS3_VFD="no"])
+        AC_CHECK_HEADERS([openssl/evp.h],, [ROS3_VFD="no"])
+        AC_CHECK_HEADERS([openssl/hmac.h],, [ROS3_VFD="no"])
+        AC_CHECK_HEADERS([openssl/sha.h],, [ROS3_VFD="no"])
+        if test "X$ROS3_VFD" = "Xyes"; then
+              AC_SEARCH_LIBS([curl_global_init], [curl],, [ROS3_VFD="no"])
+              AC_SEARCH_LIBS([EVP_sha256], [crypto],, [ROS3_VFD="no"])
+              
+              echo "#######################################"
+              echo $LIBS
+
+              AC_MSG_CHECKING(if linking to libcurl works)
+              AC_LINK_IFELSE(
+                [
+                  AC_LANG_PROGRAM([[
+                    #include <curl/curl.h>
+                    #include <openssl/evp.h>
+                    #include <openssl/hmac.h>
+                    #include <openssl/sha.h>
+                  ]],
+                  [[  
+                    unsigned char key1[SHA256_DIGEST_LENGTH];
+                    unsigned char key2[SHA256_DIGEST_LENGTH];
+                    HMAC(EVP_sha256(),
+                        (const unsigned char *)key1,
+                        SHA256_DIGEST_LENGTH,
+                        (const unsigned char *)"s3",
+                        2,
+                        key2,
+                        NULL);
+                    curl_global_init(CURL_GLOBAL_DEFAULT);
+                  ]]
+                  )],
+                [
+                  AC_MSG_RESULT([yes])
+                ],
+                [
+                  AC_MSG_RESULT([no])
+                  ROS3_VFD="no"
+                ])
+        fi
+        if test "X$ROS3_VFD" = "Xyes"; then
+              WITH_S3_VFD="--enable-ros3-vfd"
+        else
+              WITH_S3_VFD="--enable-ros3-vfd=no"
+        fi
+        echo "#######################################"
+      ])
 
 echo "S3_VFD=${WITH_S3_VFD}"
 

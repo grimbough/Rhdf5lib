@@ -38,10 +38,10 @@ jobs:
           git config --global user.email "ghau@example.com"
           git config --global user.name "GitHub Actions User"
           
-      - name: Install Linux system libraries
-        if: ${{ runner.os == 'Linux' }}
-        run: |
-          sudo apt-get install libcurl4-openssl-dev
+      #- name: Install Linux system libraries
+      #  if: ${{ runner.os == 'Linux' }}
+      #  run: |
+      #    sudo apt-get install libcurl4-openssl-dev
           
       - name: Install Mac system libraries
         if: ${{ matrix.config.os == 'macOS-latest' }}

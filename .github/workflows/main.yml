@@ -12,8 +12,8 @@ name: R-CMD-check
 jobs:
   R-CMD-check:
     runs-on: ${{ matrix.config.os }}
-
     name: ${{ matrix.config.os }} (${{ matrix.config.r }})
+    container: ${{ matrix.config.cont }}
 
     strategy:
       fail-fast: false
@@ -29,6 +29,7 @@ jobs:
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
       CRAN: ${{ matrix.config.rspm }}
+      RSPM: ${{ matrix.config.rspm }}
 
     steps:
       - name: Configure git
@@ -45,12 +46,12 @@ jobs:
       - name: Install Mac system libraries
         if: ${{ matrix.config.os == 'macOS-latest' }}
         run: |
-          brew install openssl libgit2
-          brew link openssl
-          
+          brew install libgit2
+
       - uses: actions/checkout@v1
           
       - name: Setup R
+        if: runner.os != 'Linux'
         uses: grimbough/actions-1/setup-r@master
         with:
           r-version: ${{ matrix.config.r }}

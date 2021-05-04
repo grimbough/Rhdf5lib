@@ -96,23 +96,23 @@ case $withval in
     ;;
 esac
 
-echo ${CPPFLAGS}
-echo ${LDFLAGS}
+#echo ${CPPFLAGS}
+#echo ${LDFLAGS}
 dnl Trying to ensure OpenSSL is found on BioC Mac builder
 dnl Based on similar implementation found in rtracklayer
-case "$OSTYPE" in "darwin"*)
-  BREWDIR=`brew --prefix`
-  export PKG_CONFIG_PATH=$BREWDIR/opt/openssl/lib/pkgconfig
-  ;;
-esac
-
-PKG_CHECK_MODULES([OPENSSL], [openssl >= 1.0], [OPENSSL="yes"], [OPENSSL="no"])
-if test "${OPENSSL}" != "no"; then
-  CPPFLAGS="${CPPFLAGS} ${OPENSSL_CFLAGS}"
-  LDFLAGS="${LDFLAGS} ${OPENSSL_LIBS}"
-fi
-echo ${CPPFLAGS}
-echo ${LDFLAGS}
+#case "$OSTYPE" in "darwin"*)
+#  BREWDIR=`brew --prefix`
+#  export PKG_CONFIG_PATH=$BREWDIR/opt/openssl/lib/pkgconfig
+#  ;;
+#esac
+#
+#PKG_CHECK_MODULES([OPENSSL], [openssl >= 1.0], [OPENSSL="yes"], [OPENSSL="no"])
+#if test "${OPENSSL}" != "no"; then
+#  CPPFLAGS="${CPPFLAGS} ${OPENSSL_CFLAGS}"
+#  LDFLAGS="${LDFLAGS} ${OPENSSL_LIBS}"
+#fi
+#echo ${CPPFLAGS}
+#echo ${LDFLAGS}
 
 ROS3_VFD=yes
 if test "X$ROS3_VFD" = "Xyes"; then

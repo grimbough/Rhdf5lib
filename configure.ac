@@ -55,7 +55,13 @@ fi
 if test "X$CC_BASENAME" = "Xclang"; then
   echo "COMPILER = $CC_BASENAME"
   AX_CHECK_COMPILE_FLAG([-Wno-self-assign], 
-                        [CFLAGS="$CFLAGS -Wno-self-assign"])
+                        [CFLAGS="$CFLAGS -Wno-self-assign"]) 
+  AX_CHECK_COMPILE_FLAG([-Wno-bitwise-op-parentheses], 
+                        [CFLAGS="$CFLAGS -Wno-bitwise-op-parentheses"])
+  AX_CHECK_COMPILE_FLAG([-Wno-cast-align -Wno-cast-qual], 
+                        [CFLAGS="$CFLAGS -Wno-cast-align -Wno-cast-qual"])
+  AX_CHECK_COMPILE_FLAG([-Wno-double-promotionl], 
+                        [CFLAGS="$CFLAGS -Wno-double-promotion"])
 fi
 
 ### 'checking for zlib... ';

@@ -60,8 +60,12 @@ if test "X$CC_BASENAME" = "Xclang"; then
                         [CFLAGS="$CFLAGS -Wno-bitwise-op-parentheses"])
   AX_CHECK_COMPILE_FLAG([-Wno-cast-align -Wno-cast-qual], 
                         [CFLAGS="$CFLAGS -Wno-cast-align -Wno-cast-qual"])
-  AX_CHECK_COMPILE_FLAG([-Wno-double-promotionl], 
+  AX_CHECK_COMPILE_FLAG([-Wno-double-promotion], 
                         [CFLAGS="$CFLAGS -Wno-double-promotion"])
+  AX_CHECK_COMPILE_FLAG([-Wno-implicit-fallthrough], 
+                        [CFLAGS="$CFLAGS -Wno-implicit-fallthrough"])
+  AX_CHECK_COMPILE_FLAG([-Wno-sometimes-uninitialized], 
+                        [CFLAGS="$CFLAGS -Wno-sometimes-uninitialized"])
 fi
 
 ### 'checking for zlib... ';

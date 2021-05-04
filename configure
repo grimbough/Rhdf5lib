@@ -3499,14 +3499,14 @@ else
   :
 fi
 
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -Wno-double-promotionl" >&5
-$as_echo_n "checking whether C++ compiler accepts -Wno-double-promotionl... " >&6; }
-if ${ax_cv_check_cxxflags___Wno_double_promotionl+:} false; then :
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -Wno-double-promotion" >&5
+$as_echo_n "checking whether C++ compiler accepts -Wno-double-promotion... " >&6; }
+if ${ax_cv_check_cxxflags___Wno_double_promotion+:} false; then :
   $as_echo_n "(cached) " >&6
 else
 
   ax_check_save_flags=$CXXFLAGS
-  CXXFLAGS="$CXXFLAGS  -Wno-double-promotionl"
+  CXXFLAGS="$CXXFLAGS  -Wno-double-promotion"
   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -3519,17 +3519,87 @@ main ()
 }
 _ACEOF
 if ac_fn_cxx_try_compile "$LINENO"; then :
-  ax_cv_check_cxxflags___Wno_double_promotionl=yes
+  ax_cv_check_cxxflags___Wno_double_promotion=yes
 else
-  ax_cv_check_cxxflags___Wno_double_promotionl=no
+  ax_cv_check_cxxflags___Wno_double_promotion=no
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
   CXXFLAGS=$ax_check_save_flags
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___Wno_double_promotionl" >&5
-$as_echo "$ax_cv_check_cxxflags___Wno_double_promotionl" >&6; }
-if test "x$ax_cv_check_cxxflags___Wno_double_promotionl" = xyes; then :
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___Wno_double_promotion" >&5
+$as_echo "$ax_cv_check_cxxflags___Wno_double_promotion" >&6; }
+if test "x$ax_cv_check_cxxflags___Wno_double_promotion" = xyes; then :
   CFLAGS="$CFLAGS -Wno-double-promotion"
+else
+  :
+fi
+
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -Wno-implicit-fallthrough" >&5
+$as_echo_n "checking whether C++ compiler accepts -Wno-implicit-fallthrough... " >&6; }
+if ${ax_cv_check_cxxflags___Wno_implicit_fallthrough+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+  ax_check_save_flags=$CXXFLAGS
+  CXXFLAGS="$CXXFLAGS  -Wno-implicit-fallthrough"
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"; then :
+  ax_cv_check_cxxflags___Wno_implicit_fallthrough=yes
+else
+  ax_cv_check_cxxflags___Wno_implicit_fallthrough=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+  CXXFLAGS=$ax_check_save_flags
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___Wno_implicit_fallthrough" >&5
+$as_echo "$ax_cv_check_cxxflags___Wno_implicit_fallthrough" >&6; }
+if test "x$ax_cv_check_cxxflags___Wno_implicit_fallthrough" = xyes; then :
+  CFLAGS="$CFLAGS -Wno-implicit-fallthrough"
+else
+  :
+fi
+
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -Wno-sometimes-uninitialized" >&5
+$as_echo_n "checking whether C++ compiler accepts -Wno-sometimes-uninitialized... " >&6; }
+if ${ax_cv_check_cxxflags___Wno_sometimes_uninitialized+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+  ax_check_save_flags=$CXXFLAGS
+  CXXFLAGS="$CXXFLAGS  -Wno-sometimes-uninitialized"
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"; then :
+  ax_cv_check_cxxflags___Wno_sometimes_uninitialized=yes
+else
+  ax_cv_check_cxxflags___Wno_sometimes_uninitialized=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+  CXXFLAGS=$ax_check_save_flags
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___Wno_sometimes_uninitialized" >&5
+$as_echo "$ax_cv_check_cxxflags___Wno_sometimes_uninitialized" >&6; }
+if test "x$ax_cv_check_cxxflags___Wno_sometimes_uninitialized" = xyes; then :
+  CFLAGS="$CFLAGS -Wno-sometimes-uninitialized"
 else
   :
 fi

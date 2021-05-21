@@ -106,6 +106,29 @@ case $withval in
     ;;
 esac
 
+###########################
+AC_MSG_CHECKING([whether to use -Wl,-rpath setting])
+AC_ARG_ENABLE([sharedlib-rpath],
+              [AS_HELP_STRING([--disable-sharedlib-rpath],
+               [Disable use of the '=Wl,-rpath' linker option])],
+              [ if   test "x$enableval" = "xyes" ; then
+                SHAREDLIB_RPATH="--enable-sharedlib-rpath"
+                AC_MSG_RESULT([yes])
+              elif test "x$enableval" = "xno" ; then
+                SHAREDLIB_RPATH="--disable-sharedlib-rpath"
+                AC_MSG_RESULT([no])
+              else
+                echo
+                echo "Error!"
+                echo "rpath code didn't work!"
+                exit -1
+             fi],
+             [ SHAREDLIB_RPATH="--enable-sharedlib-rpath"
+               AC_MSG_RESULT([yes]) ]
+)
+
+############################
+
 #echo ${CPPFLAGS}
 #echo ${LDFLAGS}
 dnl Trying to ensure OpenSSL is found on BioC Mac builder
@@ -168,6 +191,7 @@ echo "building the hdf5 library...";
 cd ../;
 ./configure --with-pic --enable-shared=no --enable-cxx --enable-hl \
     --with-szlib=${SZIP_HOME} --with-zlib=${ZLIB_HOME} \
+	"${SHAREDLIB_RPATH}" \
     ${WITH_S3_VFD} \
     CXX="${CXX}" CXXFLAGS="${CXXFLAGS} ${CXXPICFLAGS}" \
     CC="${CC}" CFLAGS="${CFLAGS} ${CPICFLAGS}" \

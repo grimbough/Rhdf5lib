@@ -161,7 +161,7 @@ echo "building the szip library...";
 cd ${BASEPBNAME}/szip;
 ./configure --with-pic --enable-shared=no \
     CC="${CC}" CFLAGS="${CFLAGS} ${CPICFLAGS}" CPPFLAGS="${CPPFLAGS}" \
-    AR="${AR}" RANLIB="${RANLIB}
+    AR="${AR}" RANLIB="${RANLIB}"
 $MAKE
 $MAKE install
 SZIP_HOME=`pwd -P`/szip
@@ -175,7 +175,7 @@ cd ../;
     CXX="${CXX}" CXXFLAGS="${CXXFLAGS} ${CXXPICFLAGS}" \
     CC="${CC}" CFLAGS="${CFLAGS} ${CPICFLAGS}" \
     CPPFLAGS="${CPPFLAGS}" LDFLAGS="${LDFLAGS}" \
-    AR="${AR}" RANLIB="${RANLIB}
+    AR="${AR}" RANLIB="${RANLIB}"
 $MAKE lib
 #echo "Make return value: $?"
 AS_IF([ test "$?" != 0 ], 

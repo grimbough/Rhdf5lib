@@ -24,6 +24,8 @@ CPPFLAGS=`"${R_HOME}/bin/R" CMD config CPPFLAGS`
 F77=`"${R_HOME}/bin/R" CMD config F77`
 MAKE=`"${R_HOME}/bin/R" CMD config MAKE`
 LDFLAGS=`"${R_HOME}/bin/R" CMD config LDFLAGS`
+AR=`"${R_HOME}/bin/R" CMD config AR`
+RANLIB=`"${R_HOME}/bin/R" CMD config RANLIB`
 AC_LANG(C++)
 
 dnl Checks for programs.
@@ -158,7 +160,8 @@ fi;
 echo "building the szip library...";
 cd ${BASEPBNAME}/szip;
 ./configure --with-pic --enable-shared=no \
-    CC="${CC}" CFLAGS="${CFLAGS} ${CPICFLAGS}" CPPFLAGS="${CPPFLAGS}"
+    CC="${CC}" CFLAGS="${CFLAGS} ${CPICFLAGS}" CPPFLAGS="${CPPFLAGS}" \
+    AR="${AR}" RANLIB="${RANLIB}
 $MAKE
 $MAKE install
 SZIP_HOME=`pwd -P`/szip
@@ -171,7 +174,8 @@ cd ../;
     ${WITH_S3_VFD} \
     CXX="${CXX}" CXXFLAGS="${CXXFLAGS} ${CXXPICFLAGS}" \
     CC="${CC}" CFLAGS="${CFLAGS} ${CPICFLAGS}" \
-    CPPFLAGS="${CPPFLAGS}" LDFLAGS="${LDFLAGS}"
+    CPPFLAGS="${CPPFLAGS}" LDFLAGS="${LDFLAGS}" \
+    AR="${AR}" RANLIB="${RANLIB}
 $MAKE lib
 #echo "Make return value: $?"
 AS_IF([ test "$?" != 0 ], 

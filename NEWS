@@ -1,5 +1,14 @@
-Version 1.14
+Version 1.16
+=============
 
+Bug fixes:
+  
+  o AR and RANLIB programs used to compile R are now also used to compile
+  the HDF5 library. This resolves issue when the default versions found on a
+  system are incompatible with options used to build R.
+  (thanks to @miesav, https://github.com/grimbough/Rhdf5lib/pull/41)
+
+Version 1.14
 =============
 
 New features:
@@ -13,7 +22,6 @@ Bug fixes:
   compiling HDF5.  This should make diagnosing issues easier.
 
 Version 1.8
-
 =============
 
 New features:
@@ -26,7 +34,6 @@ Bug fixes:
   with whitespace in the path.
   
 Version 1.0
-
 =============
 
 New features:
@@ -40,7 +47,6 @@ Bug fixes:
   access modes.
 
 Version 0.99
-
 =============
 
   o Package submitted

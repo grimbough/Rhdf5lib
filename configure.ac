@@ -70,6 +70,14 @@ if test "X$CC_BASENAME" = "Xclang"; then
                         [CFLAGS="$CFLAGS -Wno-sometimes-uninitialized"])
 fi
 
+dnl remove LTO compiler flags if requested
+AC_ARG_ENABLE([lto])
+AS_IF([test "x$enable_lto" = "xno"], [
+  CFLAGS=`echo ${CFLAGS} | sed 's/-flto//g'`
+  CXXFLAGS=`echo ${CXXFLAGS} | sed 's/-flto//g'`
+])
+
+
 ### 'checking for zlib... ';
 AC_ARG_WITH([zlib],
             [AS_HELP_STRING([--with-zlib=DIR],

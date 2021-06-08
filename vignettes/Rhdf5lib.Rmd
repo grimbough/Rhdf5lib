@@ -13,9 +13,9 @@ vignette: |
 ---
 # Motivation
 
-**Rhdf5lib** provides the C and C++ `HDF5` libraries. It is primarily useful to developers of other R packages who want to make use of the capabilities of the HDF5 library directly in the C or C++ code of their own packages, rather than using a higher level interface such as the [**rhdf5**](http://bioconductor.org/packages/rhdf5/) package.  Using *Rhdf5lib* make life easier for users, as they do not have to worry about installing libraries at a system level, and for developers since they can work with a defined version of the library rather than developing strategies to cope with the potential for multiple versions.
+`r Biocpkg("Rhdf5lib")` provides versions of the C and C++ HDF5 libraries. It is primarily useful to developers of other R packages who want to make use of the capabilities of the HDF5 library directly in the C or C++ code of their own packages, rather than using a higher level interface such as the [**rhdf5**](http://bioconductor.org/packages/rhdf5/) package.  Using **Rhdf5lib** makes life easier for users, as they do not have to worry about installing libraries at a system level, and for developers since they can work with a defined version of the library rather than developing strategies to cope with the potential for multiple versions.
 
-**Rhdf5lib** is very much inspired by the [**zlibbioc**](http://bioconductor.org/packages/zlibbioc/) and [**Rhtslib**](http://bioconductor.org/packages/Rhtslib/) packages.*
+**Rhdf5lib** is very much inspired by the [**zlibbioc**](http://bioconductor.org/packages/zlibbioc/) and [**Rhtslib**](http://bioconductor.org/packages/Rhtslib/) packages.
 
 # Usage
 
@@ -37,7 +37,7 @@ The statement for each platform modifies the `$PKG_LIBS` variable. If your packa
 
     PKG_LIBS=$(RHDF5_LIBS) -L/path/to/foolib -lfoo
     
-*Note that the use of `$(shell ...)` necessitates using GNU Make, and you need to make this requirement explict in your package's DESCRIPTION file via the entry:*
+*Note that the use of `$(shell ...)` necessitates using GNU Make, and you need to make this requirement explicit in your package's DESCRIPTION file via the entry:*
 
     SystemRequirements: GNU make
     
@@ -61,7 +61,7 @@ system.file(package="Rhdf5lib", "include")
 
 ## Non-standard ZLIB location
 
-*Rhdf5lib* requires the ZLIB compression library to be installed on non-Windows platforms.  If installation fails due with a message reporting that **zlib.h** can not be found, it is possible to provide the appropriate path explicitly during installation via the `configure.args` argument e.g. 
+*Rhdf5lib* requires the ZLIB compression library to be installed on non-Windows platforms.  If installation fails  with a message reporting that **zlib.h** can not be found, it is possible to provide the appropriate path explicitly during installation via the `configure.args` argument e.g. 
 
 ```{r, zlib-path, eval = FALSE}
 BiocManager::install('Rhdf5lib', configure.args = "--with-zlib='/path/to/zlib/'")
@@ -77,13 +77,13 @@ If you have configured R with link-time optimisation enabled (see [here](https:/
 BiocManager::install('Rhdf5lib', INSTALL_opts="--no-use-LTO", configure.args = "--disable-lto")
 ```
 
-This is because building **Rhdf5lib** involves first compiling the HDF5 library, and then compiling and linking the R interface against that.  The `INSTALL_opts` argument affects the latter part, but we need to `configure.args` to ensure the HDF5 library is built with the same settings. ^[Using `"--enable-lto"` here will have no effect.  To enable link-time optimisation you must have already configured R with `--enable-lto` (see [here](https://cran.r-project.org/doc/manuals/r-devel/R-admin.html#Link_002dTime-Optimization)).]
+This is because building **Rhdf5lib** involves first compiling the HDF5 library, and then compiling and linking the R interface against that.  The `INSTALL_opts` argument affects the latter part, but we need to use `configure.args` to ensure the HDF5 library is built with the same settings. ^[Using `"--enable-lto"` here will have no effect.  To enable link-time optimisation you must have already configured R with `--enable-lto` (see [here](https://cran.r-project.org/doc/manuals/r-devel/R-admin.html#Link_002dTime-Optimization)).]
 
 # Funding
 
-MLS was supported by the BMBF-funded Heidelberg Center for Human Bioinformatics (HD-HuB) within the German Network for Bioinformatics Infrastructure (de.NBI), Förderkennzeichen #031A537B
+MLS was supported by the BMBF-funded Heidelberg Center for Human Bioinformatics (HD-HuB) within the German Network for Bioinformatics Infrastructure ([de.NBI](https://www.denbi.de)), Grant Number #031A537B
 
-![](de.NBI-Logo.PNG){ width=82% }
+![](de.NBI-Logo.PNG){ width=50% }
 
 # Session info {.unnumbered}
 

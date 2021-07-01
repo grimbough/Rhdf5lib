@@ -7,6 +7,9 @@ Bug fixes:
   the HDF5 library. This resolves issue when the default versions found on a
   system are incompatible with options used to build R.
   (thanks to @miesav, https://github.com/grimbough/Rhdf5lib/pull/41)
+  o Fixed issue in Windows installation introduced by upstream changes
+  to libcurl distributed by rwinlibs.
+  (https://github.com/grimbough/Rhdf5lib/pull/42)
 
 Version 1.14
 =============

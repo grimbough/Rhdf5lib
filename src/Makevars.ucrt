@@ -25,8 +25,8 @@ Rhdf5lib.o: Rinstall rwinlibs build_hdf5
 Rinstall: build_hdf5
 
 build_hdf5: rwinlibs
-#	./hdf5/configure --with-pic --enable-shared=no
+	./hdf5/configure --with-pic --enable-shared=no CPPFLAGS="${USER_INCLUDE_DIR}" LDFLAGS="${USER_LIB_DIR}"
 
 rwinlibs:
 	mkdir -p "${USER_LIB_DIR}" "${USER_INCLUDE_DIR}"
-	"${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" "../tools/winlibs.R" ${CURL_VERSION} "${USER_LIB_DIR}"
+	"${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" "../tools/winlibs.R" ${CURL_VERSION} "${USER_LIB_DIR}" "${USER_INCLUDE_DIR}"

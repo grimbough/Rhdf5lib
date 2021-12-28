@@ -18,14 +18,12 @@ dir.create(file_path, showWarnings = TRUE)
 unzip("lib.zip", exdir = file_path)
 arch_files <- grep(LIB_TYPE, x = list.files(file_path, recursive = TRUE, full.names = TRUE), value = TRUE)
 
-message("ARCH: ", ARCH)
-
-curl_headers <- grep("\\.h$", x = list.files(file_path, recursive = TRUE, full.names = TRUE), value = TRUE)
+message("LIB TYPE: ", LIB_TYPE)
 
 message("Copying libraries")
+message(arch_files)
+message(DEST)
 file.copy(arch_files,  to = DEST)
 
-message("Copying headers")
-file.copy(curl_headers, to = INCLUDE_DEST)
 
 unlink("lib.zip")

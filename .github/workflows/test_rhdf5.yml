@@ -1,0 +1,61 @@
+on:
+  push:
+    branches:
+      - ucrt-testing
+
+name: R-CMD-check
+
+jobs:
+  R-CMD-check:
+    runs-on: ${{ matrix.config.os }}
+    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+        - { os: windows-latest, r: '4.1'}
+        - { os: windows-latest, r: '4.2'}
+
+    env:
+      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+
+    steps:
+      - name: Configure git
+        run: |
+          git config --global core.autocrlf false
+          git config --global user.email "ghau@example.com"
+          git config --global user.name "GitHub Actions User"
+
+      - uses: actions/checkout@v1
+          
+      - name: Setup R
+        uses: r-lib/actions/setup-r@v1
+        with:
+          r-version: ${{ matrix.config.r }}
+          
+      - name: Set R options
+        run: |
+          echo "options(Ncpus = 2, options = 600)" >> $HOME/.Rprofile
+          
+      - uses: r-lib/actions/setup-pandoc@master
+
+      - name: Install dependencies
+        run: |
+          install.packages(c('BiocManager', 'remotes', 'devtools', 'testthat'), quiet = TRUE)
+          library(remotes)
+          update(dev_package_deps(dependencies = TRUE), quiet = TRUE)
+        shell: Rscript {0}
+          
+      - name: Install package 
+        if: always()
+        run: |
+          devtools::install()
+        shell: Rscript {0}
+        
+      - name: Test dependent packages 
+        if: always()
+        run: |
+         BiocManager::install('grimbough/rhdf5', INSTALL_opts="--install-tests", ask = FALSE, quiet = FALSE, dependencies = TRUE)
+         testthat::test_package('rhdf5')
+        shell: Rscript {0}

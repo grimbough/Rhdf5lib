@@ -15,9 +15,10 @@ jobs:
       matrix:
         config:
         - { os: windows-latest, r: '4.1'}
-        - { os: windows-latest, r: '4.2'}
+        - { os: windows-latest, r: 'devel'}
 
     env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
 
     steps:
@@ -33,12 +34,10 @@ jobs:
         uses: r-lib/actions/setup-r@v1
         with:
           r-version: ${{ matrix.config.r }}
+          use-public-rspm: true
+          Ncpus: 2
           
-      - name: Set R options
-        run: |
-          echo "options(Ncpus = 2, options = 600)" >> $HOME/.Rprofile
-          
-      - uses: r-lib/actions/setup-pandoc@master
+      - uses: r-lib/actions/setup-pandoc@v1
 
       - name: Install dependencies
         run: |

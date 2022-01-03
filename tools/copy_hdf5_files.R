@@ -11,6 +11,7 @@ libraries <- list.files(file.path("winlib", LIB_TYPE), full.names = TRUE)
 headers <- list.files("hdf5", full.names = TRUE, recursive = TRUE)
 
 message("Copying libraries")
+print(libraries)
 invisible(file.copy(from = libraries,  to = LIB_DIR))
 
 message("Copying headers")

@@ -1,7 +1,7 @@
 # locations in the installed package where we're going to copy 
 # the libraries and headers
 USER_INCLUDE_DIR=${R_PACKAGE_DIR}/include
-USER_LIB_DIR=${R_PACKAGE_DIR}/lib${R_ARCH}/
+USER_LIB_DIR=${R_PACKAGE_DIR}/lib${R_ARCH}-ucrt/
 
 HDF5_INCLUDE=./hdf5
 

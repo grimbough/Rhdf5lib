@@ -18,6 +18,7 @@ unzip("lib.zip", exdir = file_path)
 arch_files <- grep(LIB_TYPE, x = list.files(file_path, recursive = TRUE, full.names = TRUE), value = TRUE)
 
 message("Copying libraries")
+print(arch_files)
 invisible(file.copy(arch_files,  to = DEST))
 
 file.remove("lib.zip")

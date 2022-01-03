@@ -28,7 +28,14 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "
   } else {
     arch <- ""
   }
-  patharch <- paste0(path, arch)
+  
+  if(!is.null(R.version$crt) && R.version$crt == "ucrt") {
+    crt <- "-ucrt"
+  } else {
+    crt <- ""
+  }
+  
+  patharch <- paste0(path, arch, crt)
   
   sysname <- Sys.info()['sysname']
   if(sysname == "Windows") {

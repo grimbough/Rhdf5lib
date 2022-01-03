@@ -52,9 +52,15 @@ jobs:
           devtools::install()
         shell: Rscript {0}
         
+      - name: Install dependent packages 
+        if: always()
+        run: |
+         BiocManager::install('rhdf5', ask = FALSE, quiet = TRUE)
+         BiocManager::install('rhdf5', INSTALL_opts="--install-tests", type = "source", ask = FALSE, quiet = FALSE)
+        shell: Rscript {0}
+        
       - name: Test dependent packages 
         if: always()
         run: |
-         BiocManager::install('rhdf5', INSTALL_opts="--install-tests", ask = FALSE, quiet = FALSE, dependencies = TRUE)
          testthat::test_package('rhdf5')
         shell: Rscript {0}

@@ -3,10 +3,10 @@ on:
     branches:
       - ucrt-testing
 
-name: R-CMD-check
+name: Testing rhdf5
 
 jobs:
-  R-CMD-check:
+  test-rhdf5:
     runs-on: ${{ matrix.config.os }}
     name: ${{ matrix.config.os }} (${{ matrix.config.r }})
 
@@ -55,6 +55,6 @@ jobs:
       - name: Test dependent packages 
         if: always()
         run: |
-         BiocManager::install('grimbough/rhdf5', INSTALL_opts="--install-tests", ask = FALSE, quiet = FALSE, dependencies = TRUE)
+         BiocManager::install('rhdf5', INSTALL_opts="--install-tests", ask = FALSE, quiet = FALSE, dependencies = TRUE)
          testthat::test_package('rhdf5')
         shell: Rscript {0}

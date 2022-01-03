@@ -5,9 +5,9 @@ INCLUDE_DEST <- commandArgs(TRUE)[3]
 
 ## We include the trailing slash (/) so as to exclude the "ucrt"
 ## versions of the x64 binaries, which don't link properly
-ARCH <- ifelse(R.version$arch == "x86_64", "x64", "i386")
-CRT <- ifelse(R.version$crt == "ucrt", "-ucrt/", "/")
-LIB_TYPE <- paste0(ARCH, CRT)
+ARCH <- ifelse(R.version$arch == "x86_64", "x64/", "i386/")
+CRT <- ifelse(!is.null(R.version$crt) && R.version$crt == "ucrt", "-ucrt/", "/")
+LIB_TYPE <- gsub("/", CRT, ARCH)
 
 message("Downloading dependencies")
 if(getRversion() < "3.3.0") setInternet2()

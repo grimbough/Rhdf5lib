@@ -45,8 +45,21 @@ jobs:
           library(remotes)
           update(dev_package_deps(dependencies = TRUE), quiet = TRUE)
         shell: Rscript {0}
+        
+      - name: Install dependent packages (current bioc)
+        if: always()
+        run: |
+         BiocManager::install('rhdf5', ask = FALSE, quiet = TRUE, dependencies = TRUE)
+         BiocManager::install('rhdf5', INSTALL_opts="--install-tests", force = TRUE, type = "source", ask = FALSE, quiet = FALSE)
+        shell: Rscript {0}
+        
+      - name: Test dependent packages (current bioc)
+        if: always()
+        run: |
+         testthat::test_package('rhdf5', reported = "summary")
+        shell: Rscript {0}
           
-      - name: Install package 
+      - name: Install devel package 
         if: always()
         run: |
           devtools::install()
@@ -55,12 +68,12 @@ jobs:
       - name: Install dependent packages 
         if: always()
         run: |
-         BiocManager::install('rhdf5', ask = FALSE, quiet = TRUE)
+         BiocManager::install('rhdf5filters', force = TRUE, type = "source", ask = FALSE, quiet = FALSE)
          BiocManager::install('rhdf5', INSTALL_opts="--install-tests", force = TRUE, type = "source", ask = FALSE, quiet = FALSE)
         shell: Rscript {0}
         
       - name: Test dependent packages 
         if: always()
         run: |
-         testthat::test_package('rhdf5')
+         testthat::test_package('rhdf5', reporter = "summary")
         shell: Rscript {0}

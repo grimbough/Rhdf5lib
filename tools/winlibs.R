@@ -21,4 +21,4 @@ message("Copying libraries")
 print(arch_files)
 invisible(file.copy(arch_files,  to = DEST))
 
-file.remove("lib.zip")
+invisible(file.remove("lib.zip"))

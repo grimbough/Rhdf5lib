@@ -10,7 +10,7 @@ HDF5_HL_INCLUDE=./hdf5/hl
 COMPILER=${subst gcc ,-,${R_COMPILED_BY}}
 
 PKG_CFLAGS = -I${HDF5_INCLUDE}
-PKG_LIBS = winlib/${R_ARCH}/libhdf5.a winlib/${R_ARCH}/libsz.a winlib/${R_ARCH}/libaec.a -lpsapi -lz
+PKG_LIBS = winlib${R_ARCH}/libhdf5.a winlib${R_ARCH}/libsz.a winlib${R_ARCH}/libaec.a -lpsapi -lz
 
 CURL_VERSION=7.64.1
 

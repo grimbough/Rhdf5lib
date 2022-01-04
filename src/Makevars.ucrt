@@ -6,7 +6,7 @@ USER_LIB_DIR=${R_PACKAGE_DIR}/lib${R_ARCH}-ucrt/
 HDF5_INCLUDE=./hdf5
 
 PKG_CFLAGS = -I${HDF5_INCLUDE}
-PKG_LIBS = winlib/${R_ARCH}-ucrt/libhdf5.a winlib/${R_ARCH}-ucrt/libsz.a winlib/${R_ARCH}-ucrt/libaec.a -lpsapi -lz
+PKG_LIBS = winlib${R_ARCH}-ucrt/libhdf5.a winlib${R_ARCH}-ucrt/libsz.a winlib${R_ARCH}-ucrt/libaec.a -lpsapi -lz
 
 CURL_VERSION=7.64.1
 

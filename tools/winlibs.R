@@ -11,7 +11,10 @@ LIB_TYPE <- gsub("/", CRT, ARCH)
 
 message("Downloading dependencies")
 if(getRversion() < "3.3.0") setInternet2()
-download.file(sprintf("https://github.com/rwinlib/libcurl/archive/v%s.zip", VERSION), "lib.zip", quiet = TRUE, method = "auto")
+#download.file(sprintf("https://github.com/rwinlib/libcurl/archive/v%s.zip", VERSION), "lib.zip", quiet = TRUE, method = "auto")
+download.file("https://www.huber.embl.de/users/msmith/win-libcurl/curl-7.64.1_openssl-1.1.1m_ssh2-1.10.0.zip", 
+              destfile = "lib.zip", 
+              quiet = TRUE, method = "auto")
 file_path <- file.path(tempdir(), "libcurl")
 dir.create(file_path, showWarnings = TRUE)
 unzip("lib.zip", exdir = file_path)

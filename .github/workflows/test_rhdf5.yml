@@ -47,7 +47,7 @@ jobs:
         shell: Rscript {0}
         
       - name: Install dependent packages (current bioc)
-        if: ${{ matrix.config.r }} != 'devel'
+        if: ${{ matrix.config.r }} == '4.1'
         run: |
          BiocManager::install('rhdf5', ask = FALSE, quiet = TRUE, dependencies = TRUE)
          BiocManager::install('grimbough/rhdf5', INSTALL_opts="--install-tests", force = TRUE, type = "source", ask = FALSE, quiet = FALSE)

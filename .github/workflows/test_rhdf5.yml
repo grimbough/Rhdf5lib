@@ -57,7 +57,7 @@ jobs:
         if: always()
         run: |
          xfun::session_info(packages = "rhdf5")
-         testthat::test_package('rhdf5', reported = "summary")
+         testthat::test_package('rhdf5', reporter = "summary")
         shell: Rscript {0}
           
       - name: Install devel package 

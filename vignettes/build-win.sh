@@ -31,16 +31,16 @@ pacman -Sy --needed mingw-w64-{i686,x86_64,ucrt-x86_64}-dlfcn
 if [ ! -z ${BUILD_i386+x} ]; then
   mkdir -p /tmp/winlibs/hdf5-${ver}${patch}/i386
   
-  export PATH=/c/rtools40/mingw32/bin:/usr/bin
-  export CPATH=/c/rtools40/mingw32/i686-w64-mingw32/include:/c/rtools40/mingw32/include
-  export LD_LIBRARY_PATH=/c/rtools40/mingw32/i686-w64-mingw32/lib:/c/rtools40/mingw32/lib
-  cd /c/rtools40/tmp/CMake-hdf5-${ver}${patch}/hdf5-${ver}${patch}
+  export PATH=/mingw32/bin:/usr/bin
+  export CPATH=/mingw32/i686-w64-mingw32/include:/mingw32/include
+  export LD_LIBRARY_PATH=/mingw32/i686-w64-mingw32/lib:/mingw32/lib
+  cd /tmp/CMake-hdf5-${ver}${patch}/hdf5-${ver}${patch}
   mkdir build-rtools-i686
   cd build-rtools-i686
   rm -rf *
   
   ## leave testing and tools on - we can use them to check the build
-  /c/rtools40/mingw32/bin/cmake ../ -G "MSYS Makefiles" \
+  /mingw32/bin/cmake ../ -G "MSYS Makefiles" \
   -DBUILD_SHARED_LIBS:BOOL=OFF \
   -DHDF5_BUILD_HL_LIB:BOOL=ON \
   -DHDF5_BUILD_CPP_LIB:BOOL=ON \
@@ -52,7 +52,7 @@ if [ ! -z ${BUILD_i386+x} ]; then
   -DZLIB_TGZ_NAME:STRING="ZLib.tar.gz" \
   -DUSE_LIBAEC:BOOL=ON \
   -DSZAEC_TGZ_NAME:STRING="LIBAEC.tar.gz" \
-  -DTGZPATH:STRING="/c/rtools40/tmp/CMake-hdf5-${ver}${patch}" \
+  -DTGZPATH:STRING="/tmp/CMake-hdf5-${ver}${patch}" \
   -DHDF5_ENABLE_ROS3_VFD:BOOL=ON \
   -DCMAKE_C_STANDARD_LIBRARIES:STRING="-lws2_32 -lssh2 -lcrypt32 -lwldap32" \
   -DCMAKE_CXX_STANDARD_LIBRARIES:STRING="-lws2_32 -lssh2 -lcrypt32 -lwldap32" \
@@ -69,15 +69,15 @@ if [ ! -z ${BUILD_x64+x} ]; then
 
   mkdir -p /tmp/winlibs/hdf5-${ver}${patch}/x64
 
-  export PATH=/c/rtools40/mingw64/bin:/usr/bin
-  export CPATH=/c/rtools40/mingw64/x86_64-w64-mingw32/include:/c/rtools40/mingw64/include
-  export LD_LIBRARY_PATH=/c/rtools40/mingw64/x86_64-w64-mingw32/lib:/c/rtools40/mingw64/lib
-  cd /c/rtools40/tmp/CMake-hdf5-${ver}${patch}/hdf5-${ver}${patch}
+  export PATH=/mingw64/bin:/usr/bin
+  export CPATH=/mingw64/x86_64-w64-mingw32/include:/mingw64/include
+  export LD_LIBRARY_PATH=/mingw64/x86_64-w64-mingw32/lib:/mingw64/lib
+  cd /tmp/CMake-hdf5-${ver}${patch}/hdf5-${ver}${patch}
   mkdir build-rtools-x64
   cd build-rtools-x64
   rm -rf *
   
-  /c/rtools40/mingw64/bin/cmake ../ -G "MSYS Makefiles" \
+  /mingw64/bin/cmake ../ -G "MSYS Makefiles" \
   -DBUILD_SHARED_LIBS:BOOL=OFF \
   -DHDF5_BUILD_HL_LIB:BOOL=ON \
   -DHDF5_BUILD_CPP_LIB:BOOL=ON \
@@ -89,7 +89,7 @@ if [ ! -z ${BUILD_x64+x} ]; then
   -DZLIB_TGZ_NAME:STRING="ZLib.tar.gz" \
   -DUSE_LIBAEC:BOOL=ON \
   -DSZAEC_TGZ_NAME:STRING="LIBAEC.tar.gz" \
-  -DTGZPATH:STRING="/c/rtools40/tmp/CMake-hdf5-${ver}${patch}" \
+  -DTGZPATH:STRING="/tmp/CMake-hdf5-${ver}${patch}" \
   -DHDF5_ENABLE_ROS3_VFD:BOOL=ON \
   -DCMAKE_C_STANDARD_LIBRARIES:STRING="-lws2_32 -lssh2 -lcrypt32 -lwldap32" \
   -DCMAKE_CXX_STANDARD_LIBRARIES:STRING="-lws2_32 -lssh2 -lcrypt32 -lwldap32" \
@@ -104,9 +104,9 @@ if [ ! -z ${BUILD_x64_ucrt+x} ]; then
 
   mkdir -p /tmp/winlibs/hdf5-${ver}${patch}/x64-ucrt
   
-  export PATH=/c/rtools40/ucrt64/bin:/usr/bin
-  export CPATH=/c/rtools40/ucrt64/x86_64-w64-mingw32/include:/c/rtools40/ucrt64/include
-  export LD_LIBRARY_PATH=/c/rtools40/ucrt64/x86_64-w64-mingw32/lib:/c/rtools40/ucrt64/lib
+  export PATH=/ucrt64/bin:/usr/bin
+  export CPATH=/ucrt64/x86_64-w64-mingw32/include:/ucrt64/include
+  export LD_LIBRARY_PATH=/ucrt64/x86_64-w64-mingw32/lib:/ucrt64/lib
   cd /tmp/CMake-hdf5-${ver}${patch}/hdf5-${ver}${patch}
   mkdir build-rtools-x64-ucrt
   cd build-rtools-x64-ucrt
@@ -126,8 +126,7 @@ if [ ! -z ${BUILD_x64_ucrt+x} ]; then
   -DSZAEC_TGZ_NAME:STRING="LIBAEC.tar.gz" \
   -DTGZPATH:STRING="/tmp/CMake-hdf5-${ver}${patch}" \
   -DHDF5_ENABLE_ROS3_VFD:BOOL=ON \
-  -DCMAKE_C_STANDARD_LIBRARIES:STRING="-lws2_32 -lssh2 -lcrypt32 -lwldap32" \
-  -DCMAKE_CXX_STANDARD_LIBRARIES:STRING="-lws2_32 -lssh2 -lcrypt32 -lwldap32" \
+  -DCMAKE_C_STANDARD_LIBRARIES:STRING="-lssh2 -lws2_32 -lcrypt32 -lwldap32" \
   -DCMAKE_BUILD_TYPE:STRING="Release"
   
   cmake --build .

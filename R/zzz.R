@@ -45,7 +45,7 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "
                      pattern = "\\",
                      replacement = "/", 
                      fixed = TRUE)
-    winlibs <- "-lcurl -lssh2 -lssl -lcrypto -lwldap32 -lws2_32 -lcrypt32 -lsz -laec -lz -lpsapi"
+    winlibs <- "-lcurl -lssh2 -lssl -lcrypto -lbcrypt -lwldap32 -lws2_32 -lcrypt32 -lsz -laec -lz -lpsapi"
   }
   
   result <- switch(match.arg(opt), 

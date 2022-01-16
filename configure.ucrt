@@ -1,0 +1,38 @@
+BASEPBNAME="hdf5"
+PBTGZNAME=hdf5small_cxx_hl_1.10.7.tar.gz
+
+LDFLAGS=-L`"${R_HOME}/bin/R.exe" CMD config R_TOOLS_SOFT`/lib
+CC=gcc
+CXX="g++ -std=gnu++11"
+export LIBRARY_PATH=/x86_64-w64-mingw32.static.posix/lib
+
+echo ${LDFLAGS}
+
+cd src
+if test -d ./${BASEPBNAME}; then 
+	echo 'found ' $BASEPBNAME ' header sources and tar archive;using what is there.'
+else
+	echo "untarring $PBTGZNAME ...";
+	gunzip -dc ${PBTGZNAME} | tar xf -;
+fi;
+
+
+echo "building the szip library...";
+cd ${BASEPBNAME}/szip;
+./configure --with-pic --enable-shared=no
+make
+make install
+SZIP_HOME=`pwd -P`/szip
+
+echo "SZIP_HOME=${SZIP_HOME}"
+
+echo "building the hdf5 library...";
+cd ../;
+./configure --with-pic --enable-shared=no --enable-cxx --enable-hl \
+    --with-szlib=${SZIP_HOME} \
+    --with-zlib=yes \
+    --enable-ros3-vfd=yes \
+    CC=${CC} \
+    CXX="${CXX}" \
+    LDFLAGS=-L/x86_64-w64-mingw32.static.posix
+#make

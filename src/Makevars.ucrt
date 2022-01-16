@@ -1,0 +1,28 @@
+#expose headers in installed package include folder
+USER_INCLUDE = ${R_PACKAGE_DIR}/include
+USER_LIB_DIR = ${R_PACKAGE_DIR}/lib${R_ARCH}/
+
+PKG_CFLAGS = -I./hdf5/src
+
+.PHONY: all copying
+
+all: $(SHLIB)
+
+$(SHLIB): Rhdf5lib.o
+
+Rhdf5lib.o: copying
+
+#copy hdf5 library headers to package include
+copying:
+	mkdir -p "${USER_INCLUDE}"
+	cp "./hdf5/src/"*.h "${USER_INCLUDE}"
+	cp "./hdf5/c++/src/"*.h "${USER_INCLUDE}"
+	cp "./hdf5/hl/src/"*.h "${USER_INCLUDE}"
+	cp "./hdf5/hl/c++/src/"*.h "${USER_INCLUDE}"
+	cp "./hdf5/src/libhdf5.settings" "${USER_INCLUDE}"
+	mkdir -p "${USER_LIB_DIR}"
+	cp "./hdf5/src/.libs/libhdf5.a" "${USER_LIB_DIR}"
+	cp "./hdf5/c++/src/.libs/libhdf5_cpp.a" "${USER_LIB_DIR}"
+	cp "./hdf5/hl/src/.libs/libhdf5_hl.a" "${USER_LIB_DIR}"
+	cp "./hdf5/hl/c++/src/.libs/libhdf5_hl_cpp.a" "${USER_LIB_DIR}"
+	cp "./hdf5/szip/szip/lib/libsz.a" "${USER_LIB_DIR}"

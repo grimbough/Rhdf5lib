@@ -14,7 +14,14 @@ if test -d ./${BASEPBNAME}; then
 else
 	echo "untarring $PBTGZNAME ...";
 	gunzip -dc ${PBTGZNAME} | tar xf -;
+	cat <<EOF >>hdf5/src/H5config.h.in
+#define HAVE_LIBWS2_32 1
+#define HAVE_WIN32_API 1
+#define HAVE_MINGW 1
+EOF
 fi;
+
+
 
 
 echo "building the szip library...";
@@ -34,5 +41,7 @@ cd ../;
     --enable-ros3-vfd=yes \
     CC=${CC} \
     CXX="${CXX}" \
-    LDFLAGS=-L/x86_64-w64-mingw32.static.posix
+    LDFLAGS="-L/x86_64-w64-mingw32.static.posix/lib" \
+    LIBS="-lcrypto -lws2_32 -lcrypt32"
+
 #make

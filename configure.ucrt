@@ -1,10 +1,17 @@
 BASEPBNAME="hdf5"
 PBTGZNAME=hdf5small_cxx_hl_1.10.7.tar.gz
 
+CC=`"${R_HOME}/bin/R.exe" CMD config CC`
+CFLAGS=`"${R_HOME}/bin/R.exe" CMD config CFLAGS`
+CPICFLAGS=`"${R_HOME}/bin/R.exe" CMD config CPICFLAGS`
+CXX=`"${R_HOME}/bin/R.exe" CMD config CXX`
+CXXFLAGS=`"${R_HOME}/bin/R.exe" CMD config CXXFLAGS`
+CXXPICFLAGS=`"${R_HOME}/bin/R.exe" CMD config CXXPICFLAGS`
+CPPFLAGS=`"${R_HOME}/bin/R.exe" CMD config CPPFLAGS`
+MAKE=`"${R_HOME}/bin/R.exe" CMD config MAKE`
 LDFLAGS=-L`"${R_HOME}/bin/R.exe" CMD config R_TOOLS_SOFT`/lib
-CC=gcc
-CXX="g++ -std=gnu++11"
-export LIBRARY_PATH=/x86_64-w64-mingw32.static.posix/lib
+AR=`"${R_HOME}/bin/R.exe" CMD config AR`
+RANLIB=`"${R_HOME}/bin/R.exe" CMD config RANLIB`
 
 echo ${LDFLAGS}
 
@@ -39,9 +46,10 @@ cd ../;
     --with-szlib=${SZIP_HOME} \
     --with-zlib=yes \
     --enable-ros3-vfd=yes \
-    CC=${CC} \
-    CXX="${CXX}" \
-    LDFLAGS="-L/x86_64-w64-mingw32.static.posix/lib" \
-    LIBS="-lcrypto -lws2_32 -lcrypt32"
+    CC="${CC}" CFLAGS="${CFLaGS}" \
+    CXX="${CXX}" CXXFLAGS="${CXXFLAGS}" \
+    CPPFLAGS="${CPPFLAGS}" \
+    LDFLAGS="${LDFLAGS}" \
+    LIBS="-lidn2 -lunistring -liconv -lssh2 -lssl -lcrypto -lbcrypt -lgcrypt -lgpg-error -lwldap32 -lws2_32 -lcrypt32 -lz -lzstd"
 
-#make
+make

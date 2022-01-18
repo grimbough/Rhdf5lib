@@ -96,6 +96,17 @@ jobs:
           fi
         shell: bash
           
+      - name: Remove libtool .la files
+        run: |
+          TYPE=full
+          TDIR=~/x86_64-w64-mingw32.static.posix
+          if [ "${{ runner.os }}" = Windows -a $TYPE != "none" ] ; then
+            ls ${TDIR}/lib/*.la
+            rm ${TDIR}/lib/*.la
+            ls ${TDIR}/lib/
+          fi
+        shell: bash
+          
       - uses: r-lib/actions/setup-pandoc@v1
 
       - name: Install dependencies

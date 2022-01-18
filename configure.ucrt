@@ -17,7 +17,9 @@ echo ${LDFLAGS}
 
 cd src
 if test -d ./${BASEPBNAME}; then 
+
 	echo 'found ' $BASEPBNAME ' header sources and tar archive;using what is there.'
+
 else
 	echo "untarring $PBTGZNAME ...";
 	gunzip -dc ${PBTGZNAME} | tar xf -;
@@ -26,30 +28,30 @@ else
 #define HAVE_WIN32_API 1
 #define HAVE_MINGW 1
 EOF
+
+  sed -i '/^#include <curl/i #define CURL_STATICLIB 1' hdf5/src/H5FDs3comms.h
+
+  echo "building the szip library...";
+  cd ${BASEPBNAME}/szip;
+  ./configure --with-pic --enable-shared=no
+  make
+  make install
+  SZIP_HOME=`pwd -P`/szip
+  
+  echo "SZIP_HOME=${SZIP_HOME}"
+  
+  echo "building the hdf5 library...";
+  cd ../;
+  ./configure --with-pic --enable-shared=no --enable-cxx --enable-hl \
+      --with-szlib=${SZIP_HOME} \
+      --with-zlib=yes \
+      --enable-ros3-vfd=yes \
+      CC="${CC}" CFLAGS="${CFLAGS}" \
+      CXX="${CXX}" CXXFLAGS="${CXXFLAGS}" \
+      CPPFLAGS="${CPPFLAGS}" \
+      LDFLAGS="${LDFLAGS}" \
+      AR="${AR}" RANLIB="${RANLIB}" \
+      LIBS="-lidn2 -lunistring -liconv -lssh2 -lssl -lcrypto -lbcrypt -lgcrypt -lgpg-error -lwldap32 -lws2_32 -lcrypt32 -lz -lzstd" 
+  make
+
 fi;
-
-
-
-
-echo "building the szip library...";
-cd ${BASEPBNAME}/szip;
-./configure --with-pic --enable-shared=no
-make
-make install
-SZIP_HOME=`pwd -P`/szip
-
-echo "SZIP_HOME=${SZIP_HOME}"
-
-echo "building the hdf5 library...";
-cd ../;
-./configure --with-pic --enable-shared=no --enable-cxx --enable-hl \
-    --with-szlib=${SZIP_HOME} \
-    --with-zlib=yes \
-    --enable-ros3-vfd=yes \
-    CC="${CC}" CFLAGS="${CFLaGS}" \
-    CXX="${CXX}" CXXFLAGS="${CXXFLAGS}" \
-    CPPFLAGS="${CPPFLAGS}" \
-    LDFLAGS="${LDFLAGS}" \
-    LIBS="-lidn2 -lunistring -liconv -lssh2 -lssl -lcrypto -lbcrypt -lgcrypt -lgpg-error -lwldap32 -lws2_32 -lcrypt32 -lz -lzstd"
-
-make

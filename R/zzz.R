@@ -38,15 +38,15 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "
                      pattern = "\\",
                      replacement = "/", 
                      fixed = TRUE)
-    winlibs <- "-lcurl -lssh2 -lssl -lcrypto -lwldap32 -lws2_32 -lcrypt32 -lsz -lz -lpsapi"
+    winlibs <- "-lcurl -lidn2 -lunistring -liconv -lssh2 -lssl -lcrypto -lbcrypt -lgcrypt -lgpg-error -lwldap32 -lws2_32 -lcrypt32 -lz -lzstd"
   }
   
   result <- switch(match.arg(opt), 
                    PKG_C_LIBS = {
                      switch(sysname, 
                             Windows = {
-                              sprintf('-L%s -lhdf5 %s', 
-                                      patharch, winlibs)
+                              sprintf('"%s/libhdf5.a" "%s/libsz.a" %s', 
+                                      patharch, patharch, winlibs)
                             }, {
                               sprintf('"%s/libhdf5.a" "%s/libsz.a" %s', 
                                       patharch, patharch, .getDynamicLinks())

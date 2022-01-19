@@ -38,7 +38,12 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "
                      pattern = "\\",
                      replacement = "/", 
                      fixed = TRUE)
+    
     winlibs <- "-lcurl -lssh2 -lssl -lcrypto -lwldap32 -lws2_32 -lcrypt32 -lszip -lz -lpsapi"
+    if(!is.null(R.version$crt) && R.version$crt == "ucrt") {
+      winlibs <- gsub(pattern = "-lszip", replacement = "-lsz -laec", x = winlibs, fixed = TRUE)
+      patharch <- paste0(patharch, "-ucrt")
+    }
   }
   
   result <- switch(match.arg(opt), 

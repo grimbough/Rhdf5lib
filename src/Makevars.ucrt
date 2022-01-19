@@ -1,0 +1,24 @@
+# locations in the installed package where we're going to copy 
+# the libraries and headers
+USER_INCLUDE_DIR=${R_PACKAGE_DIR}/include
+USER_LIB_DIR=${R_PACKAGE_DIR}/lib${R_ARCH}-ucrt/
+
+HDF5_INCLUDE=./hdf5
+
+PKG_CFLAGS = -I${HDF5_INCLUDE}
+PKG_LIBS = winlib${R_ARCH}-ucrt/libhdf5.a winlib${R_ARCH}-ucrt/libsz.a winlib${R_ARCH}-ucrt/libaec.a -lpsapi -lz
+
+.PHONY: all Rinstall
+
+all: $(SHLIB)
+
+$(SHLIB): Rhdf5lib.o
+
+Rhdf5lib.o: Rinstall rwinlibs
+
+rwinlibs: Rinstall 
+	"${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" "../tools/winlibs.R" ${CURL_VERSION} "${USER_LIB_DIR}"
+
+Rinstall:
+	mkdir -p "$(USER_LIB_DIR)" "$(USER_INCLUDE_DIR)"
+	"${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" "../tools/copy_hdf5_files.R" "${USER_LIB_DIR}" "${USER_INCLUDE_DIR}"

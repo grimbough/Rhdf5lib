@@ -1,0 +1,239 @@
+on:
+  push:
+    branches:
+      - ucrt-precompiled
+
+name: Testing rhdf5
+
+env:
+  GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+  R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+
+jobs:
+  test1:
+    runs-on: windows-latest
+    name: R-4.1 / Rtools 4
+
+    steps:
+      - name: Configure git
+        run: |
+          git config --global core.autocrlf false
+          git config --global user.email "ghau@example.com"
+          git config --global user.name "GitHub Actions User"
+      - uses: actions/checkout@v1
+          
+      - name: Setup R
+        uses: r-lib/actions/setup-r@v1
+        with:
+          r-version: '4.1'
+          use-public-rspm: true
+          Ncpus: 2
+          
+      - uses: r-lib/actions/setup-pandoc@v1
+
+      - name: Install dependencies
+        run: |
+          install.packages(c('BiocManager', 'xfun', 'remotes', 'devtools', 'testthat'), quiet = TRUE)
+          library(remotes)
+          update(dev_package_deps(dependencies = TRUE), quiet = TRUE)
+        shell: Rscript {0}
+        
+      - name: Install dependent packages (current bioc)
+        if: matrix.config.r == '4.1'
+        run: |
+         BiocManager::install('rhdf5', ask = FALSE, quiet = TRUE, dependencies = TRUE)
+         BiocManager::install('grimbough/rhdf5', INSTALL_opts="--install-tests", force = TRUE, type = "source", ask = FALSE, quiet = FALSE)
+        shell: Rscript {0}
+        
+      - name: Test dependent packages (current bioc)
+        if: always()
+        run: |
+         xfun::session_info(packages = "rhdf5")
+         testthat::test_package('rhdf5', reporter = "summary")
+        shell: Rscript {0}
+          
+      - name: Install devel package 
+        if: always()
+        run: |
+          devtools::install()
+        shell: Rscript {0}
+        
+      - name: Install dependent packages 
+        if: always()
+        run: |
+         BiocManager::install('rhdf5filters', force = TRUE, type = "source", ask = FALSE, quiet = FALSE)
+         BiocManager::install('grimbough/rhdf5', INSTALL_opts="--install-tests", force = TRUE, type = "source", ask = FALSE, quiet = FALSE)
+        shell: Rscript {0}
+        
+      - name: Test dependent packages 
+        if: always()
+        run: |
+         xfun::session_info(packages = "rhdf5")
+         testthat::test_package('rhdf5', reporter = "summary")
+        shell: Rscript {0}
+        
+  test2:
+    runs-on: windows-latest
+    name: R-4.2 / Rtools 4
+
+    steps:
+      - name: Configure git
+        run: |
+          git config --global core.autocrlf false
+          git config --global user.email "ghau@example.com"
+          git config --global user.name "GitHub Actions User"
+      - uses: actions/checkout@v1
+          
+      - name: Setup R
+        uses: r-lib/actions/setup-r@v1
+        with:
+          r-version: 'devel'
+          use-public-rspm: true
+          Ncpus: 2
+          
+      - uses: r-lib/actions/setup-pandoc@v1
+
+      - name: Install dependencies
+        run: |
+          install.packages(c('BiocManager', 'xfun', 'remotes', 'devtools', 'testthat'), quiet = TRUE)
+          library(remotes)
+          update(dev_package_deps(dependencies = TRUE), quiet = TRUE)
+        shell: Rscript {0}
+        
+      - name: Install devel package 
+        if: always()
+        run: |
+          devtools::install()
+        shell: Rscript {0}
+        
+      - name: Install dependent packages 
+        if: always()
+        run: |
+         BiocManager::install('rhdf5filters', force = TRUE, type = "source", ask = FALSE, quiet = FALSE)
+         BiocManager::install('grimbough/rhdf5', INSTALL_opts="--install-tests", force = TRUE, type = "source", ask = FALSE, quiet = FALSE)
+        shell: Rscript {0}
+        
+      - name: Test dependent packages 
+        if: always()
+        run: |
+         xfun::session_info(packages = "rhdf5")
+         testthat::test_package('rhdf5', reporter = "summary")
+        shell: Rscript {0}
+        
+  test2:
+    runs-on: windows-latest
+    name: R-4.2 / Rtools 42
+
+    steps:
+      - name: Configure git
+        run: |
+          git config --global core.autocrlf false
+          git config --global user.email "ghau@example.com"
+          git config --global user.name "GitHub Actions User"
+      - uses: actions/checkout@v1
+          
+      - name: Setup R
+        uses: r-lib/actions/setup-r@v1
+        with:
+          r-version: 'devel'
+          use-public-rspm: true
+          Ncpus: 2
+          
+      - name: Install toolchain
+        run: |
+          TYPE=full
+          TDIR=~/x86_64-w64-mingw32.static.posix
+          if [ "${{ runner.os }}" = Windows -a $TYPE != "none" -a -r $TDIR/type ] ; then
+            # FIXME: add toolchain version check, not only type
+            CTYPE="`cat $TDIR/type`"
+            if [ $CTYPE = $TYPE -o $CTYPE = full ] ; then
+              echo "Re-using cached $CTYPE toolchain."
+            else
+              echo "Deleting cached $CTYPE toolchain."
+              rm -rf $TDIR
+            fi
+          fi
+          if [ "${{ runner.os }}" = Windows -a $TYPE != "none" -a ! -d $TDIR ] ; then
+            echo "::group::Downloading and installing the toolchain"
+            TAG=v0.4
+            if [ $TYPE = "base" ] ; then
+              SUFF="_base"
+            else
+              SUFF="_full"
+            fi
+            URL=`curl -s https://api.github.com/repos/kalibera/ucrt3/releases | \
+                 sed -n 's!^ *\"*browser_download_url\"*: \"\(.*/download/'$TAG'/gcc10_ucrt3'$SUFF'_[0-9]\+\.tar.zst\)\"!\1!p'`
+            echo "Toolchain URL is $URL"
+            curl -s -L $URL > toolchain.tar.zst
+            if [ ! -r toolchain.tar.zst ] ; then
+              echo "::error ::ERROR: failed to download toolchain"
+              exit 1
+            fi
+            ls -l toolchain.tar.zst
+            tar xf toolchain.tar.zst -C ~
+            if [ ! -d $TDIR ] ; then
+              echo "::error ::ERROR: failed to install toolchain"
+              exit 1
+            fi
+            rm -f toolchain.tar.zst
+            echo $TYPE > $TDIR/type
+            echo "GCC version:"
+            $TDIR/bin/gcc -v
+            echo "MXE packages installed:"
+            ls $TDIR/installed/
+            echo "::endgroup::"
+          fi
+        shell: bash
+
+      - name: Set up environment for the toolchain
+        run: |
+          TYPE=full
+          TDIR=~/x86_64-w64-mingw32.static.posix
+          if [ "${{ runner.os }}" = Windows -a $TYPE != "none" ] ; then
+            echo "::group::Setting up environment for the toolchain"
+            echo $TDIR/bin >> $GITHUB_PATH
+            echo "R_CUSTOM_TOOLS_SOFT=$TDIR" >> $GITHUB_ENV
+            echo "R_CUSTOM_TOOLS_PATH=$TDIR/bin;c:/msys64/usr/bin" >> $GITHUB_ENV
+            echo "::endgroup::"
+          fi
+        shell: bash
+          
+      - name: Remove libtool .la files
+        run: |
+          TYPE=full
+          TDIR=~/x86_64-w64-mingw32.static.posix
+          if [ "${{ runner.os }}" = Windows -a $TYPE != "none" ] ; then
+            ls ${TDIR}/lib/*.la
+            rm ${TDIR}/lib/*.la
+            ls ${TDIR}/lib/
+          fi
+        shell: bash
+          
+      - uses: r-lib/actions/setup-pandoc@v1
+
+      - name: Install dependencies
+        run: |
+          install.packages(c('BiocManager', 'xfun', 'remotes', 'devtools', 'testthat'), quiet = TRUE)
+          library(remotes)
+          update(dev_package_deps(dependencies = TRUE), quiet = TRUE)
+        shell: Rscript {0}
+        
+      - name: Install devel package 
+        if: always()
+        run: |
+          devtools::install()
+        shell: Rscript {0}
+        
+      - name: Install dependent packages 
+        if: always()
+        run: |
+         BiocManager::install('rhdf5filters', force = TRUE, type = "source", ask = FALSE, quiet = FALSE)
+         BiocManager::install('grimbough/rhdf5', INSTALL_opts="--install-tests", force = TRUE, type = "source", ask = FALSE, quiet = FALSE)
+        shell: Rscript {0}
+        
+      - name: Test dependent packages 
+        if: always()
+        run: |
+         xfun::session_info(packages = "rhdf5")
+         testthat::test_package('rhdf5', reporter = "summary")
+        shell: Rscript {0}

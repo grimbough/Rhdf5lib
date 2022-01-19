@@ -120,7 +120,7 @@ jobs:
          testthat::test_package('rhdf5', reporter = "summary")
         shell: Rscript {0}
         
-  test2:
+  test3:
     runs-on: windows-latest
     name: R-4.2 / Rtools 42
 

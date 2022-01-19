@@ -1,6 +1,5 @@
 # Build against static libraries from rwinlib
 DEST <- commandArgs(TRUE)[1]
-INCLUDE_DEST <- commandArgs(TRUE)[2]
 
 ## We include the trailing slash (/) so as to exclude the "ucrt"
 ## versions of the x64 binaries, which don't link properly

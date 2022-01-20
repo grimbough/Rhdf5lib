@@ -2,8 +2,9 @@ on:
   push:
     branches:
       - ucrt-precompiled
+      - master
 
-name: Testing rhdf5
+name: Testing rhdf5 on Windows
 
 env:
   GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -41,7 +42,7 @@ jobs:
       - name: Install dependent packages (current bioc)
         run: |
          BiocManager::install('rhdf5', ask = FALSE, quiet = TRUE, dependencies = TRUE)
-         BiocManager::install('grimbough/rhdf5', INSTALL_opts="--install-tests", force = TRUE, type = "source", ask = FALSE, quiet = FALSE)
+         BiocManager::install('grimbough/rhdf5', INSTALL_opts="--install-tests", force = TRUE, type = "source", ask = FALSE, quiet = TRUE)
         shell: Rscript {0}
         
       - name: Test dependent packages (current bioc)
@@ -109,7 +110,7 @@ jobs:
         if: always()
         run: |
          BiocManager::install('rhdf5filters', force = TRUE, type = "source", ask = FALSE, quiet = FALSE)
-         BiocManager::install('grimbough/rhdf5', INSTALL_opts="--install-tests", force = TRUE, type = "source", dependencies = TRUE, ask = FALSE, quiet = FALSE)
+         BiocManager::install('grimbough/rhdf5', INSTALL_opts="--install-tests", force = TRUE, type = "source", dependencies = TRUE, ask = FALSE, quiet = TRUE)
         shell: Rscript {0}
         
       - name: Test dependent packages 
@@ -227,7 +228,7 @@ jobs:
         if: always()
         run: |
          BiocManager::install('rhdf5filters', force = TRUE, type = "source", ask = FALSE, quiet = FALSE)
-         BiocManager::install('grimbough/rhdf5', INSTALL_opts="--install-tests", force = TRUE, type = "source", dependencies = TRUE, ask = FALSE, quiet = FALSE)
+         BiocManager::install('grimbough/rhdf5', INSTALL_opts="--install-tests", force = TRUE, type = "source", dependencies = TRUE, ask = FALSE, quiet = TRUE)
         shell: Rscript {0}
         
       - name: Test dependent packages 

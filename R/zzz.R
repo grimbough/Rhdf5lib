@@ -29,9 +29,16 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "
     arch <- ""
   }
   patharch <- paste0(path, arch)
-  
+
   sysname <- Sys.info()['sysname']
   if(sysname == "Windows") {
+    
+    ## add "-ucrt" to the library directory if needed
+    ## this might be removed in the future - 2021-01-20
+    if(!is.null(R.version$crt) && R.version$crt == "ucrt") {
+      patharch <- paste0(patharch, "-ucrt")
+    }
+    
     ## for some reason double quotes aren't always sufficient on Windows
     ## so we use the 8+3 form of the path and replace slashes
     patharch <- gsub(x = utils::shortPathName(patharch),
@@ -42,7 +49,6 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "
     winlibs <- "-lcurl -lssh2 -lssl -lcrypto -lwldap32 -lws2_32 -lcrypt32 -lszip -lz -lpsapi"
     if(!is.null(R.version$crt) && R.version$crt == "ucrt") {
       winlibs <- gsub(pattern = "-lszip", replacement = "-lsz -laec", x = winlibs, fixed = TRUE)
-      patharch <- paste0(patharch, "-ucrt")
     }
   }
   
@@ -119,10 +125,15 @@ getHdf5Version <- function() {
 #' 
 #' @keywords internal
 .curlStatus <- function() {
-  settings_file <- system.file('include', 'libhdf5.settings', package = "Rhdf5lib")
-  libhdf5_settings <- readLines(settings_file)
-  line <- grep("Extra libraries", x = libhdf5_settings)
-  return(grepl(pattern = "-lcurl", x = libhdf5_settings[line]))
+  sysname <- Sys.info()['sysname']
+  if(sysname == "Windows") {
+    return(FALSE)
+  } else {
+    settings_file <- system.file('include', 'libhdf5.settings', package = "Rhdf5lib")
+    libhdf5_settings <- readLines(settings_file)
+    line <- grep("Extra libraries", x = libhdf5_settings)
+    return(grepl(pattern = "-lcurl", x = libhdf5_settings[line]))
+  }
 }
 
 #' Return the link flags depending upon the status of curl

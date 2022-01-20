@@ -6,11 +6,7 @@ mockOS <- mock(setNames("Windows", "sysname"),
                setNames("Linux", "sysname"),
                cycle = TRUE)
 stub(pkgconfig, what = "Sys.info", how = mockOS)
-if(!is.null(R.version$crt) && R.version$crt == "ucrt") {
-  stub(pkgconfig, what = "utils::shortPathName", how = "c:/foobar-ucrt")
-} else {
-  stub(pkgconfig, what = "utils::shortPathName", how = "c:/foobar")
-}
+stub(pkgconfig, what = "utils::shortPathName", how = "c:/foobar")
 
 ##  Windows
 expect_stdout(

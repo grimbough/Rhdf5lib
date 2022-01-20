@@ -1,10 +1,10 @@
 # locations in the installed package where we're going to copy 
 # the libraries and headers
 USER_INCLUDE_DIR=${R_PACKAGE_DIR}/include
-USER_LIB_DIR=${R_PACKAGE_DIR}/lib${R_ARCH}-ucrt/
+USER_LIB_DIR=${R_PACKAGE_DIR}/lib${R_ARCH}-ucrt
 
 PKG_CFLAGS = -I"${USER_INCLUDE_DIR}"
-PKG_LIBS = winlib${R_ARCH}-ucrt/libhdf5.a winlib${R_ARCH}-ucrt/libsz.a winlib${R_ARCH}-ucrt/libaec.a -lpsapi -lz
+PKG_LIBS = "${USER_LIB_DIR}"/libhdf5.a "${USER_LIB_DIR}"/libsz.a "${USER_LIB_DIR}"/libaec.a -lpsapi -lz
 
 .PHONY: all Rinstall
 

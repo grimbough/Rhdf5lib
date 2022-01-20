@@ -1,3 +1,11 @@
+Version 1.18
+=============
+
+New features:
+  
+  o Package now includes precompiled libraries for Windows built with the
+  UCRT toolchain for R-4.2
+
 Version 1.16
 =============
 

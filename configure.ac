@@ -160,36 +160,37 @@ PBTGZNAME=hdf5small_cxx_hl_1.10.7.tar.gz
 cd src
 if test -d ./${BASEPBNAME}; then 
 	echo 'found ' $BASEPBNAME ' header sources and tar archive;using what is there.'
+	cd ../
 else
 	echo "untarring $PBTGZNAME ...";
 	gunzip -dc ${PBTGZNAME} | tar xf -;
+
+  echo "building the szip library...";
+  cd ${BASEPBNAME}/szip;
+  ./configure --with-pic --enable-shared=no \
+      CC="${CC}" CFLAGS="${CFLAGS} ${CPICFLAGS}" CPPFLAGS="${CPPFLAGS}" \
+      AR="${AR}" RANLIB="${RANLIB}"
+  $MAKE
+  $MAKE install
+  SZIP_HOME=`pwd -P`/szip
+
+  echo "building the hdf5 library...";
+  cd ../;
+  ./configure --with-pic --enable-shared=no --enable-cxx --enable-hl \
+      --with-szlib=${SZIP_HOME} --with-zlib=${ZLIB_HOME} \
+      ${WITH_S3_VFD} \
+      CXX="${CXX}" CXXFLAGS="${CXXFLAGS} ${CXXPICFLAGS}" \
+      CC="${CC}" CFLAGS="${CFLAGS} ${CPICFLAGS}" \
+      CPPFLAGS="${CPPFLAGS}" LDFLAGS="${LDFLAGS}" \
+      AR="${AR}" RANLIB="${RANLIB}"
+  $MAKE lib
+  #echo "Make return value: $?"
+  AS_IF([ test "$?" != 0 ], 
+        [AC_MSG_ERROR("Failed to compiled the HDF5 library")], 
+        [echo test passed])
+  cd ../../
+  
 fi;
-
-echo "building the szip library...";
-cd ${BASEPBNAME}/szip;
-./configure --with-pic --enable-shared=no \
-    CC="${CC}" CFLAGS="${CFLAGS} ${CPICFLAGS}" CPPFLAGS="${CPPFLAGS}" \
-    AR="${AR}" RANLIB="${RANLIB}"
-$MAKE
-$MAKE install
-SZIP_HOME=`pwd -P`/szip
-
-
-echo "building the hdf5 library...";
-cd ../;
-./configure --with-pic --enable-shared=no --enable-cxx --enable-hl \
-    --with-szlib=${SZIP_HOME} --with-zlib=${ZLIB_HOME} \
-    ${WITH_S3_VFD} \
-    CXX="${CXX}" CXXFLAGS="${CXXFLAGS} ${CXXPICFLAGS}" \
-    CC="${CC}" CFLAGS="${CFLAGS} ${CPICFLAGS}" \
-    CPPFLAGS="${CPPFLAGS}" LDFLAGS="${LDFLAGS}" \
-    AR="${AR}" RANLIB="${RANLIB}"
-$MAKE lib
-#echo "Make return value: $?"
-AS_IF([ test "$?" != 0 ], 
-      [AC_MSG_ERROR("Failed to compiled the HDF5 library")], 
-      [echo test passed])
-cd ../../
 
 #update variables in Makevars
 HDF5_INCLUDE="${BASEPBNAME}/src"

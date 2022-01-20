@@ -691,7 +691,7 @@ SHELL'
 ac_subst_files=''
 ac_user_opts='
 enable_option_checking
-enable_LTO
+enable_lto
 with_zlib
 '
       ac_precious_vars='build_alias
@@ -3615,12 +3615,12 @@ fi
 
 fi
 
-# Check whether --enable-LTO was given.
-if test "${enable_LTO+set}" = set; then :
-  enableval=$enable_LTO;
+# Check whether --enable-lto was given.
+if test "${enable_lto+set}" = set; then :
+  enableval=$enable_lto;
 fi
 
-if test "x$enable_LTO" = "xno"; then :
+if test "x$enable_lto" = "xno"; then :
 
   CFLAGS=`echo ${CFLAGS} | sed 's/-flto//g'`
   CXXFLAGS=`echo ${CXXFLAGS} | sed 's/-flto//g'`
@@ -4261,38 +4261,39 @@ PBTGZNAME=hdf5small_cxx_hl_1.10.7.tar.gz
 cd src
 if test -d ./${BASEPBNAME}; then
 	echo 'found ' $BASEPBNAME ' header sources and tar archive;using what is there.'
+	cd ../
 else
 	echo "untarring $PBTGZNAME ...";
 	gunzip -dc ${PBTGZNAME} | tar xf -;
-fi;
 
-echo "building the szip library...";
-cd ${BASEPBNAME}/szip;
-./configure --with-pic --enable-shared=no \
-    CC="${CC}" CFLAGS="${CFLAGS} ${CPICFLAGS}" CPPFLAGS="${CPPFLAGS}" \
-    AR="${AR}" RANLIB="${RANLIB}"
-$MAKE
-$MAKE install
-SZIP_HOME=`pwd -P`/szip
+  echo "building the szip library...";
+  cd ${BASEPBNAME}/szip;
+  ./configure --with-pic --enable-shared=no \
+      CC="${CC}" CFLAGS="${CFLAGS} ${CPICFLAGS}" CPPFLAGS="${CPPFLAGS}" \
+      AR="${AR}" RANLIB="${RANLIB}"
+  $MAKE
+  $MAKE install
+  SZIP_HOME=`pwd -P`/szip
 
-
-echo "building the hdf5 library...";
-cd ../;
-./configure --with-pic --enable-shared=no --enable-cxx --enable-hl \
-    --with-szlib=${SZIP_HOME} --with-zlib=${ZLIB_HOME} \
-    ${WITH_S3_VFD} \
-    CXX="${CXX}" CXXFLAGS="${CXXFLAGS} ${CXXPICFLAGS}" \
-    CC="${CC}" CFLAGS="${CFLAGS} ${CPICFLAGS}" \
-    CPPFLAGS="${CPPFLAGS}" LDFLAGS="${LDFLAGS}" \
-    AR="${AR}" RANLIB="${RANLIB}"
-$MAKE lib
-#echo "Make return value: $?"
-if  test "$?" != 0 ; then :
+  echo "building the hdf5 library...";
+  cd ../;
+  ./configure --with-pic --enable-shared=no --enable-cxx --enable-hl \
+      --with-szlib=${SZIP_HOME} --with-zlib=${ZLIB_HOME} \
+      ${WITH_S3_VFD} \
+      CXX="${CXX}" CXXFLAGS="${CXXFLAGS} ${CXXPICFLAGS}" \
+      CC="${CC}" CFLAGS="${CFLAGS} ${CPICFLAGS}" \
+      CPPFLAGS="${CPPFLAGS}" LDFLAGS="${LDFLAGS}" \
+      AR="${AR}" RANLIB="${RANLIB}"
+  $MAKE lib
+  #echo "Make return value: $?"
+  if  test "$?" != 0 ; then :
   as_fn_error $? "\"Failed to compiled the HDF5 library\"" "$LINENO" 5
 else
   echo test passed
 fi
-cd ../../
+  cd ../../
+
+fi;
 
 #update variables in Makevars
 HDF5_INCLUDE="${BASEPBNAME}/src"

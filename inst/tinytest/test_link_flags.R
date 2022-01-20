@@ -6,12 +6,16 @@ mockOS <- mock(setNames("Windows", "sysname"),
                setNames("Linux", "sysname"),
                cycle = TRUE)
 stub(pkgconfig, what = "Sys.info", how = mockOS)
-stub(pkgconfig, what = "utils::shortPathName", how = "c:/foobar/")
+if(!is.null(R.version$crt) && R.version$crt == "ucrt") {
+  stub(pkgconfig, what = "utils::shortPathName", how = "c:/foobar-ucrt")
+} else {
+  stub(pkgconfig, what = "utils::shortPathName", how = "c:/foobar")
+}
 
 ##  Windows
 expect_stdout(
   pkgconfig(opt = "PKG_C_LIBS"),
-  pattern = "foobar/ -lhdf5"
+  pattern = "foobar -lhdf5"
 )
 ##  Non-Windows
 expect_stdout(
@@ -22,7 +26,7 @@ expect_stdout(
 ##  Windows
 expect_stdout(
   pkgconfig(opt = "PKG_CXX_LIBS"),
-  pattern = "foobar/ -lhdf5_cpp -lhdf5"
+  pattern = "foobar -lhdf5_cpp -lhdf5"
 )
 ##  Non-Windows
 expect_stdout(
@@ -33,7 +37,7 @@ expect_stdout(
 ##  Windows
 expect_stdout(
   pkgconfig(opt = "PKG_C_HL_LIBS"),
-  pattern = "foobar/ -lhdf5_hl -lhdf5"
+  pattern = "foobar -lhdf5_hl -lhdf5"
 )
 ##  Non-Windows
 expect_stdout(
@@ -44,7 +48,7 @@ expect_stdout(
 ##  Windows
 expect_stdout(
   pkgconfig(opt = "PKG_CXX_HL_LIBS"),
-  pattern = "foobar/ -lhdf5_hl_cpp -lhdf5_hl -lhdf5_cpp -lhdf5"
+  pattern = "foobar -lhdf5_hl_cpp -lhdf5_hl -lhdf5_cpp -lhdf5"
 )
 ##  Non-Windows
 expect_stdout(

@@ -14,7 +14,7 @@ ZLIB_INCLUDE=@ZLIB_INCLUDE@
 
 
 #expose headers in installed package include folder
-USER_INCLUDE = ${R_PACKAGE_DIR}/include
+USER_INCLUDE_DIR = ${R_PACKAGE_DIR}/include
 USER_LIB_DIR = ${R_PACKAGE_DIR}/lib${R_ARCH}/
 
 PKG_CPPFLAGS = -I${USER_INCLUDE_DIR} ${ZLIB_INCLUDE}
@@ -29,12 +29,12 @@ Rhdf5lib.o: copying
 
 #copy hdf5 library headers to package include
 copying:
-	mkdir -p "${USER_INCLUDE}"
-	cp "${HDF5_INCLUDE}/"*.h "${USER_INCLUDE}"
-	cp "${HDF5_CXX_INCLUDE}/"*.h "${USER_INCLUDE}"
-	cp "${HDF5_HL_INCLUDE}/"*.h "${USER_INCLUDE}"
-	cp "${HDF5_HL_CXX_INCLUDE}/"*.h "${USER_INCLUDE}"
-	cp "${HDF5_INCLUDE}/"libhdf5.settings "${USER_INCLUDE}"
+	mkdir -p "${USER_INCLUDE_DIR}"
+	cp "${HDF5_INCLUDE}/"*.h "${USER_INCLUDE_DIR}"
+	cp "${HDF5_CXX_INCLUDE}/"*.h "${USER_INCLUDE_DIR}"
+	cp "${HDF5_HL_INCLUDE}/"*.h "${USER_INCLUDE_DIR}"
+	cp "${HDF5_HL_CXX_INCLUDE}/"*.h "${USER_INCLUDE_DIR}"
+	cp "${HDF5_INCLUDE}/"libhdf5.settings "${USER_INCLUDE_DIR}"
 	mkdir -p "${USER_LIB_DIR}"
 	cp "${HDF5_LIB}" "${USER_LIB_DIR}"
 	cp "${HDF5_CXX_LIB}" "${USER_LIB_DIR}"

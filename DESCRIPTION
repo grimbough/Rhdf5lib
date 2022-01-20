@@ -25,4 +25,4 @@ BugReports: https://github.com/grimbough/Rhdf5lib
 SystemRequirements: GNU make
 Encoding: UTF-8
 biocViews: Infrastructure
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2

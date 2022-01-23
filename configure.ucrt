@@ -1,0 +1,15 @@
+#!/bin/sh
+
+#untar the lib
+BASEPBNAME="hdf5"
+PBTGZNAME=hdf5_headers_1.10.7.tar.gz
+cd src
+if test -d ${BASEPBNAME}; then 
+	echo 'found ' $BASEPBNAME ' header sources; using what is there.'
+else
+	echo "untarring $PBTGZNAME ...";
+	## we'll use Rscript to untar the file
+	"${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" -e "untar('wininclude/$PBTGZNAME')"
+fi;
+
+

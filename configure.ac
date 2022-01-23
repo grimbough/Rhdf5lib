@@ -178,6 +178,7 @@ else
   cd ../;
   ./configure --with-pic --enable-shared=no --enable-cxx --enable-hl \
       --with-szlib=${SZIP_HOME} --with-zlib=${ZLIB_HOME} \
+      --enable-tests=no --enable-tools=no 
       ${WITH_S3_VFD} \
       CXX="${CXX}" CXXFLAGS="${CXXFLAGS} ${CXXPICFLAGS}" \
       CC="${CC}" CFLAGS="${CFLAGS} ${CPICFLAGS}" \

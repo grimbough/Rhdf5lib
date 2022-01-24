@@ -237,3 +237,65 @@ jobs:
          xfun::session_info(packages = "rhdf5")
          testthat::test_package('rhdf5', reporter = "summary")
         shell: Rscript {0}
+
+
+  test4:
+    runs-on: ubuntu-20.04
+    name: R-4.2 / Ubuntu 20.04
+
+    steps:
+      - name: Configure git
+        run: |
+          git config --global core.autocrlf false
+          git config --global user.email "ghau@example.com"
+          git config --global user.name "GitHub Actions User"
+      - uses: actions/checkout@v1
+          
+      - name: Setup R
+        uses: r-lib/actions/setup-r@v1
+        with:
+          r-version: '4.2'
+          use-public-rspm: true
+          Ncpus: 2
+          
+      - uses: r-lib/actions/setup-pandoc@v1
+
+      - name: Install dependencies
+        run: |
+          install.packages(c('BiocManager', 'xfun', 'remotes', 'devtools', 'testthat'), quiet = TRUE)
+          library(remotes)
+          update(dev_package_deps(), quiet = TRUE)
+        shell: Rscript {0}
+        
+      - name: Install devel package 
+        if: always()
+        run: |
+          devtools::install()
+        shell: Rscript {0}
+        
+      - name: Install rhdf5filters packages 
+        if: always()
+        run: |
+         BiocManager::install('rhdf5filters', force = TRUE, type = "source", ask = FALSE, quiet = FALSE)
+        shell: Rscript {0}
+        
+      - name: Install rhdf5 dependencies
+        if: always()
+        run: |
+          db <- available.packages(repos = paste0("https://packagemanager.rstudio.com/bioconductor/packages/", BiocManager::version(), "/bioc"))
+          pkgs <- tools::package_dependencies(packages = "rhdf5", db = db, which = "all")
+          BiocManager::install(pkg, ask = FALSE)
+        shell: Rscript {0}
+        
+      - name: Install dependent packages 
+        if: always()
+        run: |
+         BiocManager::install('grimbough/rhdf5', INSTALL_opts="--install-tests", force = TRUE, type = "source", ask = FALSE, quiet = FALSE)
+        shell: Rscript {0}
+        
+      - name: Test dependent packages 
+        if: always()
+        run: |
+         xfun::session_info(packages = "rhdf5")
+         testthat::test_package('rhdf5', reporter = "summary")
+        shell: Rscript {0}

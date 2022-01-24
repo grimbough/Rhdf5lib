@@ -627,6 +627,7 @@ LIBOBJS
 ZLIB_INCLUDE
 ZLIB_LIB
 ZLIB_HOME
+AEC_LIB
 SZIP_LIB
 HDF5_HL_CXX_LIB
 HDF5_HL_LIB
@@ -692,6 +693,7 @@ ac_subst_files=''
 ac_user_opts='
 enable_option_checking
 enable_lto
+enable_sharedlib_rpath
 with_zlib
 '
       ac_precious_vars='build_alias
@@ -1327,6 +1329,8 @@ Optional Features:
   --disable-FEATURE       do not include FEATURE (same as --enable-FEATURE=no)
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
 
+  --disable-sharedlib-rpath
+                          Disable use of the '-Wl,-rpath' linker option
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
@@ -3215,23 +3219,21 @@ ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ex
 ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
 
-CC_BASENAME="`echo $CC | cut -f1 -d' '`"
+###########################
 
-#AX_CHECK_COMPILE_FLAG([-w], [CFLAGS="$CFLAGS -w"; CXXFLAGS="$CXXFLAGS -w"])
+CC_BASENAME="`echo $CC | cut -f1 -d' '`"
 
 if test "X$CC_BASENAME" = "Xgcc"; then
   echo "COMPILER = $CC_BASENAME"
-  ## we supress C warnings that trigger a WARNING from R CMD check
-  ## we aren't going to edit the HDF5 source code much
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -Wno-unused-variable -Wno-unused-parameter" >&5
-$as_echo_n "checking whether C++ compiler accepts -Wno-unused-variable -Wno-unused-parameter... " >&6; }
-if ${ax_cv_check_cxxflags___Wno_unused_variable__Wno_unused_parameter+:} false; then :
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -w" >&5
+$as_echo_n "checking whether C++ compiler accepts -w... " >&6; }
+if ${ax_cv_check_cxxflags___w+:} false; then :
   $as_echo_n "(cached) " >&6
 else
 
   ax_check_save_flags=$CXXFLAGS
-  CXXFLAGS="$CXXFLAGS  -Wno-unused-variable -Wno-unused-parameter"
+  CXXFLAGS="$CXXFLAGS  -w"
   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -3244,376 +3246,40 @@ main ()
 }
 _ACEOF
 if ac_fn_cxx_try_compile "$LINENO"; then :
-  ax_cv_check_cxxflags___Wno_unused_variable__Wno_unused_parameter=yes
+  ax_cv_check_cxxflags___w=yes
 else
-  ax_cv_check_cxxflags___Wno_unused_variable__Wno_unused_parameter=no
+  ax_cv_check_cxxflags___w=no
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
   CXXFLAGS=$ax_check_save_flags
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___Wno_unused_variable__Wno_unused_parameter" >&5
-$as_echo "$ax_cv_check_cxxflags___Wno_unused_variable__Wno_unused_parameter" >&6; }
-if test "x$ax_cv_check_cxxflags___Wno_unused_variable__Wno_unused_parameter" = xyes; then :
-  CFLAGS="$CFLAGS -Wno-unused-variable -Wno-unused-parameter"
-else
-  :
-fi
-
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -Wno-cast-qual" >&5
-$as_echo_n "checking whether C++ compiler accepts -Wno-cast-qual... " >&6; }
-if ${ax_cv_check_cxxflags___Wno_cast_qual+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-
-  ax_check_save_flags=$CXXFLAGS
-  CXXFLAGS="$CXXFLAGS  -Wno-cast-qual"
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main ()
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_compile "$LINENO"; then :
-  ax_cv_check_cxxflags___Wno_cast_qual=yes
-else
-  ax_cv_check_cxxflags___Wno_cast_qual=no
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-  CXXFLAGS=$ax_check_save_flags
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___Wno_cast_qual" >&5
-$as_echo "$ax_cv_check_cxxflags___Wno_cast_qual" >&6; }
-if test "x$ax_cv_check_cxxflags___Wno_cast_qual" = xyes; then :
-  CFLAGS="$CFLAGS -Wno-cast-qual"
-else
-  :
-fi
-
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -Wno-pedantic -Wno-extra" >&5
-$as_echo_n "checking whether C++ compiler accepts -Wno-pedantic -Wno-extra... " >&6; }
-if ${ax_cv_check_cxxflags___Wno_pedantic__Wno_extra+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-
-  ax_check_save_flags=$CXXFLAGS
-  CXXFLAGS="$CXXFLAGS  -Wno-pedantic -Wno-extra"
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main ()
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_compile "$LINENO"; then :
-  ax_cv_check_cxxflags___Wno_pedantic__Wno_extra=yes
-else
-  ax_cv_check_cxxflags___Wno_pedantic__Wno_extra=no
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-  CXXFLAGS=$ax_check_save_flags
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___Wno_pedantic__Wno_extra" >&5
-$as_echo "$ax_cv_check_cxxflags___Wno_pedantic__Wno_extra" >&6; }
-if test "x$ax_cv_check_cxxflags___Wno_pedantic__Wno_extra" = xyes; then :
-  CFLAGS="$CFLAGS -Wno-pedantic -Wno-extra"
-else
-  :
-fi
-
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -Wno-format-overflow -Wno-format-truncation" >&5
-$as_echo_n "checking whether C++ compiler accepts -Wno-format-overflow -Wno-format-truncation... " >&6; }
-if ${ax_cv_check_cxxflags___Wno_format_overflow__Wno_format_truncation+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-
-  ax_check_save_flags=$CXXFLAGS
-  CXXFLAGS="$CXXFLAGS  -Wno-format-overflow -Wno-format-truncation"
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main ()
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_compile "$LINENO"; then :
-  ax_cv_check_cxxflags___Wno_format_overflow__Wno_format_truncation=yes
-else
-  ax_cv_check_cxxflags___Wno_format_overflow__Wno_format_truncation=no
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-  CXXFLAGS=$ax_check_save_flags
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___Wno_format_overflow__Wno_format_truncation" >&5
-$as_echo "$ax_cv_check_cxxflags___Wno_format_overflow__Wno_format_truncation" >&6; }
-if test "x$ax_cv_check_cxxflags___Wno_format_overflow__Wno_format_truncation" = xyes; then :
-  CFLAGS="$CFLAGS -Wno-format-overflow -Wno-format-truncation"
-else
-  :
-fi
-
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -Wno-stringop-overflow -Wno-overlength-strings -Wno-stringop-truncation" >&5
-$as_echo_n "checking whether C++ compiler accepts -Wno-stringop-overflow -Wno-overlength-strings -Wno-stringop-truncation... " >&6; }
-if ${ax_cv_check_cxxflags___Wno_stringop_overflow__Wno_overlength_strings__Wno_stringop_truncation+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-
-  ax_check_save_flags=$CXXFLAGS
-  CXXFLAGS="$CXXFLAGS  -Wno-stringop-overflow -Wno-overlength-strings -Wno-stringop-truncation"
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main ()
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_compile "$LINENO"; then :
-  ax_cv_check_cxxflags___Wno_stringop_overflow__Wno_overlength_strings__Wno_stringop_truncation=yes
-else
-  ax_cv_check_cxxflags___Wno_stringop_overflow__Wno_overlength_strings__Wno_stringop_truncation=no
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-  CXXFLAGS=$ax_check_save_flags
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___Wno_stringop_overflow__Wno_overlength_strings__Wno_stringop_truncation" >&5
-$as_echo "$ax_cv_check_cxxflags___Wno_stringop_overflow__Wno_overlength_strings__Wno_stringop_truncation" >&6; }
-if test "x$ax_cv_check_cxxflags___Wno_stringop_overflow__Wno_overlength_strings__Wno_stringop_truncation" = xyes; then :
-  CFLAGS="$CFLAGS -Wno-stringop-overflow -Wno-overlength-strings -Wno-stringop-truncation"
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___w" >&5
+$as_echo "$ax_cv_check_cxxflags___w" >&6; }
+if test "x$ax_cv_check_cxxflags___w" = xyes; then :
+  CFLAGS="$CFLAGS -w"; CXXFLAGS="$CXXFLAGS -w"
 else
   :
 fi
 
 fi
 
-if test "X$CC_BASENAME" = "Xclang"; then
-  echo "COMPILER = $CC_BASENAME"
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -Wno-self-assign" >&5
-$as_echo_n "checking whether C++ compiler accepts -Wno-self-assign... " >&6; }
-if ${ax_cv_check_cxxflags___Wno_self_assign+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
+#if test "X$CC_BASENAME" = "Xclang"; then
+#  echo "COMPILER = $CC_BASENAME"
+#  AX_CHECK_COMPILE_FLAG([-Wno-self-assign],
+#                        [CFLAGS="$CFLAGS -Wno-self-assign"])
+#  AX_CHECK_COMPILE_FLAG([-Wno-bitwise-op-parentheses],
+#                        [CFLAGS="$CFLAGS -Wno-bitwise-op-parentheses"])
+#  AX_CHECK_COMPILE_FLAG([-Wno-cast-align -Wno-cast-qual],
+#                        [CFLAGS="$CFLAGS -Wno-cast-align -Wno-cast-qual"])
+#  AX_CHECK_COMPILE_FLAG([-Wno-double-promotion],
+#                        [CFLAGS="$CFLAGS -Wno-double-promotion"])
+#  AX_CHECK_COMPILE_FLAG([-Wno-implicit-fallthrough],
+#                        [CFLAGS="$CFLAGS -Wno-implicit-fallthrough"])
+#  AX_CHECK_COMPILE_FLAG([-Wno-sometimes-uninitialized],
+#                        [CFLAGS="$CFLAGS -Wno-sometimes-uninitialized"])
+#fi
 
-  ax_check_save_flags=$CXXFLAGS
-  CXXFLAGS="$CXXFLAGS  -Wno-self-assign"
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main ()
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_compile "$LINENO"; then :
-  ax_cv_check_cxxflags___Wno_self_assign=yes
-else
-  ax_cv_check_cxxflags___Wno_self_assign=no
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-  CXXFLAGS=$ax_check_save_flags
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___Wno_self_assign" >&5
-$as_echo "$ax_cv_check_cxxflags___Wno_self_assign" >&6; }
-if test "x$ax_cv_check_cxxflags___Wno_self_assign" = xyes; then :
-  CFLAGS="$CFLAGS -Wno-self-assign"
-else
-  :
-fi
-
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -Wno-bitwise-op-parentheses" >&5
-$as_echo_n "checking whether C++ compiler accepts -Wno-bitwise-op-parentheses... " >&6; }
-if ${ax_cv_check_cxxflags___Wno_bitwise_op_parentheses+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-
-  ax_check_save_flags=$CXXFLAGS
-  CXXFLAGS="$CXXFLAGS  -Wno-bitwise-op-parentheses"
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main ()
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_compile "$LINENO"; then :
-  ax_cv_check_cxxflags___Wno_bitwise_op_parentheses=yes
-else
-  ax_cv_check_cxxflags___Wno_bitwise_op_parentheses=no
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-  CXXFLAGS=$ax_check_save_flags
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___Wno_bitwise_op_parentheses" >&5
-$as_echo "$ax_cv_check_cxxflags___Wno_bitwise_op_parentheses" >&6; }
-if test "x$ax_cv_check_cxxflags___Wno_bitwise_op_parentheses" = xyes; then :
-  CFLAGS="$CFLAGS -Wno-bitwise-op-parentheses"
-else
-  :
-fi
-
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -Wno-cast-align -Wno-cast-qual" >&5
-$as_echo_n "checking whether C++ compiler accepts -Wno-cast-align -Wno-cast-qual... " >&6; }
-if ${ax_cv_check_cxxflags___Wno_cast_align__Wno_cast_qual+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-
-  ax_check_save_flags=$CXXFLAGS
-  CXXFLAGS="$CXXFLAGS  -Wno-cast-align -Wno-cast-qual"
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main ()
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_compile "$LINENO"; then :
-  ax_cv_check_cxxflags___Wno_cast_align__Wno_cast_qual=yes
-else
-  ax_cv_check_cxxflags___Wno_cast_align__Wno_cast_qual=no
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-  CXXFLAGS=$ax_check_save_flags
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___Wno_cast_align__Wno_cast_qual" >&5
-$as_echo "$ax_cv_check_cxxflags___Wno_cast_align__Wno_cast_qual" >&6; }
-if test "x$ax_cv_check_cxxflags___Wno_cast_align__Wno_cast_qual" = xyes; then :
-  CFLAGS="$CFLAGS -Wno-cast-align -Wno-cast-qual"
-else
-  :
-fi
-
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -Wno-double-promotion" >&5
-$as_echo_n "checking whether C++ compiler accepts -Wno-double-promotion... " >&6; }
-if ${ax_cv_check_cxxflags___Wno_double_promotion+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-
-  ax_check_save_flags=$CXXFLAGS
-  CXXFLAGS="$CXXFLAGS  -Wno-double-promotion"
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main ()
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_compile "$LINENO"; then :
-  ax_cv_check_cxxflags___Wno_double_promotion=yes
-else
-  ax_cv_check_cxxflags___Wno_double_promotion=no
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-  CXXFLAGS=$ax_check_save_flags
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___Wno_double_promotion" >&5
-$as_echo "$ax_cv_check_cxxflags___Wno_double_promotion" >&6; }
-if test "x$ax_cv_check_cxxflags___Wno_double_promotion" = xyes; then :
-  CFLAGS="$CFLAGS -Wno-double-promotion"
-else
-  :
-fi
-
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -Wno-implicit-fallthrough" >&5
-$as_echo_n "checking whether C++ compiler accepts -Wno-implicit-fallthrough... " >&6; }
-if ${ax_cv_check_cxxflags___Wno_implicit_fallthrough+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-
-  ax_check_save_flags=$CXXFLAGS
-  CXXFLAGS="$CXXFLAGS  -Wno-implicit-fallthrough"
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main ()
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_compile "$LINENO"; then :
-  ax_cv_check_cxxflags___Wno_implicit_fallthrough=yes
-else
-  ax_cv_check_cxxflags___Wno_implicit_fallthrough=no
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-  CXXFLAGS=$ax_check_save_flags
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___Wno_implicit_fallthrough" >&5
-$as_echo "$ax_cv_check_cxxflags___Wno_implicit_fallthrough" >&6; }
-if test "x$ax_cv_check_cxxflags___Wno_implicit_fallthrough" = xyes; then :
-  CFLAGS="$CFLAGS -Wno-implicit-fallthrough"
-else
-  :
-fi
-
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -Wno-sometimes-uninitialized" >&5
-$as_echo_n "checking whether C++ compiler accepts -Wno-sometimes-uninitialized... " >&6; }
-if ${ax_cv_check_cxxflags___Wno_sometimes_uninitialized+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-
-  ax_check_save_flags=$CXXFLAGS
-  CXXFLAGS="$CXXFLAGS  -Wno-sometimes-uninitialized"
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main ()
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_compile "$LINENO"; then :
-  ax_cv_check_cxxflags___Wno_sometimes_uninitialized=yes
-else
-  ax_cv_check_cxxflags___Wno_sometimes_uninitialized=no
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-  CXXFLAGS=$ax_check_save_flags
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___Wno_sometimes_uninitialized" >&5
-$as_echo "$ax_cv_check_cxxflags___Wno_sometimes_uninitialized" >&6; }
-if test "x$ax_cv_check_cxxflags___Wno_sometimes_uninitialized" = xyes; then :
-  CFLAGS="$CFLAGS -Wno-sometimes-uninitialized"
-else
-  :
-fi
-
-fi
+###########################
 
 # Check whether --enable-lto was given.
 if test "${enable_lto+set}" = set; then :
@@ -3626,6 +3292,36 @@ if test "x$enable_lto" = "xno"; then :
   CXXFLAGS=`echo ${CXXFLAGS} | sed 's/-flto//g'`
 
 fi
+
+###########################
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to use -Wl,-rpath setting" >&5
+$as_echo_n "checking whether to use -Wl,-rpath setting... " >&6; }
+# Check whether --enable-sharedlib-rpath was given.
+if test "${enable_sharedlib_rpath+set}" = set; then :
+  enableval=$enable_sharedlib_rpath;  if test "x$enableval" = "xyes" ; then
+                SHAREDLIB_RPATH="--enable-sharedlib-rpath"
+                { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+              elif test "x$enableval" = "xno" ; then
+                SHAREDLIB_RPATH="--disable-sharedlib-rpath"
+                { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+              else
+                echo
+                echo "Error!"
+                echo "rpath code didn't work!"
+                exit -1
+             fi
+else
+   SHAREDLIB_RPATH="--enable-sharedlib-rpath"
+               { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+
+fi
+
+
+############################
 
 
 ### 'checking for zlib... ';
@@ -4267,30 +3963,35 @@ else
 	gunzip -dc ${PBTGZNAME} | tar xf -;
 
   echo "building the szip library...";
-  cd ${BASEPBNAME}/szip;
-  ./configure --with-pic --enable-shared=no \
+  cd ${BASEPBNAME}/libaec-1.0.4/build;
+  mkdir -p `pwd -P`/szip
+  ../configure --with-pic --enable-shared=no --prefix=`pwd -P`/szip \
       CC="${CC}" CFLAGS="${CFLAGS} ${CPICFLAGS}" CPPFLAGS="${CPPFLAGS}" \
       AR="${AR}" RANLIB="${RANLIB}"
   $MAKE
   $MAKE install
   SZIP_HOME=`pwd -P`/szip
+  LIBS=-laec
 
+  echo $LIBS
   echo "building the hdf5 library...";
-  cd ../;
+  cd ../../;
   ./configure --with-pic --enable-shared=no --enable-cxx --enable-hl \
       --with-szlib=${SZIP_HOME} --with-zlib=${ZLIB_HOME} \
-      --enable-tests=no --enable-tools=no
+      --enable-tests=no --enable-tools=no \
       ${WITH_S3_VFD} \
+      "${SHAREDLIB_RPATH}" \
       CXX="${CXX}" CXXFLAGS="${CXXFLAGS} ${CXXPICFLAGS}" \
       CC="${CC}" CFLAGS="${CFLAGS} ${CPICFLAGS}" \
       CPPFLAGS="${CPPFLAGS}" LDFLAGS="${LDFLAGS}" \
-      AR="${AR}" RANLIB="${RANLIB}"
+      AR="${AR}" RANLIB="${RANLIB}" LIBS="${LIBS}"
   $MAKE lib
   #echo "Make return value: $?"
   if  test "$?" != 0 ; then :
-  as_fn_error $? "\"Failed to compiled the HDF5 library\"" "$LINENO" 5
+  as_fn_error $? "\"failed to build the HDF5 library\"" "$LINENO" 5
 else
-  echo test passed
+  { $as_echo "$as_me:${as_lineno-$LINENO}: \"HDF5 built successfully\"" >&5
+$as_echo "$as_me: \"HDF5 built successfully\"" >&6;}
 fi
   cd ../../
 
@@ -4318,7 +4019,9 @@ HDF5_LIB="${BASEPBNAME}/src/.libs/libhdf5.a"
 HDF5_CXX_LIB="${BASEPBNAME}/c++/src/.libs/libhdf5_cpp.a"
 HDF5_HL_LIB="${BASEPBNAME}/hl/src/.libs/libhdf5_hl.a"
 HDF5_HL_CXX_LIB="${BASEPBNAME}/hl/c++/src/.libs/libhdf5_hl_cpp.a"
-SZIP_LIB="${BASEPBNAME}/szip/src/.libs/libsz.a"
+SZIP_LIB="${BASEPBNAME}/libaec-1.0.4/build/szip/lib/libsz.a"
+AEC_LIB="${BASEPBNAME}/libaec-1.0.4/build/szip/lib/libaec.a"
+
 
 
 
@@ -4339,6 +4042,8 @@ $as_echo "$as_me:    HDF5_HL_LIB=${HDF5_HL_LIB}" >&6;}
 $as_echo "$as_me:    HDF5_HL_CXX_LIB=${HDF5_HL_CXX_LIB}" >&6;}
 { $as_echo "$as_me:${as_lineno-$LINENO}:    SZIP_LIB=${SZIP_LIB}" >&5
 $as_echo "$as_me:    SZIP_LIB=${SZIP_LIB}" >&6;}
+{ $as_echo "$as_me:${as_lineno-$LINENO}:    AEC_LIB=${AEC_LIB}" >&5
+$as_echo "$as_me:    AEC_LIB=${AEC_LIB}" >&6;}
 
 ac_config_files="$ac_config_files src/Makevars"
 

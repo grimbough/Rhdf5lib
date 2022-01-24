@@ -59,8 +59,8 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "
                               sprintf('-L%s -lhdf5 %s', 
                                       patharch, winlibs)
                             }, {
-                              sprintf('"%s/libhdf5.a" "%s/libsz.a" %s', 
-                                      patharch, patharch, .getDynamicLinks())
+                              sprintf('"%s/libhdf5.a" "%s/libsz.a" "%s/libaec.a" %s', 
+                                      patharch, patharch, patharch, .getDynamicLinks())
                             }
                      )
                    }, 
@@ -70,8 +70,8 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "
                               sprintf('-L%s -lhdf5_cpp -lhdf5 %s', 
                                       patharch, winlibs)
                             }, {
-                              sprintf('"%s/libhdf5_cpp.a" "%s/libhdf5.a" "%s/libsz.a" %s',
-                                      patharch, patharch, patharch, .getDynamicLinks())
+                              sprintf('"%s/libhdf5_cpp.a" "%s/libhdf5.a" "%s/libsz.a" "%s/libaec.a" %s',
+                                      patharch, patharch, patharch, patharch, .getDynamicLinks())
                             }
                      )
                    },
@@ -81,8 +81,8 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "
                               sprintf('-L%s -lhdf5_hl -lhdf5 %s', 
                                       patharch, winlibs)
                             }, {
-                              sprintf('"%s/libhdf5_hl.a" "%s/libhdf5.a" "%s/libsz.a" %s', 
-                                      patharch, patharch, patharch, .getDynamicLinks())
+                              sprintf('"%s/libhdf5_hl.a" "%s/libhdf5.a" "%s/libsz.a" "%s/libaec.a" %s', 
+                                      patharch, patharch, patharch, patharch, .getDynamicLinks())
                             }
                      )
                    }, 
@@ -92,8 +92,8 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "
                               sprintf('-L%s -lhdf5_hl_cpp -lhdf5_hl -lhdf5_cpp -lhdf5 %s', 
                                       patharch, winlibs)
                             }, {
-                              sprintf('"%s/libhdf5_hl_cpp.a" "%s/libhdf5_hl.a" "%s/libhdf5_cpp.a" "%s/libhdf5.a" "%s/libsz.a" %s',
-                                      patharch, patharch, patharch, patharch, patharch, .getDynamicLinks())
+                              sprintf('"%s/libhdf5_hl_cpp.a" "%s/libhdf5_hl.a" "%s/libhdf5_cpp.a" "%s/libhdf5.a" "%s/libsz.a" "%s/libaec.a" %s',
+                                      patharch, patharch, patharch, patharch, patharch, patharch, .getDynamicLinks())
                             }
                      )
                    }

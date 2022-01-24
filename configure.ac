@@ -32,43 +32,34 @@ dnl Checks for programs.
 AC_PROG_CC
 AC_PROG_CXX
 
+###########################
+
 CC_BASENAME="`echo $CC | cut -f1 -d' '`"
 
-dnl hdf5 spews loads of errors.  Use -w to suppress these if supported
-#AX_CHECK_COMPILE_FLAG([-w], [CFLAGS="$CFLAGS -w"; CXXFLAGS="$CXXFLAGS -w"])
-
-dnl specifically suppress warnings R decides are "Significant" and produces warnings in R CMD check
+dnl hdf5 spews loads of errors.  Use -w to suppress these if we're using GCC
 if test "X$CC_BASENAME" = "Xgcc"; then
   echo "COMPILER = $CC_BASENAME"
-  ## we supress C warnings that trigger a WARNING from R CMD check 
-  ## we aren't going to edit the HDF5 source code much
-  AX_CHECK_COMPILE_FLAG([-Wno-unused-variable -Wno-unused-parameter], 
-                        [CFLAGS="$CFLAGS -Wno-unused-variable -Wno-unused-parameter"])
-  AX_CHECK_COMPILE_FLAG([-Wno-cast-qual], 
-                        [CFLAGS="$CFLAGS -Wno-cast-qual"])
-  AX_CHECK_COMPILE_FLAG([-Wno-pedantic -Wno-extra], 
-                        [CFLAGS="$CFLAGS -Wno-pedantic -Wno-extra"])
-  AX_CHECK_COMPILE_FLAG([-Wno-format-overflow -Wno-format-truncation], 
-                        [CFLAGS="$CFLAGS -Wno-format-overflow -Wno-format-truncation"])
-  AX_CHECK_COMPILE_FLAG([-Wno-stringop-overflow -Wno-overlength-strings -Wno-stringop-truncation], 
-                        [CFLAGS="$CFLAGS -Wno-stringop-overflow -Wno-overlength-strings -Wno-stringop-truncation"])
+  AX_CHECK_COMPILE_FLAG([-w], [CFLAGS="$CFLAGS -w"; CXXFLAGS="$CXXFLAGS -w"])
 fi
 
-if test "X$CC_BASENAME" = "Xclang"; then
-  echo "COMPILER = $CC_BASENAME"
-  AX_CHECK_COMPILE_FLAG([-Wno-self-assign], 
-                        [CFLAGS="$CFLAGS -Wno-self-assign"]) 
-  AX_CHECK_COMPILE_FLAG([-Wno-bitwise-op-parentheses], 
-                        [CFLAGS="$CFLAGS -Wno-bitwise-op-parentheses"])
-  AX_CHECK_COMPILE_FLAG([-Wno-cast-align -Wno-cast-qual], 
-                        [CFLAGS="$CFLAGS -Wno-cast-align -Wno-cast-qual"])
-  AX_CHECK_COMPILE_FLAG([-Wno-double-promotion], 
-                        [CFLAGS="$CFLAGS -Wno-double-promotion"])
-  AX_CHECK_COMPILE_FLAG([-Wno-implicit-fallthrough], 
-                        [CFLAGS="$CFLAGS -Wno-implicit-fallthrough"])
-  AX_CHECK_COMPILE_FLAG([-Wno-sometimes-uninitialized], 
-                        [CFLAGS="$CFLAGS -Wno-sometimes-uninitialized"])
-fi
+dnl specifically suppress warnings R decides are "Significant" and produces warnings in R CMD check
+#if test "X$CC_BASENAME" = "Xclang"; then
+#  echo "COMPILER = $CC_BASENAME"
+#  AX_CHECK_COMPILE_FLAG([-Wno-self-assign], 
+#                        [CFLAGS="$CFLAGS -Wno-self-assign"]) 
+#  AX_CHECK_COMPILE_FLAG([-Wno-bitwise-op-parentheses], 
+#                        [CFLAGS="$CFLAGS -Wno-bitwise-op-parentheses"])
+#  AX_CHECK_COMPILE_FLAG([-Wno-cast-align -Wno-cast-qual], 
+#                        [CFLAGS="$CFLAGS -Wno-cast-align -Wno-cast-qual"])
+#  AX_CHECK_COMPILE_FLAG([-Wno-double-promotion], 
+#                        [CFLAGS="$CFLAGS -Wno-double-promotion"])
+#  AX_CHECK_COMPILE_FLAG([-Wno-implicit-fallthrough], 
+#                        [CFLAGS="$CFLAGS -Wno-implicit-fallthrough"])
+#  AX_CHECK_COMPILE_FLAG([-Wno-sometimes-uninitialized], 
+#                        [CFLAGS="$CFLAGS -Wno-sometimes-uninitialized"])
+#fi
+
+###########################
 
 dnl remove LTO compiler flags if requested
 AC_ARG_ENABLE([lto])
@@ -76,6 +67,30 @@ AS_IF([test "x$enable_lto" = "xno"], [
   CFLAGS=`echo ${CFLAGS} | sed 's/-flto//g'`
   CXXFLAGS=`echo ${CXXFLAGS} | sed 's/-flto//g'`
 ])
+
+###########################
+
+AC_MSG_CHECKING([whether to use -Wl,-rpath setting])
+AC_ARG_ENABLE([sharedlib-rpath],
+              [AS_HELP_STRING([--disable-sharedlib-rpath],
+               [Disable use of the '-Wl,-rpath' linker option])],
+              [ if test "x$enableval" = "xyes" ; then
+                SHAREDLIB_RPATH="--enable-sharedlib-rpath"
+                AC_MSG_RESULT([yes])
+              elif test "x$enableval" = "xno" ; then
+                SHAREDLIB_RPATH="--disable-sharedlib-rpath"
+                AC_MSG_RESULT([no])
+              else
+                echo
+                echo "Error!"
+                echo "rpath code didn't work!"
+                exit -1
+             fi],
+             [ SHAREDLIB_RPATH="--enable-sharedlib-rpath"
+               AC_MSG_RESULT([yes]) ]
+)
+
+############################
 
 
 ### 'checking for zlib... ';
@@ -166,29 +181,33 @@ else
 	gunzip -dc ${PBTGZNAME} | tar xf -;
 
   echo "building the szip library...";
-  cd ${BASEPBNAME}/szip;
-  ./configure --with-pic --enable-shared=no \
+  cd ${BASEPBNAME}/libaec-1.0.4/build;
+  mkdir -p `pwd -P`/szip
+  ../configure --with-pic --enable-shared=no --prefix=`pwd -P`/szip \
       CC="${CC}" CFLAGS="${CFLAGS} ${CPICFLAGS}" CPPFLAGS="${CPPFLAGS}" \
       AR="${AR}" RANLIB="${RANLIB}"
   $MAKE
   $MAKE install
   SZIP_HOME=`pwd -P`/szip
+  LIBS=-laec
 
+  echo $LIBS
   echo "building the hdf5 library...";
-  cd ../;
+  cd ../../;
   ./configure --with-pic --enable-shared=no --enable-cxx --enable-hl \
       --with-szlib=${SZIP_HOME} --with-zlib=${ZLIB_HOME} \
-      --enable-tests=no --enable-tools=no 
+      --enable-tests=no --enable-tools=no \
       ${WITH_S3_VFD} \
+      "${SHAREDLIB_RPATH}" \
       CXX="${CXX}" CXXFLAGS="${CXXFLAGS} ${CXXPICFLAGS}" \
       CC="${CC}" CFLAGS="${CFLAGS} ${CPICFLAGS}" \
       CPPFLAGS="${CPPFLAGS}" LDFLAGS="${LDFLAGS}" \
-      AR="${AR}" RANLIB="${RANLIB}"
+      AR="${AR}" RANLIB="${RANLIB}" LIBS="${LIBS}"
   $MAKE lib
   #echo "Make return value: $?"
   AS_IF([ test "$?" != 0 ], 
-        [AC_MSG_ERROR("Failed to compiled the HDF5 library")], 
-        [echo test passed])
+        [AC_MSG_ERROR("failed to build the HDF5 library")], 
+        [AC_MSG_NOTICE("HDF5 built successfully")])
   cd ../../
   
 fi;
@@ -211,13 +230,15 @@ HDF5_LIB="${BASEPBNAME}/src/.libs/libhdf5.a"
 HDF5_CXX_LIB="${BASEPBNAME}/c++/src/.libs/libhdf5_cpp.a"
 HDF5_HL_LIB="${BASEPBNAME}/hl/src/.libs/libhdf5_hl.a"
 HDF5_HL_CXX_LIB="${BASEPBNAME}/hl/c++/src/.libs/libhdf5_hl_cpp.a"
-SZIP_LIB="${BASEPBNAME}/szip/src/.libs/libsz.a"
+SZIP_LIB="${BASEPBNAME}/libaec-1.0.4/build/szip/lib/libsz.a"
+AEC_LIB="${BASEPBNAME}/libaec-1.0.4/build/szip/lib/libaec.a"
 
 AC_SUBST(HDF5_LIB)
 AC_SUBST(HDF5_CXX_LIB)
 AC_SUBST(HDF5_HL_LIB)
 AC_SUBST(HDF5_HL_CXX_LIB)
 AC_SUBST(SZIP_LIB)
+AC_SUBST(AEC_LIB)
 AC_SUBST(ZLIB_HOME)
 AC_SUBST(ZLIB_LIB)
 AC_SUBST(ZLIB_INCLUDE)
@@ -227,6 +248,7 @@ AC_MSG_NOTICE([   HDF5_CXX_LIB=${HDF5_CXX_LIB}])
 AC_MSG_NOTICE([   HDF5_HL_LIB=${HDF5_HL_LIB}])
 AC_MSG_NOTICE([   HDF5_HL_CXX_LIB=${HDF5_HL_CXX_LIB}])
 AC_MSG_NOTICE([   SZIP_LIB=${SZIP_LIB}])
+AC_MSG_NOTICE([   AEC_LIB=${AEC_LIB}])
 
 AC_CONFIG_FILES([src/Makevars])
 

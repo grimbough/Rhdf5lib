@@ -96,3 +96,10 @@ jobs:
         with:
           name: ${{ matrix.config.os }}-r-${{ matrix.config.r }}-results
           path: check/*.Rcheck/00install.out
+          
+      - name: Upload check results
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@master
+        with:
+          name: ${{ matrix.config.os }}-${{ matrix.config.r }}-hdf5_config.log
+          path: check/*.Rcheck/00_pkg_src/Rhdf5lib/src/hdf5/config.log

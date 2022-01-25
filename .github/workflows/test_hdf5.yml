@@ -281,7 +281,7 @@ jobs:
       - name: Install rhdf5filters package
         if: always()
         run: |
-         BiocManager::install('rhdf5filters', force = TRUE, type = "source", ask = FALSE, quiet = FALSE)
+          BiocManager::install('rhdf5filters', force = TRUE, type = "source", ask = FALSE, quiet = FALSE)
         shell: Rscript {0}
         
       - name: Install rhdf5 dependencies
@@ -289,7 +289,7 @@ jobs:
         run: |
           db <- available.packages(repos = paste0("https://packagemanager.rstudio.com/bioconductor/packages/", BiocManager::version(), "/bioc"))
           pkgs <- tools::package_dependencies(packages = "rhdf5", db = db, which = "all")
-          BiocManager::install(pkgs, ask = FALSE)
+          BiocManager::install(pkgs$rhdf5, ask = FALSE)
         shell: Rscript {0}
         
       - name: Install dependent packages 

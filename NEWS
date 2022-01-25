@@ -7,6 +7,11 @@ New features:
   UCRT toolchain for R-4.2
   o Swap bundled version of SZIP for LIBAEC.  This now reflects the official 
   HDF5 group releases.
+  o The HDF5 configure option "--disable-sharedlib-rpath" is now exposed during
+  package installation
+  (thanks to Ben Fulton @benfulton, 
+  https://github.com/grimbough/Rhdf5lib/pull/39)
+  
 
 Version 1.16
 =============

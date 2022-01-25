@@ -1,7 +1,7 @@
 on:
   push:
     branches:
-      - ucrt-precompiled
+      - testing-actions
       - master
 
 name: Testing rhdf5 on Windows
@@ -250,6 +250,11 @@ jobs:
           git config --global user.email "ghau@example.com"
           git config --global user.name "GitHub Actions User"
       - uses: actions/checkout@v1
+      
+      - name: Install Linux system libraries
+        if: ${{ runner.os == 'Linux' }}
+        run: |
+          sudo apt-get install libcurl4-openssl-dev
           
       - name: Setup R
         uses: r-lib/actions/setup-r@v1
@@ -273,7 +278,7 @@ jobs:
           devtools::install()
         shell: Rscript {0}
         
-      - name: Install rhdf5filters packages 
+      - name: Install rhdf5filters package
         if: always()
         run: |
          BiocManager::install('rhdf5filters', force = TRUE, type = "source", ask = FALSE, quiet = FALSE)
@@ -284,7 +289,7 @@ jobs:
         run: |
           db <- available.packages(repos = paste0("https://packagemanager.rstudio.com/bioconductor/packages/", BiocManager::version(), "/bioc"))
           pkgs <- tools::package_dependencies(packages = "rhdf5", db = db, which = "all")
-          BiocManager::install(pkg, ask = FALSE)
+          BiocManager::install(pkgs, ask = FALSE)
         shell: Rscript {0}
         
       - name: Install dependent packages 

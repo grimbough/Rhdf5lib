@@ -254,7 +254,7 @@ jobs:
       - name: Setup R
         uses: r-lib/actions/setup-r@v1
         with:
-          r-version: '4.2'
+          r-version: 'devel'
           use-public-rspm: true
           Ncpus: 2
           

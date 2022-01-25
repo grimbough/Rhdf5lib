@@ -44,19 +44,7 @@ fi
 
 dnl specifically suppress warnings R decides are "Significant" and produces warnings in R CMD check
 #if test "X$CC_BASENAME" = "Xclang"; then
-#  echo "COMPILER = $CC_BASENAME"
-#  AX_CHECK_COMPILE_FLAG([-Wno-self-assign], 
-#                        [CFLAGS="$CFLAGS -Wno-self-assign"]) 
-#  AX_CHECK_COMPILE_FLAG([-Wno-bitwise-op-parentheses], 
-#                        [CFLAGS="$CFLAGS -Wno-bitwise-op-parentheses"])
-#  AX_CHECK_COMPILE_FLAG([-Wno-cast-align -Wno-cast-qual], 
-#                        [CFLAGS="$CFLAGS -Wno-cast-align -Wno-cast-qual"])
-#  AX_CHECK_COMPILE_FLAG([-Wno-double-promotion], 
-#                        [CFLAGS="$CFLAGS -Wno-double-promotion"])
-#  AX_CHECK_COMPILE_FLAG([-Wno-implicit-fallthrough], 
-#                        [CFLAGS="$CFLAGS -Wno-implicit-fallthrough"])
-#  AX_CHECK_COMPILE_FLAG([-Wno-sometimes-uninitialized], 
-#                        [CFLAGS="$CFLAGS -Wno-sometimes-uninitialized"])
+
 #fi
 
 ###########################
@@ -161,10 +149,8 @@ if test "X$ROS3_VFD" = "Xyes"; then
     fi
     if test "X$ROS3_VFD" = "Xyes"; then
         WITH_S3_VFD="--enable-ros3-vfd"
-        CURL_LIBS="-lcrypto -lcurl"
     else
         WITH_S3_VFD="--enable-ros3-vfd=no"
-        CURL_LIBS=""
     fi
 fi
 echo "S3_VFD=${WITH_S3_VFD}"
@@ -177,6 +163,7 @@ if test -d ./${BASEPBNAME}; then
 	echo 'found ' $BASEPBNAME ' header sources and tar archive;using what is there.'
 	cd ../
 else
+
 	echo "untarring $PBTGZNAME ...";
 	gunzip -dc ${PBTGZNAME} | tar xf -;
 
@@ -189,11 +176,9 @@ else
   $MAKE
   $MAKE install
   SZIP_HOME=`pwd -P`/szip
-  LIBS=-laec
 
-  echo $LIBS
   echo "building the hdf5 library...";
-  cd ../../;
+  cd ../../
   ./configure --with-pic --enable-shared=no --enable-cxx --enable-hl \
       --with-szlib=${SZIP_HOME} --with-zlib=${ZLIB_HOME} \
       --enable-tests=no --enable-tools=no \

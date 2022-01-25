@@ -3959,6 +3959,9 @@ if test -d ./${BASEPBNAME}; then
 	echo 'found ' $BASEPBNAME ' header sources and tar archive;using what is there.'
 	cd ../
 else
+
+  echo "PWD" `pwd`;
+
 	echo "untarring $PBTGZNAME ...";
 	gunzip -dc ${PBTGZNAME} | tar xf -;
 
@@ -3971,11 +3974,9 @@ else
   $MAKE
   $MAKE install
   SZIP_HOME=`pwd -P`/szip
-  LIBS=-laec
 
-  echo $LIBS
   echo "building the hdf5 library...";
-  cd ../../;
+  cd ../../
   ./configure --with-pic --enable-shared=no --enable-cxx --enable-hl \
       --with-szlib=${SZIP_HOME} --with-zlib=${ZLIB_HOME} \
       --enable-tests=no --enable-tools=no \

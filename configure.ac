@@ -14,23 +14,24 @@ if test -z "${R_HOME}"; then
   exit 1
 fi
 
+## identify build tools
 CC=`"${R_HOME}/bin/R" CMD config CC`
-CFLAGS=`"${R_HOME}/bin/R" CMD config CFLAGS`
-CPICFLAGS=`"${R_HOME}/bin/R" CMD config CPICFLAGS`
-CXX=`"${R_HOME}/bin/R" CMD config CXX`
-CXXFLAGS=`"${R_HOME}/bin/R" CMD config CXXFLAGS`
-CXXPICFLAGS=`"${R_HOME}/bin/R" CMD config CXXPICFLAGS`
-CPPFLAGS=`"${R_HOME}/bin/R" CMD config CPPFLAGS`
-F77=`"${R_HOME}/bin/R" CMD config F77`
-MAKE=`"${R_HOME}/bin/R" CMD config MAKE`
-LDFLAGS=`"${R_HOME}/bin/R" CMD config LDFLAGS`
-AR=`"${R_HOME}/bin/R" CMD config AR`
-RANLIB=`"${R_HOME}/bin/R" CMD config RANLIB`
-AC_LANG(C++)
+AC_SUBST(CC)
+AC_SUBST(CXX, `"${R_HOME}/bin/R" CMD config CXX`)
+AC_SUBST(MAKE, `"${R_HOME}/bin/R" CMD config MAKE`)
+AC_SUBST(RANLIB, `"${R_HOME}/bin/R" CMD config RANLIB`)
+AC_SUBST(AR, `"${R_HOME}/bin/R" CMD config AR`)
 
 dnl Checks for programs.
 AC_PROG_CC
 AC_PROG_CXX
+
+dnl identify compiler flags
+CFLAGS=`"${R_HOME}/bin/R" CMD config CFLAGS`
+CPICFLAGS=`"${R_HOME}/bin/R" CMD config CPICFLAGS`
+CXXFLAGS=`"${R_HOME}/bin/R" CMD config CXXFLAGS`
+CXXPICFLAGS=`"${R_HOME}/bin/R" CMD config CXXPICFLAGS`
+CPPFLAGS=`"${R_HOME}/bin/R" CMD config CPPFLAGS`
 
 ###########################
 
@@ -39,7 +40,7 @@ CC_BASENAME="`echo $CC | cut -f1 -d' '`"
 dnl hdf5 spews loads of errors.  Use -w to suppress these if we're using GCC
 if test "X$CC_BASENAME" = "Xgcc"; then
   echo "COMPILER = $CC_BASENAME"
-  AX_CHECK_COMPILE_FLAG([-w], [CFLAGS="$CFLAGS -w"; CXXFLAGS="$CXXFLAGS -w"])
+  AX_CHECK_COMPILE_FLAG([-w], [CFLAGS="$CFLAGS -w"; CXXFLAGS="-w $CXXFLAGS"])
 fi
 
 dnl specifically suppress warnings R decides are "Significant" and produces warnings in R CMD check
@@ -97,8 +98,8 @@ case $withval in
         AC_MSG_ERROR([couldn't find zlib library.  
         Please specify a location using --with-zlib=/path/to/zlib])
     fi
-    ZLIB_LIB=""
-    ZLIB_INCLUDE=""
+    ZLIB_LIB_PATH=""
+    ZLIB_INCLUDE_PATH=""
     ;;
   no)
     AC_MSG_ERROR([zlib is required for Rhdf5lib])
@@ -114,28 +115,37 @@ case $withval in
     else
       AC_MSG_ERROR([zlib is required but no path specified])
     fi
-    ZLIB_LIB="-L${ZLIB_HOME}/lib/"
-    ZLIB_INCLUDE="-I${ZLIB_HOME}/include/"
+    ZLIB_LIB_PATH="-L${ZLIB_HOME}/lib/"
+    ZLIB_INCLUDE_PATH="-I${ZLIB_HOME}/include/"
     ;;
 esac
 
-#echo ${CPPFLAGS}
-#echo ${LDFLAGS}
-dnl Trying to ensure OpenSSL is found on BioC Mac builder
-dnl Based on similar implementation found in rtracklayer
-#case "$OSTYPE" in "darwin"*)
-#  BREWDIR=`brew --prefix`
-#  export PKG_CONFIG_PATH=$BREWDIR/opt/openssl/lib/pkgconfig
-#  ;;
-#esac
-#
-#PKG_CHECK_MODULES([OPENSSL], [openssl >= 1.0], [OPENSSL="yes"], [OPENSSL="no"])
-#if test "${OPENSSL}" != "no"; then
-#  CPPFLAGS="${CPPFLAGS} ${OPENSSL_CFLAGS}"
-#  LDFLAGS="${LDFLAGS} ${OPENSSL_LIBS}"
+###########################################
+
+HAVE_SZLIB="yes"
+AC_CHECK_HEADERS([szlib.h], [HAVE_SZLIB_H="yes"], [unset HAVE_SZLIB])
+if test "x$HAVE_SZLIB" = "xyes" -a "x$HAVE_SZLIB_H" = "xyes"; then
+  AC_CHECK_LIB([sz], [SZ_BufftoBuffCompress],, [unset HAVE_SZLIB])
+fi
+
+dnl if there's not a system install of szip build our own version
+#if test -z "$HAVE_SZLIB"; then
+  AC_SUBST(REQUIRE_SZIP, build-szip)
+  SZIP_HOME=`pwd -P`/src/hdf5/libaec-1.0.4/build/szip
+  AC_SUBST(SZIP_HOME, ${SZIP_HOME})
+  COPY_SZIP=copy-szip
+  SZIP_LIB='"${USER_LIB_DIR}libsz.a" "${USER_LIB_DIR}libaec.a"'
+#else
+#  AC_SUBST(SZIP_HOME, yes)
+#  CP_SZIP=""
+#  SZIP_LIB="-lsz"
 #fi
-#echo ${CPPFLAGS}
-#echo ${LDFLAGS}
+
+
+AC_SUBST(SZIP_LIB)
+AC_SUBST(COPY_SZIP)
+
+#############################################
 
 ROS3_VFD=yes
 if test "X$ROS3_VFD" = "Xyes"; then
@@ -155,47 +165,35 @@ if test "X$ROS3_VFD" = "Xyes"; then
 fi
 echo "S3_VFD=${WITH_S3_VFD}"
 
+#############################################
+
 #untar the lib
 BASEPBNAME="hdf5"
 PBTGZNAME=hdf5small_cxx_hl_1.10.7.tar.gz
-cd src
-if test -d ./${BASEPBNAME}; then 
-	echo 'found ' $BASEPBNAME ' header sources and tar archive;using what is there.'
-	cd ../
-else
 
-	echo "untarring $PBTGZNAME ...";
-	gunzip -dc ${PBTGZNAME} | tar xf -;
+if test -d src/${BASEPBNAME}; then 
+  EXTRACT_SOURCE=""
+  BUILD_HDF5=""
+else   
+  EXTRACT_SOURCE=extract-source
+  BUILD_HDF5=build-hdf5
+fi
 
-  echo "building the szip library...";
-  cd ${BASEPBNAME}/libaec-1.0.4/build;
-  mkdir -p `pwd -P`/szip
-  ../configure --with-pic --enable-shared=no --prefix=`pwd -P`/szip \
-      CC="${CC}" CFLAGS="${CFLAGS} ${CPICFLAGS}" CPPFLAGS="${CPPFLAGS}" \
-      AR="${AR}" RANLIB="${RANLIB}"
-  $MAKE
-  $MAKE install
-  SZIP_HOME=`pwd -P`/szip
+AC_SUBST(EXTRACT_SOURCE)
+AC_SUBST(BUILD_HDF5)
 
-  echo "building the hdf5 library...";
-  cd ../../
-  ./configure --with-pic --enable-shared=no --enable-cxx --enable-hl \
-      --with-szlib=${SZIP_HOME} --with-zlib=${ZLIB_HOME} \
-      --enable-tests=no --enable-tools=no \
-      ${WITH_S3_VFD} \
-      "${SHAREDLIB_RPATH}" \
-      CXX="${CXX}" CXXFLAGS="${CXXFLAGS} ${CXXPICFLAGS}" \
-      CC="${CC}" CFLAGS="${CFLAGS} ${CPICFLAGS}" \
-      CPPFLAGS="${CPPFLAGS}" LDFLAGS="${LDFLAGS}" \
-      AR="${AR}" RANLIB="${RANLIB}" LIBS="${LIBS}"
-  $MAKE lib
-  #echo "Make return value: $?"
-  AS_IF([ test "$?" != 0 ], 
-        [AC_MSG_ERROR("failed to build the HDF5 library")], 
-        [AC_MSG_NOTICE("HDF5 built successfully")])
-  cd ../../
-  
-fi;
+dnl update compiler flags
+AC_SUBST(CFLAGS)
+AC_SUBST(CPICFLAGS, ${CPICFLAGS})
+AC_SUBST(CXXFLAGS, ${CXXFLAGS})
+AC_SUBST(CXXPICFLAGS, ${CXXPICFLAGS})
+AC_SUBST(CPPFLAGS)
+
+dnl HDF5 building options
+AC_SUBST(ZLIB_HOME, ${ZLIB_HOME})
+AC_SUBST(SZIP_HOME, ${SZIP_HOME})
+AC_SUBST(WITH_S3_VFD)
+AC_SUBST(SHAREDLIB_RPATH)
 
 #update variables in Makevars
 HDF5_INCLUDE="${BASEPBNAME}/src"
@@ -206,34 +204,19 @@ AC_SUBST(HDF5_INCLUDE)
 AC_SUBST(HDF5_CXX_INCLUDE)
 AC_SUBST(HDF5_HL_INCLUDE)
 AC_SUBST(HDF5_HL_CXX_INCLUDE)
-AC_MSG_NOTICE([   HDF5_INCLUDE=${HDF5_INCLUDE}])
-AC_MSG_NOTICE([   HDF5_CXX_INCLUDE=${HDF5_CXX_INCLUDE}])
-AC_MSG_NOTICE([   HDF5_HL_INCLUDE=${HDF5_HL_INCLUDE}])
-AC_MSG_NOTICE([   HDF5_HL_CXX_INCLUDE=${HDF5_HL_CXX_INCLUDE}])
 
 HDF5_LIB="${BASEPBNAME}/src/.libs/libhdf5.a"
 HDF5_CXX_LIB="${BASEPBNAME}/c++/src/.libs/libhdf5_cpp.a"
 HDF5_HL_LIB="${BASEPBNAME}/hl/src/.libs/libhdf5_hl.a"
 HDF5_HL_CXX_LIB="${BASEPBNAME}/hl/c++/src/.libs/libhdf5_hl_cpp.a"
-SZIP_LIB="${BASEPBNAME}/libaec-1.0.4/build/szip/lib/libsz.a"
-AEC_LIB="${BASEPBNAME}/libaec-1.0.4/build/szip/lib/libaec.a"
 
 AC_SUBST(HDF5_LIB)
 AC_SUBST(HDF5_CXX_LIB)
 AC_SUBST(HDF5_HL_LIB)
 AC_SUBST(HDF5_HL_CXX_LIB)
-AC_SUBST(SZIP_LIB)
-AC_SUBST(AEC_LIB)
 AC_SUBST(ZLIB_HOME)
 AC_SUBST(ZLIB_LIB)
 AC_SUBST(ZLIB_INCLUDE)
-
-AC_MSG_NOTICE([   HDF5_LIB=${HDF5_LIB}])
-AC_MSG_NOTICE([   HDF5_CXX_LIB=${HDF5_CXX_LIB}])
-AC_MSG_NOTICE([   HDF5_HL_LIB=${HDF5_HL_LIB}])
-AC_MSG_NOTICE([   HDF5_HL_CXX_LIB=${HDF5_HL_CXX_LIB}])
-AC_MSG_NOTICE([   SZIP_LIB=${SZIP_LIB}])
-AC_MSG_NOTICE([   AEC_LIB=${AEC_LIB}])
 
 AC_CONFIG_FILES([src/Makevars])
 

@@ -1,3 +1,7 @@
+
+export RANLIB=@RANLIB@
+export AR=@AR@
+
 HDF5_INCLUDE=@HDF5_INCLUDE@
 HDF5_CXX_INCLUDE=@HDF5_CXX_INCLUDE@
 HDF5_HL_INCLUDE=@HDF5_HL_INCLUDE@
@@ -20,16 +24,20 @@ USER_LIB_DIR = ${R_PACKAGE_DIR}/lib${R_ARCH}/
 
 PKG_CPPFLAGS = -I${USER_INCLUDE_DIR} ${ZLIB_INCLUDE}
 PKG_CFLAGS = ${ZLIB_LIB}
-PKG_LIBS = "${USER_LIB_DIR}libhdf5.a" "${USER_LIB_DIR}libsz.a" "${USER_LIB_DIR}libaec.a" -lz
+PKG_LIBS = "${USER_LIB_DIR}libhdf5.a" @SZIP_LIB@ -lz
 
-all: copying $(SHLIB)
+all: $(SHLIB)
 
 $(SHLIB): Rhdf5lib.o
 
-Rhdf5lib.o: copying
+Rhdf5lib.o: copy-hdf5 @COPY_SZIP@
 
+copy-szip: copy-hdf5
+	cp hdf5/libaec-1.0.4/build/szip/lib/libsz.a "${USER_LIB_DIR}"
+	cp hdf5/libaec-1.0.4/build/szip/lib/libaec.a "${USER_LIB_DIR}"
+	
 #copy hdf5 library headers to package include
-copying:
+copy-hdf5: @BUILD_HDF5@
 	mkdir -p "${USER_INCLUDE_DIR}"
 	cp "${HDF5_INCLUDE}/"*.h "${USER_INCLUDE_DIR}"
 	cp "${HDF5_CXX_INCLUDE}/"*.h "${USER_INCLUDE_DIR}"
@@ -41,5 +49,28 @@ copying:
 	cp "${HDF5_CXX_LIB}" "${USER_LIB_DIR}"
 	cp "${HDF5_HL_LIB}" "${USER_LIB_DIR}"
 	cp "${HDF5_HL_CXX_LIB}" "${USER_LIB_DIR}"
-	cp "${SZIP_LIB}" "${USER_LIB_DIR}"
-	cp "${AEC_LIB}" "${USER_LIB_DIR}"
+
+build-hdf5: @REQUIRE_SZIP@ @EXTRACT_SOURCE@
+	cd hdf5; \
+	./configure --with-pic --enable-shared=no --enable-cxx --enable-hl \
+	--enable-tests=no --enable-tools=no \
+	--with-szlib=@SZIP_HOME@ --with-zlib=@ZLIB_HOME@ \
+	@WITH_S3_VFD@ \
+	@SHAREDLIB_RPATH@ \
+	CC='@CC@' CXX='@CXX@' \
+	CPPFLAGS='@CPPFLAGS@' \
+	CFLAGS='@CFLAGS@ @CPICFLAGS@' \
+	CXXFLAGS='@CXXFLAGS@ @CXXPICFLAGS@'; \
+	@MAKE@ lib
+
+build-szip: @EXTRACT_SOURCE@
+	cd hdf5/libaec-1.0.4/build; \
+	../configure --with-pic --enable-shared=no --prefix=@SZIP_HOME@ \
+	CC='@CC@' CXX='@CXX@' \
+	CPPFLAGS='@CPPFLAGS@' \
+	CFLAGS='@CFLAGS@ @CPICFLAGS@'; \
+	@MAKE@; \
+	@MAKE@ install
+
+extract-source:
+	gunzip -dc hdf5small_cxx_hl_1.10.7.tar.gz | tar xf -;

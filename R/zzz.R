@@ -59,8 +59,8 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "
                               sprintf('-L%s -lhdf5 %s', 
                                       patharch, winlibs)
                             }, {
-                              sprintf('"%s/libhdf5.a" "%s/libsz.a" "%s/libaec.a" %s', 
-                                      patharch, patharch, patharch, .getDynamicLinks())
+                              sprintf('"%s/libhdf5.a" %s %s', 
+                                      patharch, .getSzipLoc(patharch), .getDynamicLinks())
                             }
                      )
                    }, 
@@ -142,11 +142,24 @@ getHdf5Version <- function() {
 #' @keywords internal
 .getDynamicLinks <- function() {
   
-  if(isTRUE(.curlStatus())) {
-    links <- "-lcrypto -lcurl -lz"
-  } else {
-    links <- "-lz"
-  }
-  
+  settings_file <- system.file('include', 'libhdf5.settings', package = "Rhdf5lib")
+  libhdf5_settings <- readLines(settings_file)
+  line <- grep("Extra libraries", x = libhdf5_settings)
+  links <- strsplit(libhdf5_settings[line], split = ":")[[1]][2]
   return(links)
+}
+
+#' If we compiled our own version of SZIP this returns the link path
+#' Othwise it returns an empty string.
+#' 
+#' @keywords internal
+.getSzipLoc <- function(path) {
+  
+  status <- file.exists(file.path(path, "libsz.a"))
+  if(isTRUE(status)) {
+    ldflags <- sprintf('-L"%s"', path)
+  } else {
+    path <- ""
+  }
+  return(path)
 }

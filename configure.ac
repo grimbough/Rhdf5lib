@@ -36,17 +36,16 @@ CPPFLAGS=`"${R_HOME}/bin/R" CMD config CPPFLAGS`
 ###########################
 
 CC_BASENAME="`echo $CC | cut -f1 -d' '`"
+echo "COMPILER = $CC_BASENAME"
 
 dnl hdf5 spews loads of errors.  Use -w to suppress these if we're using GCC
 if test "X$CC_BASENAME" = "Xgcc"; then
-  echo "COMPILER = $CC_BASENAME"
   AX_CHECK_COMPILE_FLAG([-w], [CFLAGS="$CFLAGS -w"; CXXFLAGS="-w $CXXFLAGS"])
 fi
 
-dnl specifically suppress warnings R decides are "Significant" and produces warnings in R CMD check
-#if test "X$CC_BASENAME" = "Xclang"; then
-
-#fi
+if test "X$CC_BASENAME" = "Xclang"; then
+  AX_CHECK_COMPILE_FLAG([-w], [CFLAGS="$CFLAGS -w"; CXXFLAGS="-w $CXXFLAGS"])
+fi
 
 ###########################
 
@@ -129,17 +128,17 @@ if test "x$HAVE_SZLIB" = "xyes" -a "x$HAVE_SZLIB_H" = "xyes"; then
 fi
 
 dnl if there's not a system install of szip build our own version
-#if test -z "$HAVE_SZLIB"; then
+if test -z "$HAVE_SZLIB"; then
   AC_SUBST(REQUIRE_SZIP, build-szip)
   SZIP_HOME=`pwd -P`/src/hdf5/libaec-1.0.4/build/szip
   AC_SUBST(SZIP_HOME, ${SZIP_HOME})
   COPY_SZIP=copy-szip
   SZIP_LIB='"${USER_LIB_DIR}libsz.a" "${USER_LIB_DIR}libaec.a"'
-#else
-#  AC_SUBST(SZIP_HOME, yes)
-#  CP_SZIP=""
-#  SZIP_LIB="-lsz"
-#fi
+else
+  AC_SUBST(SZIP_HOME, yes)
+  CP_SZIP=""
+  SZIP_LIB="-lsz"
+fi
 
 
 AC_SUBST(SZIP_LIB)

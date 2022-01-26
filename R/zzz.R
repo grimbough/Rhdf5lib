@@ -141,11 +141,14 @@ getHdf5Version <- function() {
 #' 
 #' @keywords internal
 .getDynamicLinks <- function() {
-  
-  settings_file <- system.file('include', 'libhdf5.settings', package = "Rhdf5lib")
-  libhdf5_settings <- readLines(settings_file)
-  line <- grep("Extra libraries", x = libhdf5_settings)
-  links <- strsplit(libhdf5_settings[line], split = ":")[[1]][2]
+  if(sysname == "Windows") {
+    links <- "-lz"
+  } else {
+    settings_file <- system.file('include', 'libhdf5.settings', package = "Rhdf5lib", mustWork = TRUE)
+    libhdf5_settings <- readLines(settings_file)
+    line <- grep("Extra libraries", x = libhdf5_settings)
+    links <- strsplit(libhdf5_settings[line], split = ":")[[1]][2]
+  }
   return(links)
 }
 

@@ -3232,9 +3232,9 @@ CPPFLAGS=`"${R_HOME}/bin/R" CMD config CPPFLAGS`
 ###########################
 
 CC_BASENAME="`echo $CC | cut -f1 -d' '`"
+echo "COMPILER = $CC_BASENAME"
 
 if test "X$CC_BASENAME" = "Xgcc"; then
-  echo "COMPILER = $CC_BASENAME"
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C compiler accepts -w" >&5
 $as_echo_n "checking whether C compiler accepts -w... " >&6; }
@@ -3273,9 +3273,43 @@ fi
 
 fi
 
-#if test "X$CC_BASENAME" = "Xclang"; then
+if test "X$CC_BASENAME" = "Xclang"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C compiler accepts -w" >&5
+$as_echo_n "checking whether C compiler accepts -w... " >&6; }
+if ${ax_cv_check_cflags___w+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
 
-#fi
+  ax_check_save_flags=$CFLAGS
+  CFLAGS="$CFLAGS  -w"
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"; then :
+  ax_cv_check_cflags___w=yes
+else
+  ax_cv_check_cflags___w=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+  CFLAGS=$ax_check_save_flags
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cflags___w" >&5
+$as_echo "$ax_cv_check_cflags___w" >&6; }
+if test "x$ax_cv_check_cflags___w" = xyes; then :
+  CFLAGS="$CFLAGS -w"; CXXFLAGS="-w $CXXFLAGS"
+else
+  :
+fi
+
+fi
 
 ###########################
 
@@ -3840,7 +3874,7 @@ fi
 
 fi
 
-#if test -z "$HAVE_SZLIB"; then
+if test -z "$HAVE_SZLIB"; then
   REQUIRE_SZIP=build-szip
 
   SZIP_HOME=`pwd -P`/src/hdf5/libaec-1.0.4/build/szip
@@ -3848,11 +3882,12 @@ fi
 
   COPY_SZIP=copy-szip
   SZIP_LIB='"${USER_LIB_DIR}libsz.a" "${USER_LIB_DIR}libaec.a"'
-#else
-#  AC_SUBST(SZIP_HOME, yes)
-#  CP_SZIP=""
-#  SZIP_LIB="-lsz"
-#fi
+else
+  SZIP_HOME=yes
+
+  CP_SZIP=""
+  SZIP_LIB="-lsz"
+fi
 
 
 

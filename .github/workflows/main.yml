@@ -1,8 +1,5 @@
 on:
   push:
-    branches:
-      - master
-      - testing-actions
   pull_request:
     branches:
       - master

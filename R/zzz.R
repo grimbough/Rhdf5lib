@@ -141,6 +141,7 @@ getHdf5Version <- function() {
 #' 
 #' @keywords internal
 .getDynamicLinks <- function() {
+  sysname <- Sys.info()['sysname']
   if(sysname == "Windows") {
     links <- "-lz"
   } else {

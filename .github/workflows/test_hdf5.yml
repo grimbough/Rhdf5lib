@@ -284,7 +284,7 @@ jobs:
       - name: Install rhdf5 dependencies
         if: always()
         run: |
-          db <- available.packages(repos = paste0("https://bioconductor.riken.jp/packages/", BiocManager::version(), "/bioc"))
+          db <- available.packages(repos = paste0("https://packagemanager.rstudio.com/bioconductor/packages/", BiocManager::version(), "/bioc"))
           pkgs <- tools::package_dependencies(packages = "rhdf5", db = db, which = "all")
           BiocManager::install(pkgs$rhdf5, ask = FALSE)
         shell: Rscript {0}

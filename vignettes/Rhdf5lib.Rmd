@@ -43,7 +43,7 @@ The statement for each platform modifies the `$PKG_LIBS` variable. If your packa
     
 The default behaviour of `Rhdf5lib::pkgconfig` is to report the location of the shared library as the result of `system.file("lib", package="Rhdf5lib")`.  If this is inappropriate for your system e.g. a cluster with a shared file system, use the environment variable `RHDF5LIB_RPATH` to override this and set an appropriate location for your infrastructure.
 
-Valid options to provide to `pkgconfig()`  are: `PKG_C_LIBS`, `PKG_CXX_LIBS`, `PKG_C_HL_LIBS` and `PKG_CXX_HL_LIBS`.  Choose the most appropriate depending upon whether your linking code requires the C++ API (`C` vs `CXX`) and/or the HDF5 'high-level' API (`HL`).  Choosing options that you don't require should not harm performance, but will result in a larger library and greater memory usage for your application, so it is good practice to select only the features you need.
+Valid options to provide to `pkgconfig()`  are: `PKG_C_LIBS`, `PKG_CXX_LIBS`, `PKG_C_HL_LIBS` and `PKG_CXX_HL_LIBS`.  Choose the most appropriate depending upon whether your linking code requires the C++ API (`C` vs `CXX`) and/or the HDF5 'high-level' API (`HL`).  Choosing options that you don't require should not harm performance, but will result in a larger library and potentially greater memory usage for your application, so it is good practice to select only the features you need.
 
 ## Locating the library headers
 
@@ -78,6 +78,14 @@ BiocManager::install('Rhdf5lib', INSTALL_opts="--no-use-LTO", configure.args = "
 ```
 
 This is because building **Rhdf5lib** involves first compiling the HDF5 library, and then compiling and linking the R interface against that.  The `INSTALL_opts` argument affects the latter part, but we need to use `configure.args` to ensure the HDF5 library is built with the same settings. ^[Using `"--enable-lto"` here will have no effect.  To enable link-time optimisation you must have already configured R with `--enable-lto` (see [here](https://cran.r-project.org/doc/manuals/r-devel/R-admin.html#Link_002dTime-Optimization)).]
+
+## Disabling setting rpath
+
+If you encounter problems checking whether to use `-Wl,-rpath` to "*link shared libs in nondefault directories*" you can disable the test by passing the option `"--disable-sharedlib-rath"` to the configuration script.
+
+```{r, disable-rpath, eval = FALSE}
+BiocManager::install('Rhdf5lib', configure.args = "--disable-sharedlib-rath")
+```
 
 # Funding
 

@@ -3,12 +3,12 @@
 \name{.getSzipLoc}
 \alias{.getSzipLoc}
 \title{If we compiled our own version of SZIP this returns the link path
-Othwise it returns an empty string.}
+Otherwise it returns an empty string.}
 \usage{
 .getSzipLoc(path)
 }
 \description{
 If we compiled our own version of SZIP this returns the link path
-Othwise it returns an empty string.
+Otherwise it returns an empty string.
 }
 \keyword{internal}

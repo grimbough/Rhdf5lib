@@ -2,13 +2,11 @@
 % Please edit documentation in R/zzz.R
 \name{.getDynamicLinks}
 \alias{.getDynamicLinks}
-\title{Return the link flags depending upon the status of curl
-determined during package installation}
+\title{Return the link flags determined when HDF5 was configured}
 \usage{
 .getDynamicLinks()
 }
 \description{
-Return the link flags depending upon the status of curl
-determined during package installation
+Return the link flags determined when HDF5 was configured
 }
 \keyword{internal}

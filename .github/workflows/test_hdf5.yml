@@ -1,10 +1,7 @@
 on:
   push:
-    branches:
-      - testing-actions
-      - master
 
-name: Testing rhdf5 on Windows
+name: Testing rhdf5
 
 env:
   GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -299,6 +296,77 @@ jobs:
         shell: Rscript {0}
         
       - name: Test dependent packages 
+        if: always()
+        run: |
+         xfun::session_info(packages = "rhdf5")
+         testthat::test_package('rhdf5', reporter = "summary")
+        shell: Rscript {0}
+        
+  test5:
+    runs-on: macOS-latest
+    name: R-4.2 / Mac OSX
+
+    steps:
+      - name: Configure git
+        run: |
+          git config --global core.autocrlf false
+          git config --global user.email "ghau@example.com"
+          git config --global user.name "GitHub Actions User"
+      - uses: actions/checkout@v1
+      
+      - name: Install Mac system libraries
+        run: |
+          brew install openssl@1.1
+          
+      - name: Create Makevars
+        run: |
+          mkdir $HOME/.R
+          echo 'LDFLAGS="-L/usr/local/opt/openssl@1.1/lib"' > $HOME/.R/Makevars
+          echo 'CPPFLAGS="-I/usr/local/opt/openssl@1.1/include"' >> $HOME/.R/Makevars
+          
+      - name: Setup R
+        uses: r-lib/actions/setup-r@v1
+        with:
+          r-version: 'devel'
+          use-public-rspm: true
+          Ncpus: 2
+          
+      - uses: r-lib/actions/setup-pandoc@v1
+
+      - name: Install dependencies
+        run: |
+          install.packages(c('BiocManager', 'xfun', 'remotes', 'devtools', 'testthat'), quiet = TRUE)
+          library(remotes)
+          update(dev_package_deps(), quiet = TRUE)
+        shell: Rscript {0}
+        
+      - name: Install devel package 
+        if: always()
+        run: |
+          devtools::install()
+        shell: Rscript {0}
+        
+      - name: Install rhdf5filters
+        if: always()
+        run: |
+          BiocManager::install('rhdf5filters', force = TRUE, type = "source", ask = FALSE, quiet = FALSE)
+        shell: Rscript {0}
+        
+      - name: Install rhdf5 dependencies
+        if: always()
+        run: |
+          db <- available.packages(repos = paste0("https://packagemanager.rstudio.com/bioconductor/packages/", BiocManager::version(), "/bioc"))
+          pkgs <- tools::package_dependencies(packages = "rhdf5", db = db, which = "all")
+          BiocManager::install(pkgs$rhdf5, ask = FALSE)
+        shell: Rscript {0}
+        
+      - name: Install rhdf5 
+        if: always()
+        run: |
+         BiocManager::install('grimbough/rhdf5', INSTALL_opts="--install-tests", force = TRUE, type = "source", ask = FALSE, quiet = FALSE)
+        shell: Rscript {0}
+        
+      - name: Test rhdf5 packages 
         if: always()
         run: |
          xfun::session_info(packages = "rhdf5")

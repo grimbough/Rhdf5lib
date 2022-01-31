@@ -57,7 +57,7 @@ jobs:
           
       - name: Set R options
         run: |
-          echo "options(BioC_mirror = 'https://packagemanager.rstudio.com/bioconductor')" >> ${HOME}/.Rprofile
+          echo "options(BioC_mirror = 'https://bioconductor.riken.jp')" >> ${HOME}/.Rprofile
 
       - name: Create Makevars
         if: ${{ matrix.config.os == 'macOS-latest' }}

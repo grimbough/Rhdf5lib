@@ -120,24 +120,7 @@ getHdf5Version <- function() {
   return(versionNum)
 }
 
-#' Determine whether libcurl and libcrypto were found during package 
-#' installation
-#' 
-#' @keywords internal
-.curlStatus <- function() {
-  sysname <- Sys.info()['sysname']
-  if(sysname == "Windows") {
-    return(FALSE)
-  } else {
-    settings_file <- system.file('include', 'libhdf5.settings', package = "Rhdf5lib")
-    libhdf5_settings <- readLines(settings_file)
-    line <- grep("Extra libraries", x = libhdf5_settings)
-    return(grepl(pattern = "-lcurl", x = libhdf5_settings[line]))
-  }
-}
-
-#' Return the link flags depending upon the status of curl
-#' determined during package installation
+#' Return the link flags determined when HDF5 was configured
 #' 
 #' @keywords internal
 .getDynamicLinks <- function() {
@@ -154,7 +137,7 @@ getHdf5Version <- function() {
 }
 
 #' If we compiled our own version of SZIP this returns the link path
-#' Othwise it returns an empty string.
+#' Otherwise it returns an empty string.
 #' 
 #' @keywords internal
 .getSzipLoc <- function(path) {

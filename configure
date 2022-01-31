@@ -624,19 +624,8 @@ ac_includes_default="\
 
 ac_subst_vars='LTLIBOBJS
 LIBOBJS
-ZLIB_INCLUDE
-ZLIB_LIB
-HDF5_HL_CXX_LIB
-HDF5_HL_LIB
-HDF5_CXX_LIB
-HDF5_LIB
-HDF5_HL_CXX_INCLUDE
-HDF5_HL_INCLUDE
-HDF5_CXX_INCLUDE
-HDF5_INCLUDE
 SHAREDLIB_RPATH
 WITH_S3_VFD
-ZLIB_HOME
 CXXPICFLAGS
 CPICFLAGS
 BUILD_HDF5
@@ -645,6 +634,9 @@ COPY_SZIP
 SZIP_LIB
 SZIP_HOME
 REQUIRE_SZIP
+ZLIB_INCLUDE
+ZLIB_LIB
+ZLIB_HOME
 EGREP
 GREP
 CPP
@@ -656,8 +648,6 @@ ac_ct_CC
 CPPFLAGS
 LDFLAGS
 CFLAGS
-AR
-RANLIB
 MAKE
 CXX
 CC
@@ -2171,10 +2161,6 @@ CXX=`"${R_HOME}/bin/R" CMD config CXX`
 
 MAKE=`"${R_HOME}/bin/R" CMD config MAKE`
 
-RANLIB=`"${R_HOME}/bin/R" CMD config RANLIB`
-
-AR=`"${R_HOME}/bin/R" CMD config AR`
-
 
 ac_ext=c
 ac_cpp='$CPP $CPPFLAGS'
@@ -3234,47 +3220,9 @@ CPPFLAGS=`"${R_HOME}/bin/R" CMD config CPPFLAGS`
 CC_BASENAME="`echo $CC | cut -f1 -d' '`"
 echo "COMPILER = $CC_BASENAME"
 
-if test "X$CC_BASENAME" = "Xgcc"; then
+if test "X$CC_BASENAME" = "Xgcc" -o "X$CC_BASENAME" = "Xclang"; then
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C compiler accepts -w" >&5
-$as_echo_n "checking whether C compiler accepts -w... " >&6; }
-if ${ax_cv_check_cflags___w+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-
-  ax_check_save_flags=$CFLAGS
-  CFLAGS="$CFLAGS  -w"
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main ()
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_compile "$LINENO"; then :
-  ax_cv_check_cflags___w=yes
-else
-  ax_cv_check_cflags___w=no
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-  CFLAGS=$ax_check_save_flags
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cflags___w" >&5
-$as_echo "$ax_cv_check_cflags___w" >&6; }
-if test "x$ax_cv_check_cflags___w" = xyes; then :
-  CFLAGS="$CFLAGS -w"; CXXFLAGS="-w $CXXFLAGS"
-else
-  :
-fi
-
-fi
-
-if test "X$CC_BASENAME" = "Xclang"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C compiler accepts -w" >&5
 $as_echo_n "checking whether C compiler accepts -w... " >&6; }
 if ${ax_cv_check_cflags___w+:} false; then :
   $as_echo_n "(cached) " >&6
@@ -3333,21 +3281,21 @@ $as_echo_n "checking whether to use -Wl,-rpath setting... " >&6; }
 if test "${enable_sharedlib_rpath+set}" = set; then :
   enableval=$enable_sharedlib_rpath;  if test "x$enableval" = "xyes" ; then
                 SHAREDLIB_RPATH="--enable-sharedlib-rpath"
-                { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+                  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
-              elif test "x$enableval" = "xno" ; then
-                SHAREDLIB_RPATH="--disable-sharedlib-rpath"
-                { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+                elif test "x$enableval" = "xno" ; then
+                  SHAREDLIB_RPATH="--disable-sharedlib-rpath"
+                  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
-              else
-                echo
-                echo "Error!"
-                echo "rpath code didn't work!"
-                exit -1
-             fi
+                else
+                  echo
+                  echo "Error!"
+                  echo "rpath code didn't work!"
+                  exit -1
+               fi
 else
    SHAREDLIB_RPATH="--enable-sharedlib-rpath"
-               { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+                 { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
 
 fi
@@ -3807,9 +3755,14 @@ done
     ;;
 esac
 
+
+
+
+
 ###########################################
 
 HAVE_SZLIB="yes"
+HAVE_AEC="yes"
 for ac_header in szlib.h
 do :
   ac_fn_c_check_header_mongrel "$LINENO" "szlib.h" "ac_cv_header_szlib_h" "$ac_includes_default"
@@ -3820,6 +3773,20 @@ _ACEOF
  HAVE_SZLIB_H="yes"
 else
   unset HAVE_SZLIB
+fi
+
+done
+
+for ac_header in libaec.h
+do :
+  ac_fn_c_check_header_mongrel "$LINENO" "libaec.h" "ac_cv_header_libaec_h" "$ac_includes_default"
+if test "x$ac_cv_header_libaec_h" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBAEC_H 1
+_ACEOF
+ HAVE_AEC_H="yes"
+else
+  unset HAVE_AEC
 fi
 
 done
@@ -3872,28 +3839,77 @@ else
   unset HAVE_SZLIB
 fi
 
+  if test "x$HAVE_SZLIB" = "xyes" -a "x$HAVE_AEC_H" = "xyes" -a "x$HAVE_AEC" = "xyes"; then
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for aec_buffer_encode in -lsz" >&5
+$as_echo_n "checking for aec_buffer_encode in -lsz... " >&6; }
+if ${ac_cv_lib_sz_aec_buffer_encode+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lsz -laec $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char aec_buffer_encode ();
+int
+main ()
+{
+return aec_buffer_encode ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_sz_aec_buffer_encode=yes
+else
+  ac_cv_lib_sz_aec_buffer_encode=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_sz_aec_buffer_encode" >&5
+$as_echo "$ac_cv_lib_sz_aec_buffer_encode" >&6; }
+if test "x$ac_cv_lib_sz_aec_buffer_encode" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBSZ 1
+_ACEOF
+
+  LIBS="-lsz $LIBS"
+
+else
+  unset HAVE_AEC
+fi
+
+  fi
 fi
 
 if test -z "$HAVE_SZLIB"; then
   REQUIRE_SZIP=build-szip
 
   SZIP_HOME=`pwd -P`/src/hdf5/libaec-1.0.4/build/szip
-  SZIP_HOME=${SZIP_HOME}
-
   COPY_SZIP=copy-szip
   SZIP_LIB='"${USER_LIB_DIR}libsz.a" "${USER_LIB_DIR}libaec.a"'
 else
   SZIP_HOME=yes
-
-  CP_SZIP=""
-  SZIP_LIB="-lsz"
+  COPY_SZIP=
+  SZIP_LIB=-lsz
+  if test "x$HAVE_AEC" = "xyes"; then
+    SZIP_LIB='-lsz -laec'
+  fi
 fi
 
 
 
 
 
-#############################################
+  #############################################
 
 ROS3_VFD=yes
 if test "X$ROS3_VFD" = "Xyes"; then
@@ -4057,53 +4073,26 @@ fi
 fi
 echo "S3_VFD=${WITH_S3_VFD}"
 
-#############################################
+  #############################################
 
 #untar the lib
 BASEPBNAME="hdf5"
-PBTGZNAME=hdf5small_cxx_hl_1.10.7.tar.gz
 
 if test -d src/${BASEPBNAME}; then
+
   EXTRACT_SOURCE=""
   BUILD_HDF5=""
+
 else
+
   EXTRACT_SOURCE=extract-source
   BUILD_HDF5=build-hdf5
+
 fi
 
 
 
 
-
-CPICFLAGS=${CPICFLAGS}
-
-CXXFLAGS=${CXXFLAGS}
-
-CXXPICFLAGS=${CXXPICFLAGS}
-
-
-
-ZLIB_HOME=${ZLIB_HOME}
-
-SZIP_HOME=${SZIP_HOME}
-
-
-
-
-#update variables in Makevars
-HDF5_INCLUDE="${BASEPBNAME}/src"
-HDF5_CXX_INCLUDE="${BASEPBNAME}/c++/src"
-HDF5_HL_INCLUDE="${BASEPBNAME}/hl/src"
-HDF5_HL_CXX_INCLUDE="${BASEPBNAME}/hl/c++/src"
-
-
-
-
-
-HDF5_LIB="${BASEPBNAME}/src/.libs/libhdf5.a"
-HDF5_CXX_LIB="${BASEPBNAME}/c++/src/.libs/libhdf5_cpp.a"
-HDF5_HL_LIB="${BASEPBNAME}/hl/src/.libs/libhdf5_hl.a"
-HDF5_HL_CXX_LIB="${BASEPBNAME}/hl/c++/src/.libs/libhdf5_hl_cpp.a"
 
 
 

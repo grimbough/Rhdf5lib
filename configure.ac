@@ -19,8 +19,6 @@ CC=`"${R_HOME}/bin/R" CMD config CC`
 AC_SUBST(CC)
 AC_SUBST(CXX, `"${R_HOME}/bin/R" CMD config CXX`)
 AC_SUBST(MAKE, `"${R_HOME}/bin/R" CMD config MAKE`)
-AC_SUBST(RANLIB, `"${R_HOME}/bin/R" CMD config RANLIB`)
-AC_SUBST(AR, `"${R_HOME}/bin/R" CMD config AR`)
 
 dnl Checks for programs.
 AC_PROG_CC
@@ -35,20 +33,16 @@ CPPFLAGS=`"${R_HOME}/bin/R" CMD config CPPFLAGS`
 
 ###########################
 
+dnl hdf5 spews loads of errors.  Use -w to suppress these if we're using GCC or clang
 CC_BASENAME="`echo $CC | cut -f1 -d' '`"
 echo "COMPILER = $CC_BASENAME"
 
-dnl hdf5 spews loads of errors.  Use -w to suppress these if we're using GCC
-if test "X$CC_BASENAME" = "Xgcc"; then
+if test "X$CC_BASENAME" = "Xgcc" -o "X$CC_BASENAME" = "Xclang"; then
   AX_CHECK_COMPILE_FLAG([-w], [CFLAGS="$CFLAGS -w"; CXXFLAGS="-w $CXXFLAGS"])
 fi
-
-if test "X$CC_BASENAME" = "Xclang"; then
-  AX_CHECK_COMPILE_FLAG([-w], [CFLAGS="$CFLAGS -w"; CXXFLAGS="-w $CXXFLAGS"])
-fi
-
+  
 ###########################
-
+  
 dnl remove LTO compiler flags if requested
 AC_ARG_ENABLE([lto])
 AS_IF([test "x$enable_lto" = "xno"], [
@@ -64,23 +58,23 @@ AC_ARG_ENABLE([sharedlib-rpath],
                [Disable use of the '-Wl,-rpath' linker option])],
               [ if test "x$enableval" = "xyes" ; then
                 SHAREDLIB_RPATH="--enable-sharedlib-rpath"
-                AC_MSG_RESULT([yes])
-              elif test "x$enableval" = "xno" ; then
-                SHAREDLIB_RPATH="--disable-sharedlib-rpath"
-                AC_MSG_RESULT([no])
-              else
-                echo
-                echo "Error!"
-                echo "rpath code didn't work!"
-                exit -1
-             fi],
-             [ SHAREDLIB_RPATH="--enable-sharedlib-rpath"
-               AC_MSG_RESULT([yes]) ]
+                  AC_MSG_RESULT([yes])
+                elif test "x$enableval" = "xno" ; then
+                  SHAREDLIB_RPATH="--disable-sharedlib-rpath"
+                  AC_MSG_RESULT([no])
+                else
+                  echo
+                  echo "Error!"
+                  echo "rpath code didn't work!"
+                  exit -1
+               fi],
+               [ SHAREDLIB_RPATH="--enable-sharedlib-rpath"
+                 AC_MSG_RESULT([yes]) ]
 )
-
+  
 ############################
-
-
+  
+  
 ### 'checking for zlib... ';
 AC_ARG_WITH([zlib],
             [AS_HELP_STRING([--with-zlib=DIR],
@@ -119,33 +113,44 @@ case $withval in
     ;;
 esac
 
+AC_SUBST(ZLIB_HOME)
+AC_SUBST(ZLIB_LIB)
+AC_SUBST(ZLIB_INCLUDE)
+
 ###########################################
 
 HAVE_SZLIB="yes"
+HAVE_AEC="yes"
 AC_CHECK_HEADERS([szlib.h], [HAVE_SZLIB_H="yes"], [unset HAVE_SZLIB])
+AC_CHECK_HEADERS([libaec.h], [HAVE_AEC_H="yes"], [unset HAVE_AEC])
 if test "x$HAVE_SZLIB" = "xyes" -a "x$HAVE_SZLIB_H" = "xyes"; then
   AC_CHECK_LIB([sz], [SZ_BufftoBuffCompress],, [unset HAVE_SZLIB])
+  if test "x$HAVE_SZLIB" = "xyes" -a "x$HAVE_AEC_H" = "xyes" -a "x$HAVE_AEC" = "xyes"; then
+    AC_CHECK_LIB([sz], [aec_buffer_encode],, [unset HAVE_AEC], [-laec])
+  fi
 fi
-
+  
 dnl if there's not a system install of szip build our own version
 if test -z "$HAVE_SZLIB"; then
   AC_SUBST(REQUIRE_SZIP, build-szip)
   SZIP_HOME=`pwd -P`/src/hdf5/libaec-1.0.4/build/szip
-  AC_SUBST(SZIP_HOME, ${SZIP_HOME})
   COPY_SZIP=copy-szip
   SZIP_LIB='"${USER_LIB_DIR}libsz.a" "${USER_LIB_DIR}libaec.a"'
 else
-  AC_SUBST(SZIP_HOME, yes)
-  CP_SZIP=""
-  SZIP_LIB="-lsz"
+  SZIP_HOME=yes
+  COPY_SZIP=
+  SZIP_LIB=-lsz
+  if test "x$HAVE_AEC" = "xyes"; then
+    SZIP_LIB='-lsz -laec'
+  fi
 fi
 
-
+AC_SUBST(SZIP_HOME)
 AC_SUBST(SZIP_LIB)
 AC_SUBST(COPY_SZIP)
-
-#############################################
-
+  
+  #############################################
+  
 ROS3_VFD=yes
 if test "X$ROS3_VFD" = "Xyes"; then
     AC_CHECK_HEADERS([curl/curl.h],, [unset ROS3_VFD])
@@ -163,19 +168,23 @@ if test "X$ROS3_VFD" = "Xyes"; then
     fi
 fi
 echo "S3_VFD=${WITH_S3_VFD}"
-
-#############################################
+  
+  #############################################
 
 #untar the lib
 BASEPBNAME="hdf5"
-PBTGZNAME=hdf5small_cxx_hl_1.10.7.tar.gz
 
+dnl if we've already extracted the HDF5 source assume it's also configured and built
 if test -d src/${BASEPBNAME}; then 
+
   EXTRACT_SOURCE=""
   BUILD_HDF5=""
-else   
+  
+else  
+
   EXTRACT_SOURCE=extract-source
   BUILD_HDF5=build-hdf5
+  
 fi
 
 AC_SUBST(EXTRACT_SOURCE)
@@ -183,39 +192,14 @@ AC_SUBST(BUILD_HDF5)
 
 dnl update compiler flags
 AC_SUBST(CFLAGS)
-AC_SUBST(CPICFLAGS, ${CPICFLAGS})
-AC_SUBST(CXXFLAGS, ${CXXFLAGS})
-AC_SUBST(CXXPICFLAGS, ${CXXPICFLAGS})
+AC_SUBST(CPICFLAGS)
+AC_SUBST(CXXFLAGS)
+AC_SUBST(CXXPICFLAGS)
 AC_SUBST(CPPFLAGS)
 
 dnl HDF5 building options
-AC_SUBST(ZLIB_HOME, ${ZLIB_HOME})
-AC_SUBST(SZIP_HOME, ${SZIP_HOME})
 AC_SUBST(WITH_S3_VFD)
 AC_SUBST(SHAREDLIB_RPATH)
-
-#update variables in Makevars
-HDF5_INCLUDE="${BASEPBNAME}/src"
-HDF5_CXX_INCLUDE="${BASEPBNAME}/c++/src"
-HDF5_HL_INCLUDE="${BASEPBNAME}/hl/src"
-HDF5_HL_CXX_INCLUDE="${BASEPBNAME}/hl/c++/src"
-AC_SUBST(HDF5_INCLUDE)
-AC_SUBST(HDF5_CXX_INCLUDE)
-AC_SUBST(HDF5_HL_INCLUDE)
-AC_SUBST(HDF5_HL_CXX_INCLUDE)
-
-HDF5_LIB="${BASEPBNAME}/src/.libs/libhdf5.a"
-HDF5_CXX_LIB="${BASEPBNAME}/c++/src/.libs/libhdf5_cpp.a"
-HDF5_HL_LIB="${BASEPBNAME}/hl/src/.libs/libhdf5_hl.a"
-HDF5_HL_CXX_LIB="${BASEPBNAME}/hl/c++/src/.libs/libhdf5_hl_cpp.a"
-
-AC_SUBST(HDF5_LIB)
-AC_SUBST(HDF5_CXX_LIB)
-AC_SUBST(HDF5_HL_LIB)
-AC_SUBST(HDF5_HL_CXX_LIB)
-AC_SUBST(ZLIB_HOME)
-AC_SUBST(ZLIB_LIB)
-AC_SUBST(ZLIB_INCLUDE)
 
 AC_CONFIG_FILES([src/Makevars])
 

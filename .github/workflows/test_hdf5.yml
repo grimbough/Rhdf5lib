@@ -1,5 +1,5 @@
 on:
-  push:
+  workflow_dispatch:
 
 name: Testing rhdf5
 
@@ -77,8 +77,7 @@ jobs:
       - name: Configure git
         run: |
           git config --global core.autocrlf false
-          git config --global user.email "ghau@example.com"
-          git config --global user.name "GitHub Actions User"
+
       - uses: actions/checkout@v1
           
       - name: Setup R

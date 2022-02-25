@@ -19,10 +19,10 @@ jobs:
       fail-fast: false
       matrix:
         config:
-        - { os: windows-2022, bioc: 'devel'}
-        - { os: macOS-latest, bioc: 'devel'}
-        - { os: ubuntu-18.04, bioc: 'devel'}
-        - { os: ubuntu-20.04, bioc: 'devel'}
+        - { os: windows-2022, bioc-version: 'devel'}
+        - { os: macOS-latest, bioc-version: 'devel'}
+        - { os: ubuntu-18.04, bioc-version: 'devel'}
+        - { os: ubuntu-20.04, bioc-version: 'devel'}
 
 
 

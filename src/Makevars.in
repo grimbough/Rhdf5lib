@@ -61,7 +61,7 @@ build-hdf5: @REQUIRE_SZIP@ @EXTRACT_SOURCE@
 
 build-szip: @EXTRACT_SOURCE@
 	cd hdf5/libaec-1.0.4/build; \
-	../configure --with-pic --enable-shared=no --prefix=@SZIP_HOME@ \
+	../configure --with-pic --enable-shared=no --prefix=@SZIP_HOME@ --libdir=@SZIP_HOME@/lib \
 	CC='@CC@' CXX='@CXX@' \
 	CPPFLAGS='@CPPFLAGS@' \
 	CFLAGS='@CFLAGS@ @CPICFLAGS@'; \

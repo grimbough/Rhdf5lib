@@ -21,10 +21,8 @@ jobs:
         config:
         - { os: windows-2022, bioc-version: 'devel'}
         - { os: macOS-latest, bioc-version: 'devel'}
-        - { os: ubuntu-18.04, bioc-version: 'devel'}
-        - { os: ubuntu-20.04, bioc-version: 'devel'}
-
-
+        - { os: ubuntu-18.04, bioc-version: 'devel', system-libs: 'libcurl4-gnutls-dev libaec-dev'}
+        - { os: ubuntu-20.04, bioc-version: 'devel', system-libs: 'libcurl4-openssl-dev'}
 
     steps:
       - name: Configure git
@@ -34,18 +32,13 @@ jobs:
       - name: Install Linux system libraries
         if: ${{ runner.os == 'Linux' }}
         run: |
-          sudo apt-get install libcurl4-openssl-dev
+          sudo apt-get update && sudo apt-get install ${{ matrix.config.system-libs }}
           
       - name: Install Mac system libraries
         if: ${{ matrix.config.os == 'macOS-latest' }}
         run: |
           brew install libgit2
           
-      - name: Install SZIP at system level
-        if: ${{ matrix.config.os == 'ubuntu-18.04' }}
-        run: |
-          sudo apt-get install libaec-dev
-
       - uses: actions/checkout@v1
           
       - name: Setup R and Bioconductor
@@ -65,8 +58,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          install.packages(c('BiocManager', 'remotes', 'rcmdcheck', 'devtools', 'testthat'), quiet = TRUE)
-          BiocManager::install(version = 'devel', ask = FALSE, update = FALSE)
+          install.packages(c('remotes', 'rcmdcheck', 'devtools', 'testthat'), quiet = TRUE)
           library(remotes)
           update(dev_package_deps(dependencies = TRUE), quiet = TRUE)
         shell: Rscript {0}
@@ -74,13 +66,6 @@ jobs:
       - name: Bioc - Build, Install, Check
         id: build-install-check
         uses: grimbough/bioc-actions/build-install-check@v1
-        
-      - name: Test coverage
-        if: ${{ matrix.config.os == 'ubuntu-20.04' }}
-        run: |
-          BiocManager::install('covr', update = FALSE, ask = FALSE)
-          covr::codecov()
-        shell: Rscript {0}
         
       - name: Run BiocCheck
         uses: grimbough/bioc-actions/run-BiocCheck@v1

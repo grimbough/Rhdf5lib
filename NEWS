@@ -3,7 +3,12 @@ Version 1.20
 
 Bug fixes:
 
-  o Fixed problem where on some systems, the AEC library would be installed
+  o Installation on a system with an existing SZIP library would lead to an
+  empty linking location when linking against the package. This could cause
+  downstream compilation problems on some systems.
+  (thanks to @brgew for reporting and Philippe Bordron @bordron for helpful
+  diagnostics https://github.com/grimbough/rhdf5/issues/109)
+  o Fixed problem where, on some systems, the AEC library would be installed
   to a directory named 'lib64' rather than 'lib' as expected by the package 
   Makevars 
   (thanks to Robby Engelmann @robby81 for reporting this, 

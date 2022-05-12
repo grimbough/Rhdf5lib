@@ -1,11 +1,7 @@
 Package: Rhdf5lib
 Type: Package
 Title: hdf5 library as an R package
-<<<<<<< HEAD
-Version: 1.18.1
-=======
-Version: 1.19.1-1
->>>>>>> 9ad3307... Stop producing an empty linker location when using system SZIP
+Version: 1.18.2
 Authors@R: c(
             person(
               "Mike", "Smith", 

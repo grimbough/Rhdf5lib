@@ -59,7 +59,7 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "
                               sprintf('-L%s -lhdf5 %s', 
                                       patharch, winlibs)
                             }, {
-                              sprintf('"%s/libhdf5.a" -L"%s" %s', 
+                              sprintf('"%s/libhdf5.a"%s%s', 
                                       patharch, .getSzipLoc(patharch), .getDynamicLinks())
                             }
                      )
@@ -70,7 +70,7 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "
                               sprintf('-L%s -lhdf5_cpp -lhdf5 %s', 
                                       patharch, winlibs)
                             }, {
-                              sprintf('"%s/libhdf5_cpp.a" "%s/libhdf5.a" -L"%s" %s',
+                              sprintf('"%s/libhdf5_cpp.a" "%s/libhdf5.a"%s%s',
                                       patharch, patharch, .getSzipLoc(patharch), .getDynamicLinks())
                             }
                      )
@@ -81,7 +81,7 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "
                               sprintf('-L%s -lhdf5_hl -lhdf5 %s', 
                                       patharch, winlibs)
                             }, {
-                              sprintf('"%s/libhdf5_hl.a" "%s/libhdf5.a" -L"%s" %s', 
+                              sprintf('"%s/libhdf5_hl.a" "%s/libhdf5.a"%s%s', 
                                       patharch, patharch, .getSzipLoc(patharch), .getDynamicLinks())
                             }
                      )
@@ -92,7 +92,7 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "
                               sprintf('-L%s -lhdf5_hl_cpp -lhdf5_hl -lhdf5_cpp -lhdf5 %s', 
                                       patharch, winlibs)
                             }, {
-                              sprintf('"%s/libhdf5_hl_cpp.a" "%s/libhdf5_hl.a" "%s/libhdf5_cpp.a" "%s/libhdf5.a" -L"%s" %s',
+                              sprintf('"%s/libhdf5_hl_cpp.a" "%s/libhdf5_hl.a" "%s/libhdf5_cpp.a" "%s/libhdf5.a"%s%s',
                                       patharch, patharch, patharch, patharch, .getSzipLoc(patharch), .getDynamicLinks())
                             }
                      )
@@ -144,9 +144,9 @@ getHdf5Version <- function() {
   
   status <- file.exists(file.path(path, "libsz.a"))
   if(isTRUE(status)) {
-    ldflags <- sprintf('-L"%s"', path)
+    ldflags <- sprintf(' -L"%s"', path)
   } else {
-    path <- ""
+    ldflags <- ""
   }
-  return(path)
+  return(ldflags)
 }

@@ -35,16 +35,16 @@ copy-szip: copy-hdf5
 #copy hdf5 library headers to package include
 copy-hdf5: @BUILD_HDF5@
 	mkdir -p "${USER_INCLUDE_DIR}"
-	cp "${HDF5_INCLUDE}/"*.h "${USER_INCLUDE_DIR}"
-	cp "${HDF5_CXX_INCLUDE}/"*.h "${USER_INCLUDE_DIR}"
-	cp "${HDF5_HL_INCLUDE}/"*.h "${USER_INCLUDE_DIR}"
-	cp "${HDF5_HL_CXX_INCLUDE}/"*.h "${USER_INCLUDE_DIR}"
-	cp "${HDF5_INCLUDE}/"libhdf5.settings "${USER_INCLUDE_DIR}"
+	cp ${HDF5_INCLUDE}/*.h "${USER_INCLUDE_DIR}"
+	cp ${HDF5_CXX_INCLUDE}/*.h "${USER_INCLUDE_DIR}"
+	cp ${HDF5_HL_INCLUDE}/*.h "${USER_INCLUDE_DIR}"
+	cp ${HDF5_HL_CXX_INCLUDE}/*.h "${USER_INCLUDE_DIR}"
+	cp ${HDF5_INCLUDE}/libhdf5.settings "${USER_INCLUDE_DIR}"
 	mkdir -p "${USER_LIB_DIR}"
-	cp "${HDF5_LIB}" "${USER_LIB_DIR}"
-	cp "${HDF5_CXX_LIB}" "${USER_LIB_DIR}"
-	cp "${HDF5_HL_LIB}" "${USER_LIB_DIR}"
-	cp "${HDF5_HL_CXX_LIB}" "${USER_LIB_DIR}"
+	cp ${HDF5_LIB} "${USER_LIB_DIR}"
+	cp ${HDF5_CXX_LIB} "${USER_LIB_DIR}"
+	cp ${HDF5_HL_LIB} "${USER_LIB_DIR}"
+	cp ${HDF5_HL_CXX_LIB} "${USER_LIB_DIR}"
 
 build-hdf5: @REQUIRE_SZIP@ @EXTRACT_SOURCE@
 	cd hdf5; \

@@ -13,7 +13,7 @@ env:
 jobs:
   R-CMD-check:
     runs-on: ${{ matrix.config.os }}
-    name: ${{ matrix.config.os }} (${{ matrix.config.bioc }})
+    name: ${{ matrix.config.os }} (${{ matrix.config.bioc-version }})
 
     strategy:
       fail-fast: false
@@ -57,11 +57,7 @@ jobs:
       - uses: r-lib/actions/setup-pandoc@v2
 
       - name: Install dependencies
-        run: |
-          install.packages(c('remotes', 'rcmdcheck', 'devtools', 'testthat'), quiet = TRUE)
-          library(remotes)
-          update(dev_package_deps(dependencies = TRUE), quiet = TRUE)
-        shell: Rscript {0}
+        uses: r-lib/actions/setup-r-dependencies@v2
         
       - name: Bioc - Build, Install, Check
         id: build-install-check

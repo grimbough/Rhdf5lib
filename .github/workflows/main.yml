@@ -61,7 +61,8 @@ jobs:
         with:
         ## install BiocCheck here so it is cached
           extra-packages: |
-            BiocCheck 
+            bioc::BiocCheck
+            codetoolsBioC=?ignore
         
       - name: Bioc - Build, Install, Check
         id: build-install-check

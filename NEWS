@@ -1,3 +1,11 @@
+Version 1.22
+=============
+
+User visible changes:
+
+  o Removed pre-compiled library for 32-bit Windows as this platform is no
+  longer supported by R.
+
 Version 1.20
 =============
 

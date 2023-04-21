@@ -25,11 +25,12 @@ AC_PROG_CC
 AC_PROG_CXX
 
 dnl identify compiler flags
-CFLAGS=`"${R_HOME}/bin/R" CMD config CFLAGS`
-CPICFLAGS=`"${R_HOME}/bin/R" CMD config CPICFLAGS`
-CXXFLAGS=`"${R_HOME}/bin/R" CMD config CXXFLAGS`
-CXXPICFLAGS=`"${R_HOME}/bin/R" CMD config CXXPICFLAGS`
-CPPFLAGS=`"${R_HOME}/bin/R" CMD config CPPFLAGS`
+AC_SUBST(CFLAGS, `"${R_HOME}/bin/R" CMD config CFLAGS`)
+AC_SUBST(CPICFLAGS, `"${R_HOME}/bin/R" CMD config CPICFLAGS`)
+AC_SUBST(CXXFLAGS, `"${R_HOME}/bin/R" CMD config CXXFLAGS`)
+AC_SUBST(CXXPICFLAGS, `"${R_HOME}/bin/R" CMD config CXXPICFLAGS`)
+AC_SUBST(CPPFLAGS, `"${R_HOME}/bin/R" CMD config CPPFLAGS`)
+AC_SUBST(LDFLAGS, `"${R_HOME}/bin/R" CMD config LDFLAGS`)
 
 ###########################
 
@@ -189,13 +190,6 @@ fi
 
 AC_SUBST(EXTRACT_SOURCE)
 AC_SUBST(BUILD_HDF5)
-
-dnl update compiler flags
-AC_SUBST(CFLAGS)
-AC_SUBST(CPICFLAGS)
-AC_SUBST(CXXFLAGS)
-AC_SUBST(CXXPICFLAGS)
-AC_SUBST(CPPFLAGS)
 
 dnl HDF5 building options
 AC_SUBST(WITH_S3_VFD)

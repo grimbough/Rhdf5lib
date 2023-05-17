@@ -9,14 +9,14 @@ HDF5_CXX_LIB="${BASEPBNAME}/c++/src/.libs/libhdf5_cpp.a"
 HDF5_HL_LIB="${BASEPBNAME}/hl/src/.libs/libhdf5_hl.a"
 HDF5_HL_CXX_LIB="${BASEPBNAME}/hl/c++/src/.libs/libhdf5_hl_cpp.a"
 
-ZLIB_LIB=@ZLIB_LIB@
-ZLIB_INCLUDE=@ZLIB_INCLUDE@
+ZLIB_LIB=@ZLIB_LIB_PATH@
+ZLIB_INCLUDE=@ZLIB_INCLUDE_PATH@
 
 #expose headers in installed package include folder
 USER_INCLUDE_DIR = ${R_PACKAGE_DIR}/include
 USER_LIB_DIR = ${R_PACKAGE_DIR}/lib${R_ARCH}/
 
-PKG_CPPFLAGS = -I${USER_INCLUDE_DIR} ${ZLIB_INCLUDE}
+PKG_CPPFLAGS = -I"${USER_INCLUDE_DIR}" ${ZLIB_INCLUDE}
 PKG_CFLAGS = ${ZLIB_LIB}
 PKG_LIBS = "${USER_LIB_DIR}libhdf5.a" @SZIP_LIB@ -lz
 

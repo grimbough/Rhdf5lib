@@ -658,8 +658,8 @@ COPY_SZIP
 SZIP_LIB
 SZIP_HOME
 REQUIRE_SZIP
-ZLIB_INCLUDE
-ZLIB_LIB
+ZLIB_INCLUDE_PATH
+ZLIB_LIB_PATH
 ZLIB_HOME
 CXXPICFLAGS
 CPICFLAGS
@@ -4118,8 +4118,8 @@ done
     else
       as_fn_error $? "zlib is required but no path specified" "$LINENO" 5
     fi
-    ZLIB_LIB_PATH="-L${ZLIB_HOME}/lib/"
-    ZLIB_INCLUDE_PATH="-I${ZLIB_HOME}/include/"
+    ZLIB_LIB_PATH=-L"${ZLIB_HOME}/lib/"
+    ZLIB_INCLUDE_PATH=-I"${ZLIB_HOME}/include/"
     ;;
 esac
 

@@ -109,14 +109,14 @@ case $withval in
     else
       AC_MSG_ERROR([zlib is required but no path specified])
     fi
-    ZLIB_LIB_PATH="-L${ZLIB_HOME}/lib/"
-    ZLIB_INCLUDE_PATH="-I${ZLIB_HOME}/include/"
+    ZLIB_LIB_PATH=-L"${ZLIB_HOME}/lib/"
+    ZLIB_INCLUDE_PATH=-I"${ZLIB_HOME}/include/"
     ;;
 esac
 
 AC_SUBST(ZLIB_HOME)
-AC_SUBST(ZLIB_LIB)
-AC_SUBST(ZLIB_INCLUDE)
+AC_SUBST(ZLIB_LIB_PATH)
+AC_SUBST(ZLIB_INCLUDE_PATH)
 
 ###########################################
 

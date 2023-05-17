@@ -1,3 +1,12 @@
+Version 1.24
+=============
+
+Bug fixes:
+
+  o Fixed compilation issue when there was a space in the library path.
+  (thanks to Pius Martinn @albert180 for reporting this, 
+  https://github.com/grimbough/rhdf5/issues/128)
+
 Version 1.22
 =============
 

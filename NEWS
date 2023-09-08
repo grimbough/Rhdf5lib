@@ -6,6 +6,11 @@ Bug fixes:
   o Fixed compilation issue when there was a space in the library path.
   (thanks to Pius Martinn @albert180 for reporting this, 
   https://github.com/grimbough/rhdf5/issues/128)
+  o The configure script now detect the AR and RANLIB associated with R.
+  This fixes an issue installing the package from source when using R 
+  provided by conda.
+  (thanks to Jim Jeffers @jimjeffers for reporting this,
+  https://github.com/grimbough/Rhdf5lib/issues/52)
 
 Version 1.22
 =============

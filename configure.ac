@@ -19,6 +19,7 @@ CC=`"${R_HOME}/bin/R" CMD config CC`
 AC_SUBST(CC)
 AC_SUBST(CXX, `"${R_HOME}/bin/R" CMD config CXX`)
 AC_SUBST(MAKE, `"${R_HOME}/bin/R" CMD config MAKE`)
+AC_SUBST(AR, `"${R_HOME}/bin/R" CMD config AR`)
 
 dnl Checks for programs.
 AC_PROG_CC

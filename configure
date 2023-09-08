@@ -671,6 +671,7 @@ ac_ct_CC
 CPPFLAGS
 LDFLAGS
 CFLAGS
+AR
 MAKE
 CXX
 CC
@@ -2560,6 +2561,8 @@ CC=`"${R_HOME}/bin/R" CMD config CC`
 CXX=`"${R_HOME}/bin/R" CMD config CXX`
 
 MAKE=`"${R_HOME}/bin/R" CMD config MAKE`
+
+AR=`"${R_HOME}/bin/R" CMD config AR`
 
 
 

@@ -3942,6 +3942,8 @@ CXXFLAGS=`"${R_HOME}/bin/R" CMD config CXXFLAGS`
 CXXPICFLAGS=`"${R_HOME}/bin/R" CMD config CXXPICFLAGS`
 
 CPPFLAGS=`"${R_HOME}/bin/R" CMD config CPPFLAGS`
+cppflags=`"${R_HOME}/bin/R" CMD config --cppflags`
+CPPFLAGS="${CPPFLAGS} ${cppflags}"
 
 LDFLAGS=`"${R_HOME}/bin/R" CMD config LDFLAGS`
 

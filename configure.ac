@@ -29,7 +29,9 @@ AC_SUBST(CFLAGS, `"${R_HOME}/bin/R" CMD config CFLAGS`)
 AC_SUBST(CPICFLAGS, `"${R_HOME}/bin/R" CMD config CPICFLAGS`)
 AC_SUBST(CXXFLAGS, `"${R_HOME}/bin/R" CMD config CXXFLAGS`)
 AC_SUBST(CXXPICFLAGS, `"${R_HOME}/bin/R" CMD config CXXPICFLAGS`)
-AC_SUBST(CPPFLAGS, `"${R_HOME}/bin/R" CMD config CPPFLAGS`)
+CPPFLAGS=`"${R_HOME}/bin/R" CMD config CPPFLAGS`
+cppflags=`"${R_HOME}/bin/R" CMD config --cppflags`
+AC_SUBST(CPPFLAGS, "${CPPFLAGS} ${cppflags}")
 AC_SUBST(LDFLAGS, `"${R_HOME}/bin/R" CMD config LDFLAGS`)
 
 ###########################

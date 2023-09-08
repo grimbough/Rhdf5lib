@@ -671,6 +671,7 @@ ac_ct_CC
 CPPFLAGS
 LDFLAGS
 CFLAGS
+RANLIB
 AR
 MAKE
 CXX
@@ -2563,6 +2564,8 @@ CXX=`"${R_HOME}/bin/R" CMD config CXX`
 MAKE=`"${R_HOME}/bin/R" CMD config MAKE`
 
 AR=`"${R_HOME}/bin/R" CMD config AR`
+
+RANLIB=`"${R_HOME}/bin/R" CMD config RANLIB`
 
 
 

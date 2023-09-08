@@ -57,7 +57,7 @@ build-hdf5: @REQUIRE_SZIP@ @EXTRACT_SOURCE@
 	CPPFLAGS='@CPPFLAGS@' \
 	CFLAGS='@CFLAGS@ @CPICFLAGS@' \
 	CXXFLAGS='@CXXFLAGS@ @CXXPICFLAGS@' \
-	AR='@AR@' \
+	AR='@AR@' RANLIB='@RANLIB@' \
 	LDFLAGS='@LDFLAGS@'; \
 	@MAKE@ lib
 
@@ -66,8 +66,8 @@ build-szip: @EXTRACT_SOURCE@
 	../configure --with-pic --enable-shared=no --prefix=@SZIP_HOME@ --libdir=@SZIP_HOME@/lib \
 	CC='@CC@' CXX='@CXX@' \
 	CPPFLAGS='@CPPFLAGS@' \
-	AR='@AR@' \
-	CFLAGS='@CFLAGS@ @CPICFLAGS@'; \
+	CFLAGS='@CFLAGS@ @CPICFLAGS@' \
+	AR='@AR@' RANLIB='@RANLIB@'; \
 	@MAKE@; \
 	@MAKE@ install
 

@@ -13,7 +13,7 @@ vignette: |
 ---
 # Motivation
 
-`r Biocpkg("Rhdf5lib")` provides versions of the C and C++ HDF5 libraries. It is primarily useful to developers of other R packages who want to make use of the capabilities of the HDF5 library directly in the C or C++ code of their own packages, rather than using a higher level interface such as the [**rhdf5**](http://bioconductor.org/packages/rhdf5/) package.  Using **Rhdf5lib** makes life easier for users, as they do not have to worry about installing libraries at a system level, and for developers since they can work with a defined version of the library rather than developing strategies to cope with the potential for multiple versions.
+`r BiocStyle::Biocpkg("Rhdf5lib")` provides versions of the C and C++ HDF5 libraries. It is primarily useful to developers of other R packages who want to make use of the capabilities of the HDF5 library directly in the C or C++ code of their own packages, rather than using a higher level interface such as the [**rhdf5**](http://bioconductor.org/packages/rhdf5/) package.  Using **Rhdf5lib** makes life easier for users, as they do not have to worry about installing libraries at a system level, and for developers since they can work with a defined version of the library rather than developing strategies to cope with the potential for multiple versions.
 
 **Rhdf5lib** is very much inspired by the [**zlibbioc**](http://bioconductor.org/packages/zlibbioc/) and [**Rhtslib**](http://bioconductor.org/packages/Rhtslib/) packages.
 

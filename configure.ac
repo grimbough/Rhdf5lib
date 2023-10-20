@@ -123,14 +123,17 @@ AC_SUBST(ZLIB_INCLUDE_PATH)
 ###########################################
 
 ON_BUILDER=false
+echo ON_BUILDER=${ON_BUILDER}
+
 dnl we always want to build our own versions on the various build systems
-if test "${MY_UNIVERSE+set}" != set; then
-  ON_BUILDER=true
-fi
+MY_UNIVERSE=${MY_UNIVERSE:-false}
 IS_BIOC_BUILD_MACHINE=${IS_BIOC_BUILD_MACHINE:-false}
-if test ${IS_BIOC_BUILD_MACHINE} == true; then
+
+if test ${MY_UNIVERSE} != false -o ${IS_BIOC_BUILD_MACHINE} == true; then
   ON_BUILDER=true
 fi
+echo ON_BUILDER=${ON_BUILDER}
+
 
 if test ${ON_BUILDER} == false; then
   HAVE_SZLIB="yes"

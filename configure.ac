@@ -122,14 +122,26 @@ AC_SUBST(ZLIB_INCLUDE_PATH)
 
 ###########################################
 
-HAVE_SZLIB="yes"
-HAVE_AEC="yes"
-AC_CHECK_HEADERS([szlib.h], [HAVE_SZLIB_H="yes"], [unset HAVE_SZLIB])
-AC_CHECK_HEADERS([libaec.h], [HAVE_AEC_H="yes"], [unset HAVE_AEC])
-if test "x$HAVE_SZLIB" = "xyes" -a "x$HAVE_SZLIB_H" = "xyes"; then
-  AC_CHECK_LIB([sz], [SZ_BufftoBuffCompress],, [unset HAVE_SZLIB])
-  if test "x$HAVE_SZLIB" = "xyes" -a "x$HAVE_AEC_H" = "xyes" -a "x$HAVE_AEC" = "xyes"; then
-    AC_CHECK_LIB([sz], [aec_buffer_encode],, [unset HAVE_AEC], [-laec])
+ON_BUILDER=false
+dnl we always want to build our own versions on the various build systems
+if test "${MY_UNIVERSE+set}" != set; then
+  ON_BUILDER=true
+fi
+IS_BIOC_BUILD_MACHINE=${IS_BIOC_BUILD_MACHINE:-false}
+if test ${IS_BIOC_BUILD_MACHINE} == true; then
+  ON_BUILDER=true
+fi
+
+if test ${ON_BUILDER} == false; then
+  HAVE_SZLIB="yes"
+  HAVE_AEC="yes"
+  AC_CHECK_HEADERS([szlib.h], [HAVE_SZLIB_H="yes"], [unset HAVE_SZLIB])
+  AC_CHECK_HEADERS([libaec.h], [HAVE_AEC_H="yes"], [unset HAVE_AEC])
+  if test "x$HAVE_SZLIB" = "xyes" -a "x$HAVE_SZLIB_H" = "xyes"; then
+    AC_CHECK_LIB([sz], [SZ_BufftoBuffCompress],, [unset HAVE_SZLIB])
+    if test "x$HAVE_SZLIB" = "xyes" -a "x$HAVE_AEC_H" = "xyes" -a "x$HAVE_AEC" = "xyes"; then
+      AC_CHECK_LIB([sz], [aec_buffer_encode],, [unset HAVE_AEC], [-laec])
+    fi
   fi
 fi
   

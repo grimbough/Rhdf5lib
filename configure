@@ -4135,9 +4135,19 @@ esac
 
 ###########################################
 
-HAVE_SZLIB="yes"
-HAVE_AEC="yes"
-       for ac_header in szlib.h
+ON_BUILDER=false
+if test "${MY_UNIVERSE+set}" != set; then
+  ON_BUILDER=true
+fi
+IS_BIOC_BUILD_MACHINE=${IS_BIOC_BUILD_MACHINE:-false}
+if test ${IS_BIOC_BUILD_MACHINE} == true; then
+  ON_BUILDER=true
+fi
+
+if test ${ON_BUILDER} == false; then
+  HAVE_SZLIB="yes"
+  HAVE_AEC="yes"
+         for ac_header in szlib.h
 do :
   ac_fn_c_check_header_compile "$LINENO" "szlib.h" "ac_cv_header_szlib_h" "$ac_includes_default"
 if test "x$ac_cv_header_szlib_h" = xyes
@@ -4149,7 +4159,7 @@ else $as_nop
 fi
 
 done
-       for ac_header in libaec.h
+         for ac_header in libaec.h
 do :
   ac_fn_c_check_header_compile "$LINENO" "libaec.h" "ac_cv_header_libaec_h" "$ac_includes_default"
 if test "x$ac_cv_header_libaec_h" = xyes
@@ -4161,8 +4171,8 @@ else $as_nop
 fi
 
 done
-if test "x$HAVE_SZLIB" = "xyes" -a "x$HAVE_SZLIB_H" = "xyes"; then
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for SZ_BufftoBuffCompress in -lsz" >&5
+  if test "x$HAVE_SZLIB" = "xyes" -a "x$HAVE_SZLIB_H" = "xyes"; then
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for SZ_BufftoBuffCompress in -lsz" >&5
 printf %s "checking for SZ_BufftoBuffCompress in -lsz... " >&6; }
 if test ${ac_cv_lib_sz_SZ_BufftoBuffCompress+y}
 then :
@@ -4207,8 +4217,8 @@ else $as_nop
   unset HAVE_SZLIB
 fi
 
-  if test "x$HAVE_SZLIB" = "xyes" -a "x$HAVE_AEC_H" = "xyes" -a "x$HAVE_AEC" = "xyes"; then
-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for aec_buffer_encode in -lsz" >&5
+    if test "x$HAVE_SZLIB" = "xyes" -a "x$HAVE_AEC_H" = "xyes" -a "x$HAVE_AEC" = "xyes"; then
+      { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for aec_buffer_encode in -lsz" >&5
 printf %s "checking for aec_buffer_encode in -lsz... " >&6; }
 if test ${ac_cv_lib_sz_aec_buffer_encode+y}
 then :
@@ -4253,6 +4263,7 @@ else $as_nop
   unset HAVE_AEC
 fi
 
+    fi
   fi
 fi
 

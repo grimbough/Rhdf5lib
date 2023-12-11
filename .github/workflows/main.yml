@@ -37,9 +37,8 @@ jobs:
       - name: Install Mac system libraries
         if: ${{ matrix.config.os == 'macOS-latest' }}
         run: |
-          source("https://mac.R-project.org/bin/install.R")
-          install.libs("openssl")
-        shell: Rscript {0}
+          sudo Rscript -e 'source("https://mac.R-project.org/bin/install.R")' -e 'install.libs("openssl")'
+        shell: bash
         
       - uses: actions/checkout@v3
           

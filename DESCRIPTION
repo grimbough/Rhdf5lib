@@ -1,7 +1,11 @@
 Package: Rhdf5lib
 Type: Package
 Title: hdf5 library as an R package
+<<<<<<< HEAD
 Version: 1.25.0
+=======
+Version: 1.25.1
+>>>>>>> fdf6b185815c2d7533b44590df5f2061343ac626
 Authors@R: c(
             person(
               "Mike", "Smith", 

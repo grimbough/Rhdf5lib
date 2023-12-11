@@ -37,8 +37,10 @@ jobs:
       - name: Install Mac system libraries
         if: ${{ matrix.config.os == 'macOS-latest' }}
         run: |
-          brew install libgit2
-          
+          source("https://mac.R-project.org/bin/install.R")
+          install.libs("openssl")
+        shell: Rscript {0}
+        
       - uses: actions/checkout@v3
           
       - name: Setup R and Bioconductor
@@ -47,12 +49,12 @@ jobs:
           bioc-version: ${{ matrix.config.bioc-version }}
           bioc-mirror: https://ftp.gwdg.de/pub/misc/bioconductor
           
-      - name: Create Makevars
-        if: ${{ matrix.config.os == 'macOS-latest' }}
-        run: |
-          mkdir $HOME/.R
-          echo 'LDFLAGS="-L/usr/local/opt/openssl@1.1/lib"' > $HOME/.R/Makevars
-          echo 'CPPFLAGS="-I/usr/local/opt/openssl@1.1/include"' >> $HOME/.R/Makevars
+      # - name: Create Makevars
+      #   if: ${{ matrix.config.os == 'macOS-latest' }}
+      #   run: |
+      #     mkdir $HOME/.R
+      #     echo 'LDFLAGS="-L/usr/local/opt/openssl@1.1/lib"' > $HOME/.R/Makevars
+      #     echo 'CPPFLAGS="-I/usr/local/opt/openssl@1.1/include"' >> $HOME/.R/Makevars
 
       - uses: r-lib/actions/setup-pandoc@v2
 

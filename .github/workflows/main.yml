@@ -79,6 +79,12 @@ jobs:
           sessionInfo()
         shell: Rscript {0}
         
+      - name: Check libhdf5 status
+        run: |
+          ls -l ${R_LIBS_USER}/Rhdf5lib/lib
+          nm ${R_LIBS_USER}/Rhdf5lib/lib/libhdf5.a | grep EVP_sha256
+        shell: bash
+        
       - name: Upload check results
         if: always()
         uses: actions/upload-artifact@v3
@@ -92,3 +98,13 @@ jobs:
         with:
           name: ${{ matrix.config.os }}-${{ matrix.config.r }}-hdf5_config.log
           path: check/*.Rcheck/00_pkg_src/Rhdf5lib/src/hdf5/config.log
+          
+      ## upload source and binary packages
+      - name: Upload check output
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ matrix.os }}-bioc-${{ matrix.bioc-version}}-pkgs
+          path: |
+            ${{ steps.build-install-check.outputs.source-tarball }}
+            ${{ steps.build-install-check.outputs.package-binary }}
+            

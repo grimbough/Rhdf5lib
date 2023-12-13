@@ -80,6 +80,7 @@ jobs:
           ls -lR /opt/R/x86_64
           ls -l ${R_LIBS_USER}/Rhdf5lib/lib
           nm ${R_LIBS_USER}/Rhdf5lib/lib/libhdf5.a | grep EVP_sha256
+          nm ${R_LIBS_USER}/Rhdf5lib/lib/libhdf5.a
           otool -L ${R_LIBS_USER}/Rhdf5lib/libs/Rhdf5lib.so
         shell: bash
         

@@ -77,9 +77,10 @@ jobs:
       - name: Check libhdf5 status
         if: ${{ matrix.config.os == 'macOS-latest' }}
         run: |
+          ls -lR /opt/R/x86_64
           ls -l ${R_LIBS_USER}/Rhdf5lib/lib
           nm ${R_LIBS_USER}/Rhdf5lib/lib/libhdf5.a | grep EVP_sha256
-          otool -L ${R_LIBS_USER}/Rhdf5lib/libs/rhdf5.so
+          otool -L ${R_LIBS_USER}/Rhdf5lib/libs/Rhdf5lib.so
         shell: bash
         
       - name: Upload check results

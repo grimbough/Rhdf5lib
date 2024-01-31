@@ -25,11 +25,13 @@ jobs:
           channel-priority: true
           activate-environment: foo
       
-      - name: Bash
-        shell: bash -el {0}
+      - shell: bash -el {0}
         run: |
-          mamba info
-          mamba list
+          conda info
+          conda list
+          conda config --show-sources
+          conda config --show
+          printenv | sort
 
       - name: Bash
         shell: bash -el {0}

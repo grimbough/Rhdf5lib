@@ -1,7 +1,7 @@
 on:
   push:
-    braches:
-      - !mac-conda
+    branches-ignore:
+      - mac-conda
   pull_request:
     branches:
       - master

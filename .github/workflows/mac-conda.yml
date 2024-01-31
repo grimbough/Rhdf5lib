@@ -21,6 +21,8 @@ jobs:
         with:
           use-mamba: true
           miniconda-version: "latest"
+          channels: conda-forge,defaults,bioconda
+          channel-priority: true
           activate-environment: foo
       
       - name: Bash
@@ -33,7 +35,7 @@ jobs:
         shell: bash -el {0}
         run: |
           mamba install -c r 
-          mamba install bioconda::bioconductor-rhdf5lib
+          mamba install bioconductor-rhdf5lib
           
       - name: R
         shell: Rscript {0}

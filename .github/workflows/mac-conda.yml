@@ -25,28 +25,18 @@ jobs:
           channel-priority: true
           activate-environment: foo
       
-      - shell: bash -el {0}
-        run: |
-          conda info
-          conda list
-          conda config --show-sources
-          conda config --show
-          printenv | sort
-
       - name: Bash
         shell: bash -el {0}
         run: |
           conda install -c r r-biocmanager bioconductor-rhdf5lib
 
       - name: R
-        shell: Rscript {0}
+        shell: bash -el {0}
         run: |
-          .libPaths()
-          installed.packages()[,1:2]
-          sessionInfo()
+          R -e .libPaths() -e installed.packages()[,1:2] -e sessionInfo()
 
       - name: R
-        shell: Rscript {0}
+        shell: bash -el {0}
         run: |
-          BiocManager::install('Rhdf5lib', lib = tempdir())
+          R -e BiocManager::install('Rhdf5lib', lib = tempdir())
           

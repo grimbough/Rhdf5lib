@@ -33,10 +33,10 @@ jobs:
       - name: R
         shell: bash -el {0}
         run: |
-          R -e .libPaths() -e installed.packages()[,1:2] -e sessionInfo()
+          R -e '.libPaths()' -e 'installed.packages()[,1:2]' -e 'sessionInfo()'
 
       - name: R
         shell: bash -el {0}
         run: |
-          R -e BiocManager::install('Rhdf5lib', lib = tempdir())
+          R -e 'BiocManager::install("Rhdf5lib", lib = tempdir())'
           

@@ -36,10 +36,17 @@ jobs:
       - name: Bash
         shell: bash -el {0}
         run: |
-          conda install -c r bioconductor-rhdf5lib
+          conda install -c r r-biocmanager bioconductor-rhdf5lib
 
       - name: R
         shell: Rscript {0}
         run: |
-          library(Rhdf5lib)
+          .libPaths()
+          installed.packages()[,1:2]
           sessionInfo()
+
+      - name: R
+        shell: Rscript {0}
+        run: |
+          BiocManager::install('Rhdf5lib', lib = tempdir())
+          

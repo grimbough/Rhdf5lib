@@ -1,0 +1,41 @@
+on:
+  workflow_dispatch:
+
+name: OSX and Conda
+
+env:
+  GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+  R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+
+jobs:
+  test-pkg:
+    runs-on: macOS-latest
+    name: testing conda
+
+    steps:
+
+      - uses: actions/checkout@v4
+          
+      - uses: conda-incubator/setup-miniconda@v3
+        with:
+          use-mamba: true
+          miniconda-version: "latest"
+          activate-environment: foo
+      
+      - name: Bash
+        shell: bash -el {0}
+        run: |
+          mamba info
+          mamba list
+
+      - name: Bash
+        shell: bash -el {0}
+        run: |
+          mamba install -c r 
+          mamba install bioconda::bioconductor-rhdf5lib
+          
+      - name: R
+        shell: Rscript {0}
+        run: |
+          library(Rhdf5lib)
+          sessionInfo()

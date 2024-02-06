@@ -29,18 +29,17 @@ jobs:
       - name: Bash
         shell: bash -el {0}
         run: |
-          uname -a
           conda install -c r r-biocmanager
-          echo $PATH
-          conda list
-
-      - name: R
-        shell: bash -el {0}
-        run: |
-          R -e '.libPaths()' -e 'installed.packages()[,1:2]' -e 'sessionInfo()'
 
       - name: Install Rhdf5lib from source
         shell: bash -el {0}
         run: |
+          R -e 'BiocManager::install("Rhdf5lib", lib = tempdir())'
+          
+      - name: Install Rhdf5lib from source
+        shell: bash -el {0}
+        run: |
+          unset host_alias
+          unset build_alias
           R -e 'BiocManager::install("Rhdf5lib", lib = tempdir())'
           

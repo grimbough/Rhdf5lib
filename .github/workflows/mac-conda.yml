@@ -48,7 +48,7 @@ jobs:
       - name: Bash
         shell: bash -el {0}
         run: |
-          conda install -c r r-biocmanager
+          conda install -c r r-biocmanager r-remotes
           
       - name: Testing scripts
         shell: bash -el {0}
@@ -60,8 +60,10 @@ jobs:
       - name: Install Rhdf5lib from source
         shell: bash -el {0}
         run: |
+          mkdir ${{ runner.temp }}/R-lib
           R CMD config --all
           R -e 'BiocManager::install("grimbough/Rhdf5lib", lib = tempdir(), ref="mac-conda")'
+          R CMD INSTALL --library=${{ runner.temp }}/R-lib Rhdf5lib
           
       - name: Install Rhdf5lib from source
         shell: bash -el {0}

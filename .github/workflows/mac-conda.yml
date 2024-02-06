@@ -30,7 +30,7 @@ jobs:
         shell: bash -el {0}
         run: |
           uname -a
-          conda install -c r r-biocmanager bioconductor-rhdf5lib
+          conda install -c r r-biocmanager
           echo $PATH
           conda list
 
@@ -38,7 +38,6 @@ jobs:
         shell: bash -el {0}
         run: |
           R -e '.libPaths()' -e 'installed.packages()[,1:2]' -e 'sessionInfo()'
-          R -e 'library(Rhdf5lib)'
 
       - name: Install Rhdf5lib from source
         shell: bash -el {0}

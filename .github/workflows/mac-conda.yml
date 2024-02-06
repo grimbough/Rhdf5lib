@@ -32,6 +32,15 @@ jobs:
           echo ${host_alias}
           echo ${build_alias}
           
+      - name: Testing scripts
+        shell: bash -el {0}
+        run: |
+          wget -O config.sub https://git.savannah.gnu.org/cgit/config.git/plain/config.sub 
+          wget -O config.guess https://git.savannah.gnu.org/cgit/config.git/plain/config.guess 
+          bash ./config.guess
+          bash ./config.sub $(bash ./config.guess)
+        working-directory: ${{ runner.temp }}  
+          
       - name: Bash
         shell: bash -el {0}
         run: |

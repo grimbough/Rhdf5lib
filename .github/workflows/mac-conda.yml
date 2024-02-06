@@ -37,7 +37,7 @@ jobs:
         shell: bash -el {0}
         run: |
           R -e '.libPaths()' -e 'installed.packages()[,1:2]' -e 'sessionInfo()'
-          library(Rhdf5lib)
+          R -e 'library(Rhdf5lib)'
 
       - name: Install Rhdf5lib from source
         shell: bash -el {0}

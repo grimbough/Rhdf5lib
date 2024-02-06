@@ -45,6 +45,13 @@ jobs:
         shell: bash -el {0}
         run: |
           conda install -c r r-biocmanager
+          
+      - name: Testing scripts
+        shell: bash -el {0}
+        run: |
+          bash ./config.guess
+          bash ./config.sub $(bash ./config.guess)
+        working-directory: ${{ runner.temp }}  
 
       - name: Install Rhdf5lib from source
         shell: bash -el {0}

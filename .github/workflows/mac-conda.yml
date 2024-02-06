@@ -35,7 +35,7 @@ jobs:
         shell: bash -el {0}
         run: |
           mkdir ${{ runner.temp }}/R-lib
-          R CMD INSTALL --library=${{ runner.temp }}/R-lib ${{ github.workspace }}/Rhdf5lib
+          R CMD INSTALL --library=${{ runner.temp }}/R-lib ${{ github.workspace }}
         working-directory: ${{ runner.temp }} 
         
           

@@ -26,6 +26,12 @@ jobs:
           activate-environment: foo
           architecture: arm64
       
+      - name: System details
+        shell: bash -el {0}
+        run: |
+          echo ${host_alias}
+          echo ${build_alias}
+          
       - name: Bash
         shell: bash -el {0}
         run: |

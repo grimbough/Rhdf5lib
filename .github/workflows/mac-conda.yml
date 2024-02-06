@@ -31,6 +31,10 @@ jobs:
         run: |
           echo ${host_alias}
           echo ${build_alias}
+          (uname -m)
+          (uname -r)
+          (uname -s)
+          (uname -v)
           
       - name: Testing scripts
         shell: bash -el {0}
@@ -56,7 +60,8 @@ jobs:
       - name: Install Rhdf5lib from source
         shell: bash -el {0}
         run: |
-          R -e 'BiocManager::install("Rhdf5lib", lib = tempdir())'
+          R CMD config --all
+          R -e 'BiocManager::install("grimbough/Rhdf5lib", lib = tempdir(), ref="mac-conda")'
           
       - name: Install Rhdf5lib from source
         shell: bash -el {0}

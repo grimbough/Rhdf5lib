@@ -26,49 +26,16 @@ jobs:
           activate-environment: foo
           architecture: arm64
       
-      - name: System details
-        shell: bash -el {0}
-        run: |
-          echo ${host_alias}
-          echo ${build_alias}
-          (uname -m)
-          (uname -r)
-          (uname -s)
-          (uname -v)
-          
-      - name: Testing scripts
-        shell: bash -el {0}
-        run: |
-          wget -O config.sub https://git.savannah.gnu.org/cgit/config.git/plain/config.sub 
-          wget -O config.guess https://git.savannah.gnu.org/cgit/config.git/plain/config.guess 
-          bash ./config.guess
-          bash ./config.sub $(bash ./config.guess)
-        working-directory: ${{ runner.temp }}  
-          
       - name: Bash
         shell: bash -el {0}
         run: |
           conda install -c r r-biocmanager r-remotes
           
-      - name: Testing scripts
-        shell: bash -el {0}
-        run: |
-          bash ./config.guess
-          bash ./config.sub $(bash ./config.guess)
-        working-directory: ${{ runner.temp }}  
-
       - name: Install Rhdf5lib from source
         shell: bash -el {0}
         run: |
           mkdir ${{ runner.temp }}/R-lib
-          R CMD config --all
-          R -e 'BiocManager::install("grimbough/Rhdf5lib", lib = tempdir(), ref="mac-conda")'
-          R CMD INSTALL --library=${{ runner.temp }}/R-lib Rhdf5lib
-          
-      - name: Install Rhdf5lib from source
-        shell: bash -el {0}
-        run: |
-          unset host_alias
-          unset build_alias
-          R -e 'BiocManager::install("Rhdf5lib", lib = tempdir())'
+          R CMD INSTALL --library=${{ runner.temp }}/R-lib ${{ github.workspace }}/Rhdf5lib
+        working-directory: ${{ runner.temp }} 
+        
           

@@ -10,7 +10,7 @@ env:
 
 jobs:
   test-pkg:
-    runs-on: macOS-latest
+    runs-on: macOS-14
     name: testing conda
 
     steps:
@@ -28,6 +28,7 @@ jobs:
       - name: Bash
         shell: bash -el {0}
         run: |
+          uname -a
           conda install -c r r-biocmanager bioconductor-rhdf5lib
 
       - name: R

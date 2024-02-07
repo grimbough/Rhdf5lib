@@ -3997,7 +3997,7 @@ else $as_nop
   :
 fi
 
-elif echo $CC_BASENAME | grep -q clang; then
+elif echo $CC_BASENAME | grep -q 'clang\|gcc'; then
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether C compiler accepts -w" >&5
 printf %s "checking whether C compiler accepts -w... " >&6; }
 if test ${ax_cv_check_cflags___w+y}

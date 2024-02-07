@@ -3997,6 +3997,45 @@ else $as_nop
   :
 fi
 
+elif echo $CC_BASENAME | grep -q 'clang\|gcc'; then
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether C compiler accepts -w" >&5
+printf %s "checking whether C compiler accepts -w... " >&6; }
+if test ${ax_cv_check_cflags___w+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+
+  ax_check_save_flags=$CFLAGS
+  CFLAGS="$CFLAGS  -w"
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main (void)
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"
+then :
+  ax_cv_check_cflags___w=yes
+else $as_nop
+  ax_cv_check_cflags___w=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+  CFLAGS=$ax_check_save_flags
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cflags___w" >&5
+printf "%s\n" "$ax_cv_check_cflags___w" >&6; }
+if test "x$ax_cv_check_cflags___w" = xyes
+then :
+  CFLAGS="$CFLAGS -w"; CXXFLAGS="-w $CXXFLAGS"
+else $as_nop
+  :
+fi
+
 fi
 
 ###########################
@@ -4135,9 +4174,22 @@ esac
 
 ###########################################
 
-HAVE_SZLIB="yes"
-HAVE_AEC="yes"
-       for ac_header in szlib.h
+ON_BUILDER=false
+echo ON_BUILDER=${ON_BUILDER}
+
+MY_UNIVERSE=${MY_UNIVERSE:-false}
+IS_BIOC_BUILD_MACHINE=${IS_BIOC_BUILD_MACHINE:-false}
+
+if test ${MY_UNIVERSE} != false -o ${IS_BIOC_BUILD_MACHINE} == true; then
+  ON_BUILDER=true
+fi
+echo ON_BUILDER=${ON_BUILDER}
+
+
+if test ${ON_BUILDER} == false; then
+  HAVE_SZLIB="yes"
+  HAVE_AEC="yes"
+         for ac_header in szlib.h
 do :
   ac_fn_c_check_header_compile "$LINENO" "szlib.h" "ac_cv_header_szlib_h" "$ac_includes_default"
 if test "x$ac_cv_header_szlib_h" = xyes
@@ -4149,7 +4201,7 @@ else $as_nop
 fi
 
 done
-       for ac_header in libaec.h
+         for ac_header in libaec.h
 do :
   ac_fn_c_check_header_compile "$LINENO" "libaec.h" "ac_cv_header_libaec_h" "$ac_includes_default"
 if test "x$ac_cv_header_libaec_h" = xyes
@@ -4161,8 +4213,8 @@ else $as_nop
 fi
 
 done
-if test "x$HAVE_SZLIB" = "xyes" -a "x$HAVE_SZLIB_H" = "xyes"; then
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for SZ_BufftoBuffCompress in -lsz" >&5
+  if test "x$HAVE_SZLIB" = "xyes" -a "x$HAVE_SZLIB_H" = "xyes"; then
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for SZ_BufftoBuffCompress in -lsz" >&5
 printf %s "checking for SZ_BufftoBuffCompress in -lsz... " >&6; }
 if test ${ac_cv_lib_sz_SZ_BufftoBuffCompress+y}
 then :
@@ -4207,8 +4259,8 @@ else $as_nop
   unset HAVE_SZLIB
 fi
 
-  if test "x$HAVE_SZLIB" = "xyes" -a "x$HAVE_AEC_H" = "xyes" -a "x$HAVE_AEC" = "xyes"; then
-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for aec_buffer_encode in -lsz" >&5
+    if test "x$HAVE_SZLIB" = "xyes" -a "x$HAVE_AEC_H" = "xyes" -a "x$HAVE_AEC" = "xyes"; then
+      { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for aec_buffer_encode in -lsz" >&5
 printf %s "checking for aec_buffer_encode in -lsz... " >&6; }
 if test ${ac_cv_lib_sz_aec_buffer_encode+y}
 then :
@@ -4253,6 +4305,7 @@ else $as_nop
   unset HAVE_AEC
 fi
 
+    fi
   fi
 fi
 

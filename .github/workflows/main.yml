@@ -4,7 +4,7 @@ on:
       - mac-conda
   pull_request:
     branches:
-      - master
+      - devel
 
 name: R-CMD-check
 
@@ -21,10 +21,11 @@ jobs:
       fail-fast: false
       matrix:
         config:
-        - { os: windows-2022, bioc-version: 'devel'}
-        - { os: macOS-latest, bioc-version: 'devel'}
-        - { os: ubuntu-20.04, bioc-version: 'devel', system-libs: 'libcurl4-gnutls-dev libaec-dev'}
-        - { os: ubuntu-22.04, bioc-version: 'devel', system-libs: 'libcurl4-openssl-dev'}
+        - { os: windows-2022, bioc-version: 'devel', Ncpus: 4}
+        - { os: macOS-13,     bioc-version: 'devel', Ncpus: 4}
+        - { os: macOS-14,     bioc-version: 'devel', Ncpus: 3}
+        - { os: ubuntu-20.04, bioc-version: 'devel', Ncpus: 4, system-libs: 'libcurl4-gnutls-dev libaec-dev'}
+        - { os: ubuntu-22.04, bioc-version: 'devel', Ncpus: 4, system-libs: 'libcurl4-openssl-dev'}
 
     steps:
       - name: Configure git
@@ -43,21 +44,15 @@ jobs:
           install.libs("openssl")
         shell: Rscript {0}
         
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
           
       - name: Setup R and Bioconductor
         uses: grimbough/bioc-actions/setup-bioc@v1
         with:
           bioc-version: ${{ matrix.config.bioc-version }}
           bioc-mirror: https://ftp.gwdg.de/pub/misc/bioconductor
+          Ncpus: ${{ matrix.config.Ncpus }}
           
-      # - name: Create Makevars
-      #   if: ${{ matrix.config.os == 'macOS-latest' }}
-      #   run: |
-      #     mkdir $HOME/.R
-      #     echo 'LDFLAGS="-L/usr/local/opt/openssl@1.1/lib"' > $HOME/.R/Makevars
-      #     echo 'CPPFLAGS="-I/usr/local/opt/openssl@1.1/include"' >> $HOME/.R/Makevars
-
       - uses: r-lib/actions/setup-pandoc@v2
 
       - name: Install dependencies
@@ -84,14 +79,14 @@ jobs:
         
       - name: Upload check results
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.config.os }}-results
           path: ${{ steps.build-install-check.outputs.check-dir }}
           
       - name: Upload check results
         if: ${{ failure() }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.config.os }}-${{ matrix.config.r }}-hdf5_config.log
           path: check/*.Rcheck/00_pkg_src/Rhdf5lib/src/hdf5/config.log

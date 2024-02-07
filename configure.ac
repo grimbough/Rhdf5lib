@@ -42,6 +42,8 @@ echo "COMPILER = $CC_BASENAME"
 
 if test "X$CC_BASENAME" = "Xgcc" -o "X$CC_BASENAME" = "Xclang"; then
   AX_CHECK_COMPILE_FLAG([-w], [CFLAGS="$CFLAGS -w"; CXXFLAGS="-w $CXXFLAGS"])
+elif echo $CC_BASENAME | grep -q 'clang\|gcc'; then
+  AX_CHECK_COMPILE_FLAG([-w], [CFLAGS="$CFLAGS -w"; CXXFLAGS="-w $CXXFLAGS"])
 fi
   
 ###########################

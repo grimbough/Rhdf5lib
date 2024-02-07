@@ -1,0 +1,41 @@
+on:
+  push:
+  workflow_dispatch:
+
+name: OSX and Conda
+
+env:
+  GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+  R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+
+jobs:
+  test-pkg:
+    runs-on: macOS-14
+    name: testing conda
+
+    steps:
+
+      - uses: actions/checkout@v4
+          
+      - uses: conda-incubator/setup-miniconda@v3
+        with:
+          use-mamba: true
+          miniconda-version: "latest"
+          channels: conda-forge,defaults,bioconda
+          channel-priority: true
+          activate-environment: foo
+          architecture: arm64
+      
+      - name: Bash
+        shell: bash -el {0}
+        run: |
+          conda install -c r r-biocmanager r-remotes
+          
+      - name: Install Rhdf5lib from source
+        shell: bash -el {0}
+        run: |
+          mkdir ${{ runner.temp }}/R-lib
+          R CMD INSTALL --library=${{ runner.temp }}/R-lib ${{ github.workspace }}
+        working-directory: ${{ runner.temp }} 
+        
+          

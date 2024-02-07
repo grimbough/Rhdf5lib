@@ -1,3 +1,15 @@
+Version 1.26
+=============
+
+Bug fixes:
+
+  o Updated parts of the bundled HDF5 configure scripts (config.guess &
+  config.sub) which were very old and didn't recognise Apple arm64 systems
+  when running R installed via conda. (Thanks to @eyalbenda for reporting, 
+  https://github.com/grimbough/Rhdf5lib/issues/54)  Backported to 
+  Rhdf5lib version 1.24.2
+
+  
 Version 1.24
 =============
 

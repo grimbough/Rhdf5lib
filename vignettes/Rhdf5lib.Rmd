@@ -33,6 +33,12 @@ Add the following lines to both `src/Makevars` and `src/Makevars.win`
         'Rhdf5lib::pkgconfig("PKG_C_LIBS")') 
     PKG_LIBS=$(RHDF5_LIBS)
 
+Alternatively if using the C++ interface, please add the following lines instead:
+
+    RHDF5_LIBS=$(shell "${R_HOME}/bin${R_ARCH_BIN}/Rscript" -e \ 
+        'Rhdf5lib::pkgconfig("PKG_CXX_LIBS")') 
+    PKG_LIBS=$(RHDF5_LIBS)
+
 The statement for each platform modifies the `$PKG_LIBS` variable. If your package needs to add additional information to the `$PKG_LIBS` variable, do so by adding to the `PKG_LIBS=$(RHDF5_LIBS)` line, e.g.,
 
     PKG_LIBS=$(RHDF5_LIBS) -L/path/to/foolib -lfoo

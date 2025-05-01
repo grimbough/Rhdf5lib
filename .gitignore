@@ -9,6 +9,7 @@ src/*.so
 src/*.dll
 src/hdf5/*
 src/Makevars
+_temp
 
 config.log
 config.status

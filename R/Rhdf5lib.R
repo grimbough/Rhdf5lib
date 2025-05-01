@@ -8,7 +8,4 @@
 #'
 #' @docType package
 #' @name Rhdf5lib
-#'
-#' @useDynLib Rhdf5lib
-#'
 NULL

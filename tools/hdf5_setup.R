@@ -59,6 +59,7 @@ h5.options <- c(options,
     "-DHDF5_BUILD_UTILS=OFF",
     paste0("-DCMAKE_PREFIX_PATH=", install_path),
     "-DHDF5_USE_LIBAEC_STATIC=ON",
+    "-DHDF5_ENABLE_ROS3_VFD=ON",
     #"-DHDF5_ENABLE_PLUGIN_SUPPORT=ON", # This should be handled by the rhdf5filters package, so we won't do it here.
     #"-DHDF5_MINGW_STATIC_GCC_LIBS=ON", # ??? probably not necessary, R should be dynamically linking to them anyway if it's built by Rtools.
     NULL

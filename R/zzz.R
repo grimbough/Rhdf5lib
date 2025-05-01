@@ -131,8 +131,16 @@ getHdf5Version <- function() {
     settings_file <- system.file('lib', 'libhdf5.settings', package = "Rhdf5lib", mustWork = TRUE)
     libhdf5_settings <- readLines(settings_file)
     line <- grep("Extra libraries", x = libhdf5_settings)
-    links <- strsplit(libhdf5_settings[line], split = ": ")[[1]][2]
-    links <- sprintf("-l%s", strsplit(links, split = ";")[[1]])
+    libstr <- strsplit(libhdf5_settings[line], split = ": ")[[1]][2]
+    libs <- strsplit(libstr, split = ";")[[1]]
+
+    # For some reason, HDF5 reports paths to the dynamic libraries rather than
+    # just the names of the libraries, so we need to do some unpacking.
+    base <- basename(libs)
+    is.path <- grepl("^lib.*\\..*", base)
+    libs[is.path] <- sub("lib([^\\.]+)\\..*", "\\1", base[is.path])
+
+    links <- sprintf("-l%s", libs)
     links <- paste(c("", links), collapse=" ")
   }
   return(links)

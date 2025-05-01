@@ -3,13 +3,16 @@
 .RData
 .Ruserdata
 *.Rproj
+*.swp
 
 src/*.o
 src/*.so
 src/*.dll
 src/hdf5/*
 src/Makevars
-_temp
+
+_temp_*
+inst/hdf5
 
 config.log
 config.status

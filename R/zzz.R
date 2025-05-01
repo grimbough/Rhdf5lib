@@ -17,12 +17,12 @@
 #' @export
 #' @rawNamespace if(tools:::.OStype() == "windows") { importFrom(utils, shortPathName) }
 pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "PKG_C_HL_LIBS")) {
-  
+ 
   path <- Sys.getenv(
     x = "RHDF5LIB_RPATH",
     unset = system.file("lib", package="Rhdf5lib", mustWork=TRUE)
   )
-  
+
   if (nzchar(.Platform$r_arch)) {
     arch <- sprintf("/%s", .Platform$r_arch)
   } else {
@@ -126,12 +126,14 @@ getHdf5Version <- function() {
 .getDynamicLinks <- function() {
   sysname <- Sys.info()['sysname']
   if(sysname == "Windows") {
-    links <- "-lz"
+    links <- " -lz"
   } else {
-    settings_file <- system.file('include', 'libhdf5.settings', package = "Rhdf5lib", mustWork = TRUE)
+    settings_file <- system.file('lib', 'libhdf5.settings', package = "Rhdf5lib", mustWork = TRUE)
     libhdf5_settings <- readLines(settings_file)
     line <- grep("Extra libraries", x = libhdf5_settings)
-    links <- strsplit(libhdf5_settings[line], split = ":")[[1]][2]
+    links <- strsplit(libhdf5_settings[line], split = ": ")[[1]][2]
+    links <- sprintf("-l%s", strsplit(links, split = ";")[[1]])
+    links <- paste(c("", links), collapse=" ")
   }
   return(links)
 }

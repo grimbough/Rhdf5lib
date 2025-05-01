@@ -12,7 +12,8 @@ src/hdf5/*
 src/Makevars
 
 _temp_*
-inst/hdf5
+inst/include
+inst/lib
 
 config.log
 config.status

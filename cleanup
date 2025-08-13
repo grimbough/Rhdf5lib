@@ -1,4 +1,4 @@
 # Removing these directories to ensure that they aren't
 # persisted into the tarball for R CMD BUILD. This will
 # not be run by default in R CMD INSTALL. 
-rm -rf inst/igraph
+rm -rf inst/hdf5

@@ -16,12 +16,30 @@
 #' pkgconfig("PKG_CXX_HL_LIBS")
 #' @export
 #' @rawNamespace if(tools:::.OStype() == "windows") { importFrom(utils, shortPathName) }
-pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "PKG_C_HL_LIBS")) {
+pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "PKG_C_HL_LIBS", "PKG_CPP_FLAGS")) {
+  opt <- match.arg(opt)
+
+  if (!is.na(Sys.getenv("RHDF5LIB_PKG_CPP_FLAGS", NA))) {
+    candidate <- paste0("RHDF5LIB_", opt)
+    try <- Sys.getenv(candidate, NA)
+    if (is.na(try)) {
+      stop("'RHDF5LIB_PKG_CPP_FLAGS' is set but '", candidate, "' is not, see '?Rhdf5lib::pkgconfig' for details")
+    }
+    cat(try) 
+    return(invisible(NULL))
+  }
  
-  path <- Sys.getenv(
+  raw_path <- Sys.getenv(
     x = "RHDF5LIB_RPATH",
-    unset = system.file("lib", package="Rhdf5lib", mustWork=TRUE)
+    unset = system.file(package="Rhdf5lib", mustWork=TRUE)
   )
+
+  if (opt == "PKG_CPP_FLAGS") {
+    cat(paste0("-I", file.path(raw_path, "include")))
+    return(invisible(NULL))
+  }
+
+  path <- file.path(raw_path, "lib")
 
   if (nzchar(.Platform$r_arch)) {
     arch <- sprintf("/%s", .Platform$r_arch)
@@ -52,7 +70,7 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "
     }
   }
   
-  result <- switch(match.arg(opt), 
+  result <- switch(opt,
                    PKG_C_LIBS = {
                      switch(sysname, 
                             Windows = {
@@ -60,7 +78,7 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "
                                       patharch, winlibs)
                             }, {
                               sprintf('"%s/libhdf5.a"%s%s', 
-                                      patharch, .getSzipLoc(patharch), .getDynamicLinks())
+                                      patharch, .getSzipLoc(patharch), .getDynamicLinks(path))
                             }
                      )
                    }, 
@@ -71,7 +89,7 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "
                                       patharch, winlibs)
                             }, {
                               sprintf('"%s/libhdf5_cpp.a" "%s/libhdf5.a"%s%s',
-                                      patharch, patharch, .getSzipLoc(patharch), .getDynamicLinks())
+                                      patharch, patharch, .getSzipLoc(patharch), .getDynamicLinks(path))
                             }
                      )
                    },
@@ -82,7 +100,7 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "
                                       patharch, winlibs)
                             }, {
                               sprintf('"%s/libhdf5_hl.a" "%s/libhdf5.a"%s%s', 
-                                      patharch, patharch, .getSzipLoc(patharch), .getDynamicLinks())
+                                      patharch, patharch, .getSzipLoc(patharch), .getDynamicLinks(path))
                             }
                      )
                    }, 
@@ -93,7 +111,7 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "
                                       patharch, winlibs)
                             }, {
                               sprintf('"%s/libhdf5_hl_cpp.a" "%s/libhdf5_hl.a" "%s/libhdf5_cpp.a" "%s/libhdf5.a"%s%s',
-                                      patharch, patharch, patharch, patharch, .getSzipLoc(patharch), .getDynamicLinks())
+                                      patharch, patharch, patharch, patharch, .getSzipLoc(patharch), .getDynamicLinks(path))
                             }
                      )
                    }
@@ -123,12 +141,12 @@ getHdf5Version <- function() {
 #' Return the link flags determined when HDF5 was configured
 #' 
 #' @keywords internal
-.getDynamicLinks <- function() {
+.getDynamicLinks <- function(path) {
   sysname <- Sys.info()['sysname']
   if(sysname == "Windows") {
     links <- " -lz"
   } else {
-    settings_file <- system.file('lib', 'libhdf5.settings', package = "Rhdf5lib", mustWork = TRUE)
+    settings_file <- file.path(path, 'libhdf5.settings')
     libhdf5_settings <- readLines(settings_file)
     line <- grep("Extra libraries", x = libhdf5_settings)
     libstr <- strsplit(libhdf5_settings[line], split = ": ")[[1]][2]
@@ -154,7 +172,7 @@ getHdf5Version <- function() {
   
   status <- file.exists(file.path(path, "libsz.a"))
   if(isTRUE(status)) {
-    ldflags <- sprintf(' -L"%s"', path)
+    ldflags <- sprintf(' -L"%s" -lsz', path)
   } else {
     ldflags <- ""
   }

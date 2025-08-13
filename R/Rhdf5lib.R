@@ -7,5 +7,6 @@
 #' C++ code of their own packages, rather than using a higher level interface.
 #'
 #' @docType package
+#' @useDynLib Rhdf5lib
 #' @name Rhdf5lib
 NULL

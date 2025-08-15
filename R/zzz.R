@@ -19,14 +19,28 @@
 pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "PKG_C_HL_LIBS", "PKG_CPP_FLAGS")) {
   opt <- match.arg(opt)
 
-  if (!is.na(Sys.getenv("RHDF5LIB_PKG_CPP_FLAGS", NA))) {
+  if (Sys.getenv("RHDF5LIB_SYSTEM_LIB", FALSE)) {
     candidate <- paste0("RHDF5LIB_", opt)
     try <- Sys.getenv(candidate, NA)
-    if (is.na(try)) {
-      stop("'RHDF5LIB_PKG_CPP_FLAGS' is set but '", candidate, "' is not, see '?Rhdf5lib::pkgconfig' for details")
+    if (!is.na(try)) {
+      cat(try) 
+      return(invisible(NULL))
     }
-    cat(try) 
-    return(invisible(NULL))
+    if (opt == "PKG_CPP_FLAGS") {
+      system2("pkg-config", c("hdf5", "--cflags-only-I"))
+      return(invisible(NULL))
+    } else {
+      flags <- system2("pkg-config", c("hdf5", "--libs"), stdout=TRUE)
+      if (opt == "PKG_CXX_LIBS") {
+        flags <- paste(flags, "-lhdf5_cpp")
+      } else if (opt == "PKG_C_HL_LIBS") {
+        flags <- paste(flags, "-lhdf5_hl")
+      } else if (opt == "PKG_CXX_HL_LIBS") {
+        flags <- paste(flags, "-lhdf5_hl", "-lhdf5_cpp", "-lhdf5_hl_cpp")
+      }
+      cat(flags)
+      return(invisible(NULL))
+    }
   }
  
   raw_path <- Sys.getenv(

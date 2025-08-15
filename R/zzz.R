@@ -19,14 +19,12 @@
 pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "PKG_C_HL_LIBS", "PKG_CPP_FLAGS")) {
   opt <- match.arg(opt)
 
-  if (Sys.getenv("RHDF5LIB_SYSTEM_LIB", FALSE)) {
-    candidate <- paste0("RHDF5LIB_", opt)
-    try <- Sys.getenv(candidate, NA)
-    if (!is.na(try)) {
-      cat(try) 
+  if (.useSystemLibrary()) {
+    attempt <- Sys.getenv(paste0("RHDF5LIB_", opt), NA)
+    if (!is.na(attempt)) {
+      cat(attempt) 
       return(invisible(NULL))
-    }
-    if (opt == "PKG_CPP_FLAGS") {
+    } else if (opt == "PKG_CPP_FLAGS") {
       system2("pkg-config", c("hdf5", "--cflags-only-I"))
       return(invisible(NULL))
     } else {
@@ -134,6 +132,10 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "
   cat(result)
 }
 
+.useSystemLibrary <- function() {
+  Sys.getenv("RHDF5LIB_USE_SYSTEM_LIBRARY", "0") == "1"
+}
+
 #' Report the version of HDF5 distributed with this package
 #' 
 #' This function returns the version number of the HDF5 library that is 
@@ -146,9 +148,18 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "
 #' getHdf5Version()
 #' @export
 getHdf5Version <- function() {
-  cReturn <- .Call("Rhdf5lib_hdf5_libversion", 
-        PACKAGE = "Rhdf5lib")
-  versionNum <- paste(cReturn, collapse = ".")
+  if (.useSystemLibrary()) {
+    attempt <- Sys.getenv("RHDF5LIB_SYSTEM_LIBRARY_VERSION", NA)
+    if (!is.na(attempt)) {
+      return(attempt)
+    }
+    return(system2("pkg-config", c("hdf5", "--modversion"), stdout=TRUE))
+  } else {
+    settings_file <- system.file("lib", "libhdf5.settings", package="Rhdf5lib", mustWork=TRUE)
+    libhdf5_settings <- readLines(settings_file)
+    line <- grep("HDF5 Version:", x = libhdf5_settings)
+    versionNum <- strsplit(libhdf5_settings[line], split = ": ")[[1]][2]
+  }
   return(versionNum)
 }
 

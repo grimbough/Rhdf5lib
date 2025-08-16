@@ -19,21 +19,21 @@
 pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "PKG_C_HL_LIBS", "PKG_CPP_FLAGS")) {
   opt <- match.arg(opt)
 
-  if (.useSystemLibrary()) {
+  if(.useSystemLibrary()) {
     attempt <- Sys.getenv(paste0("RHDF5LIB_", opt), NA)
-    if (!is.na(attempt)) {
+    if(!is.na(attempt)) {
       cat(attempt) 
       return(invisible(NULL))
-    } else if (opt == "PKG_CPP_FLAGS") {
+    } else if(opt == "PKG_CPP_FLAGS") {
       system2("pkg-config", c("hdf5", "--cflags-only-I"))
       return(invisible(NULL))
     } else {
       flags <- system2("pkg-config", c("hdf5", "--libs"), stdout=TRUE)
-      if (opt == "PKG_CXX_LIBS") {
+      if(opt == "PKG_CXX_LIBS") {
         flags <- paste(flags, "-lhdf5_cpp")
-      } else if (opt == "PKG_C_HL_LIBS") {
+      } else if(opt == "PKG_C_HL_LIBS") {
         flags <- paste(flags, "-lhdf5_hl")
-      } else if (opt == "PKG_CXX_HL_LIBS") {
+      } else if(opt == "PKG_CXX_HL_LIBS") {
         flags <- paste(flags, "-lhdf5_hl", "-lhdf5_cpp", "-lhdf5_hl_cpp")
       }
       cat(flags)
@@ -46,14 +46,14 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "
     unset = system.file(package="Rhdf5lib", mustWork=TRUE)
   )
 
-  if (opt == "PKG_CPP_FLAGS") {
+  if(opt == "PKG_CPP_FLAGS") {
     cat(paste0("-I", file.path(raw_path, "include")))
     return(invisible(NULL))
   }
 
   path <- file.path(raw_path, "lib")
 
-  if (nzchar(.Platform$r_arch)) {
+  if(nzchar(.Platform$r_arch)) {
     arch <- sprintf("/%s", .Platform$r_arch)
   } else {
     arch <- ""
@@ -148,9 +148,9 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "
 #' getHdf5Version()
 #' @export
 getHdf5Version <- function() {
-  if (.useSystemLibrary()) {
+  if(.useSystemLibrary()) {
     attempt <- Sys.getenv("RHDF5LIB_SYSTEM_LIBRARY_VERSION", NA)
-    if (!is.na(attempt)) {
+    if(!is.na(attempt)) {
       return(attempt)
     }
     return(system2("pkg-config", c("hdf5", "--modversion"), stdout=TRUE))
@@ -194,12 +194,5 @@ getHdf5Version <- function() {
 #' 
 #' @keywords internal
 .getSzipLoc <- function(path) {
-  
-  status <- file.exists(file.path(path, "libsz.a"))
-  if(isTRUE(status)) {
-    ldflags <- sprintf(' -L"%s" -lsz', path)
-  } else {
-    ldflags <- ""
-  }
-  return(ldflags)
+  sprintf(' "%s"', file.path(path, "libsz.a"))
 }

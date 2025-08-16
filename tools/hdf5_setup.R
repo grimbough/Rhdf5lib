@@ -47,6 +47,11 @@ if (!file.exists(file.path(install_path, "lib", "libaec.a"))) {
     }
 }
 
+# Deleting the shared libraries because we don't need those.
+lib.path <- file.path(install_path, "lib")
+all.libs <- list.files(lib.path)
+unlink(file.path(lib.path, all.libs[grep("lib(aec|sz)\\.so.*", all.libs)]))
+
 #####################
 ### Building HDF5 ###
 #####################

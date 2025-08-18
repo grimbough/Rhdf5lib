@@ -53,9 +53,15 @@ Valid options to provide to `pkgconfig()`  are: `PKG_C_LIBS`, `PKG_CXX_LIBS`, `P
 
 ## Locating the library headers
 
-In order for the C/C++ compiler to find the HDF5 headers during package installation, add **Rhdf5lib** to the *LinkingTo* field of the DESCRIPTION file of your package, e.g.
+First, add **Rhdf5lib** to the *LinkingTo* field of the DESCRIPTION file of your package, e.g.
 
     LinkingTo: Rhdf5lib
+
+Then add the following lines to both `src/Makevars` and `src/Makevars.win`. This ensures that your package will use the system HDF5 library if directed to do so by the administrator of the R installation.
+
+    RHDF5_FLAGS=$(shell "${R_HOME}/bin${R_ARCH_BIN}/Rscript" -e \ 
+        'Rhdf5lib::pkgconfig("PKG_CPP_FLAGS")') 
+    PKG_CPP_FLAGS=$(RHDF5_FLAGS)
 
 In you C or C++ code files, you can then use the standard include techniques, e.g., `#include "hdf5.h"` or `#include "H5Cpp.h"`.  You can inspect the header files manually to check their names and declared functions.  To find their location on your system you can use the following code:
 
@@ -64,6 +70,18 @@ system.file(package="Rhdf5lib", "include")
 ```
 
 # Configuration arguments for non-standard system setups
+
+## Using system libraries
+
+If you wish to use your system's HDF5 library, you can set the `RHDF5LIB_USE_SYSTEM_LIBRARY` environment variable to 1. This will instruct **Rhdf5lib** to skip the compilation of its own copy of the HDF5 library. All calls to `Rhdf5lib::pkgconfig()` will fall back to the `pkg-config` utility to retrieve compiler and linker flags.
+
+## Overriding specific flags
+
+You can explicitly control the behavior of `Rhdf5lib::pkgconfig()` by setting the `RHDF5LIB_<OPT>` environment variable, where `<OPT>` is any of the options accepted by `Rhdf5lib::pkgconfig()`. For example, if we were to set:
+
+    export RHDF5LIB_PKG_CPP_FLAGS=-I/some/path/to/hdf5/headers
+
+then this would be returned by `Rhdf5lib::pkgconfig("PKG_CPP_FLAGS")`.
 
 ## Non-standard ZLIB location
 

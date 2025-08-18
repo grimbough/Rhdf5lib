@@ -1,3 +1,7 @@
+if (Sys.getenv("RHDF5LIB_USE_SYSTEM_LIBRARY", "0") == "1") {
+    quit(save="no")
+}
+
 cmake <- biocmake::find()
 
 options <- biocmake::formatArguments(biocmake::configure(fortran.compiler=FALSE))

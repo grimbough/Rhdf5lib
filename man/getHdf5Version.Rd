@@ -14,6 +14,13 @@ number.
 This function returns the version number of the HDF5 library that is 
 distributed with this package.
 }
+\details{
+If the \code{RHDF5LIB_USE_SYSTEM_LIBRARY} environment variable is set to 1,
+the HDF5 library version is retrieved via \code{pkg-config}.
+
+If the \code{RHDF5LIB_LIBRARY_VERSION} environment variable is set,
+the value of that environment variable is returned directly.
+}
 \examples{
 getHdf5Version()
 }

@@ -3,4 +3,3 @@
 .travis.yml
 .github
 .gitignore
-*-source\.tar\.gz$

@@ -4,7 +4,7 @@
 \alias{.getDynamicLinks}
 \title{Return the link flags determined when HDF5 was configured}
 \usage{
-.getDynamicLinks()
+.getDynamicLinks(path)
 }
 \description{
 Return the link flags determined when HDF5 was configured

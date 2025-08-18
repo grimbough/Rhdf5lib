@@ -1,3 +1,3 @@
 
 expect_silent(libver <- Rhdf5lib::getHdf5Version())
-expect_identical(libver, "1.10.7")
+expect_identical(libver, "1.14.6")

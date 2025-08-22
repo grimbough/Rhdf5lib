@@ -35,11 +35,7 @@ if (!file.exists(file.path(install_path, "lib", "libaec.a"))) {
         }
     }
 
-    if (.Platform$OS.type != "windows") {
-        status <- system2(cmake, c("--build", build_path))
-    } else {
-        status <- system2(cmake, c("--build", build_path, "--config", "Release"))
-    }
+    status <- system2(cmake, c("--build", build_path))
     if (status != 0) {
         stop("failed to build the libaec library with CMake")
     }
@@ -92,11 +88,7 @@ if (!file.exists(file.path(install_path, "lib", "libhdf5.a"))) {
         }
     }
 
-    if (.Platform$OS.type != "windows") {
-        status <- system2(cmake, c("--build", build_path))
-    } else {
-        status <- system2(cmake, c("--build", build_path, "--config", "Release"))
-    }
+    status <- system2(cmake, c("--build", build_path))
     if (status != 0) {
         stop("failed to build the HDF5 library with CMake")
     }

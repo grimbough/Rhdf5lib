@@ -91,10 +91,8 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "
                      replacement = "/", 
                      fixed = TRUE)
     
-    winlibs <- "-lcurl -lssh2 -lssl -lcrypto -lwldap32 -lws2_32 -lcrypt32 -lszip -lz -lpsapi"
-    if(!is.null(R.version$crt) && R.version$crt == "ucrt") {
-      winlibs <- gsub(pattern = "-lszip", replacement = "-lsz -laec", x = winlibs, fixed = TRUE)
-    }
+    winlibs <- c("curl", "psl", "bcrypt", "zstd", "brotlidec", "brotlicommon", "idn2", "unistring", "nghttp2", "iconv", "ssh2", "gcrypt", "gpgme", "gpg-error", "ssl" "crypto", "wldap32", "ws2_32", "crypt32", "sz", "aec", "z", "psapi")
+    winlibs <- paste(sprintf("-l%s", winlibs), collapse = " ")
   }
   
   result <- switch(opt,

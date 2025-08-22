@@ -66,21 +66,23 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "
 
   path <- file.path(raw_path, "lib")
 
-  if(nzchar(.Platform$r_arch)) {
-    arch <- sprintf("/%s", .Platform$r_arch)
-  } else {
-    arch <- ""
-  }
-  patharch <- paste0(path, arch)
+  # Probably not necessary anymore - do we even build multiple architectures in a single package these days?
+  path <- patharch
+#  if(nzchar(.Platform$r_arch)) {
+#    arch <- sprintf("/%s", .Platform$r_arch)
+#  } else {
+#    arch <- ""
+#  }
+#  patharch <- paste0(path, arch)
 
   sysname <- Sys.info()['sysname']
   if(sysname == "Windows") {
     
-    ## add "-ucrt" to the library directory if needed
-    ## this might be removed in the future - 2021-01-20
-    if(!is.null(R.version$crt) && R.version$crt == "ucrt" && R.version$arch == "x86_64") {
-      patharch <- paste0(patharch, "-ucrt")
-    }
+#    ## add "-ucrt" to the library directory if needed
+#    ## this might be removed in the future - 2021-01-20
+#    if(!is.null(R.version$crt) && R.version$crt == "ucrt" && R.version$arch == "x86_64") {
+#      patharch <- paste0(patharch, "-ucrt")
+#    }
     
     ## for some reason double quotes aren't always sufficient on Windows
     ## so we use the 8+3 form of the path and replace slashes

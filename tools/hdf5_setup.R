@@ -18,41 +18,44 @@ raw.options <- c(
 ### Building libaec ###
 #######################
 
-if (!file.exists(file.path(install_path, "lib", "libaec.a"))) {
-    tmp_dir <- "_temp_libaec"
-    dir.create(tmp_dir, recursive=TRUE, showWarnings=FALSE)
-    build_path <- file.path(tmp_dir, "build")
+# If we're on Windows, we use the libaec and libsz bundled with Rtools.
+if (.Platform$OS.type != "windows") {
+    if (!file.exists(file.path(install_path, "lib", "libaec.a"))) {
+        tmp_dir <- "_temp_libaec"
+        dir.create(tmp_dir, recursive=TRUE, showWarnings=FALSE)
+        build_path <- file.path(tmp_dir, "build")
 
-    if (!file.exists(build_path)) {
-        source_path <- file.path(tmp_dir, "source")
-        if (!file.exists(source_path)) {
-            stopifnot(untar("libaec-source.tar.gz", exdir=tmp_dir) == 0)
-            first <- list.files(tmp_dir, pattern="^libaec-")
-            file.rename(file.path(tmp_dir, first), source_path)
+        if (!file.exists(build_path)) {
+            source_path <- file.path(tmp_dir, "source")
+            if (!file.exists(source_path)) {
+                stopifnot(untar("libaec-source.tar.gz", exdir=tmp_dir) == 0)
+                first <- list.files(tmp_dir, pattern="^libaec-")
+                file.rename(file.path(tmp_dir, first), source_path)
+            }
+
+            aec.options <- biocmake::formatArguments(raw.options)
+            if (system2(cmake, c("-S", source_path, "-B", build_path, aec.options), stderr=FALSE) != 0) {
+                stop("failed to configure the libaec library with CMake")
+            }
         }
 
-        aec.options <- biocmake::formatArguments(raw.options)
-        if (system2(cmake, c("-S", source_path, "-B", build_path, aec.options), stderr=FALSE) != 0) {
-            stop("failed to configure the libaec library with CMake")
+        status <- system2(cmake, c("--build", build_path))
+        if (status != 0) {
+            stop("failed to build the libaec library with CMake")
+        }
+
+        dir.create("inst", showWarnings=FALSE)
+        status <- system2(cmake, c("--install", build_path), stderr=FALSE)
+        if (status != 0) {
+            stop("failed to install the libaec library with CMake")
         }
     }
 
-    status <- system2(cmake, c("--build", build_path))
-    if (status != 0) {
-        stop("failed to build the libaec library with CMake")
-    }
-
-    dir.create("inst", showWarnings=FALSE)
-    status <- system2(cmake, c("--install", build_path), stderr=FALSE)
-    if (status != 0) {
-        stop("failed to install the libaec library with CMake")
-    }
+    # Deleting the shared libraries because we don't need those.
+    lib.path <- file.path(install_path, "lib")
+    all.libs <- list.files(lib.path)
+    unlink(file.path(lib.path, all.libs[grep("lib(aec|sz)\\.(so|dll).*", all.libs)]))
 }
-
-# Deleting the shared libraries because we don't need those.
-lib.path <- file.path(install_path, "lib")
-all.libs <- list.files(lib.path)
-unlink(file.path(lib.path, all.libs[grep("lib(aec|sz)\\.(so|dll).*", all.libs)]))
 
 #####################
 ### Building HDF5 ###
@@ -78,7 +81,6 @@ if (!file.exists(file.path(install_path, "lib", "libhdf5.a"))) {
             HDF5_BUILD_TOOLS="OFF",
             HDF5_BUILD_EXAMPLES="OFF",
             HDF5_BUILD_UTILS="OFF",
-            CMAKE_PREFIX_PATH=install_path,
             HDF5_USE_LIBAEC_STATIC="ON",
             HDF5_ENABLE_ROS3_VFD="ON",
             #HDF5_ENABLE_PLUGIN_SUPPORT="ON", # This should be handled by the rhdf5filters package, so we won't do it here.
@@ -87,6 +89,9 @@ if (!file.exists(file.path(install_path, "lib", "libhdf5.a"))) {
         )
         if (.Platform$OS.type == "windows") {
             h5.raw.options[["CMAKE_C_FLAGS"]] <- paste(h5.raw.options[["CMAKE_C_FLAGS"]], "-DCURL_STATICLIB")
+        } else {
+            # If we're not on Windows, we need to tell Cmake where to find our newly installed libaec/libsz.
+            h5.raw.options <- c(h5.raw.options, CMAKE_PREFIX_PATH=install_path)
         }
 
         h5.options <- biocmake::formatArguments(h5.raw.options)

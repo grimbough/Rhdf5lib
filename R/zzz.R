@@ -67,7 +67,7 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "
   path <- file.path(raw_path, "lib")
 
   # Probably not necessary anymore - do we even build multiple architectures in a single package these days?
-  path <- patharch
+  patharch <- path
 #  if(nzchar(.Platform$r_arch)) {
 #    arch <- sprintf("/%s", .Platform$r_arch)
 #  } else {

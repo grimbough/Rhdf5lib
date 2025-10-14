@@ -1,18 +1,24 @@
 Package: Rhdf5lib
 Type: Package
 Title: hdf5 library as an R package
-Version: 1.31.0
+Version: 1.31.1
 Authors@R: c(
-            person(
-              "Mike", "Smith", 
-              role=c("ctb", "cre"), 
-              email = "grimbough@gmail.com",
-              comment = c(ORCID = "0000-0002-7800-3848")
-            ),
-            person(
-              given = "The HDF Group",
-              role = "cph"
-            ))
+    person(
+      "Mike", "Smith",
+      role = "ctb",
+      comment = c(ORCID = "0000-0002-7800-3848")
+    ),
+    person(
+      "Hugo", "Gruson",
+      role = "cre",
+      email = "hugo.gruson@embl.de",
+      comment = c(ORCID = "0000-0002-4094-1476"))
+    ,
+    person(
+      given = "The HDF Group",
+      role = "cph"
+    )
+  )
 Description: Provides C and C++ hdf5 libraries.
 License: Artistic-2.0
 Copyright: src/hdf5/COPYING

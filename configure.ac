@@ -4,6 +4,7 @@
 AC_PREREQ([2.65])
 AC_INIT([Rhdf5lib], [1.13], [grimbough@gmail.com])
 AC_CONFIG_SRCDIR([src])
+AC_CONFIG_AUX_DIR([tools])
 
 m4_include([m4/ax_check_compile_flag.m4])
 

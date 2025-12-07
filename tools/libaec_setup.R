@@ -25,7 +25,7 @@ raw.options <- c(
 build_path <- "_build_libaec"
 
 if (!file.exists(build_path)) {
-    source_path <- "libaec"
+    source_path <- "vendor/libaec"
     aec.options <- biocmake::formatArguments(raw.options)
     if (system2(cmake, c("-S", source_path, "-B", build_path, aec.options), stderr=FALSE) != 0) {
         stop("failed to configure the libaec library with CMake")

@@ -24,7 +24,7 @@ raw.options <- c(
 build_path <- "_build_hdf5"
 
 if (!file.exists(build_path)) {
-    source_path <- "hdf5"
+    source_path <- "vendor/hdf5"
     h5.raw.options <- c(
         raw.options, 
         BUILD_SHARED_LIBS="OFF",

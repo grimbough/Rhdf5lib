@@ -18,3 +18,4 @@ inst/lib
 config.log
 config.status
 configure~
+_build*

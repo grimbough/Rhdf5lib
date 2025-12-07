@@ -62,27 +62,17 @@ if (.Platform$OS.type != "windows") {
 #####################
 
 if (!file.exists(file.path(install_path, "lib", "libhdf5.a"))) {
-    tmp_dir <- "_temp_hdf5"
-    dir.create(tmp_dir, recursive=TRUE, showWarnings=FALSE)
-    build_path <- file.path(tmp_dir, "build")
+    build_path <- "_build_hdf5"
 
     if (!file.exists(build_path)) {
-        source_path <- file.path(tmp_dir, "source")
-        if (!file.exists(source_path)) {
-            stopifnot(untar("hdf5-source.tar.gz", exdir=tmp_dir) == 0)
-            first <- list.files(tmp_dir, pattern="^hdf5-")
-            file.rename(file.path(tmp_dir, first), source_path)
-        }
-
+        source_path <- "hdf5"
         h5.raw.options <- c(
             raw.options, 
             BUILD_SHARED_LIBS="OFF",
             HDF5_BUILD_CPP_LIB="ON",
             HDF5_BUILD_TOOLS="OFF",
             HDF5_BUILD_EXAMPLES="OFF",
-            HDF5_BUILD_UTILS="OFF",
-            HDF5_USE_LIBAEC_STATIC="ON",
-            HDF5_ENABLE_ROS3_VFD="ON",
+            #HDF5_ENABLE_ROS3_VFD="ON",
             #HDF5_ENABLE_PLUGIN_SUPPORT="ON", # This should be handled by the rhdf5filters package, so we won't do it here.
             #HDF5_MINGW_STATIC_GCC_LIBS="ON", # ??? probably not necessary, R should be dynamically linking to them anyway if it's built by Rtools.
             NULL

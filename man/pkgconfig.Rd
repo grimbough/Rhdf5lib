@@ -24,9 +24,10 @@ This function returns values for \code{PKG_LIBS} variables for use in
 Makevars files.
 }
 \details{
-If the \code{RHDF5LIB_USE_SYSTEM_LIBRARY} environment variable is set to 1,
-\code{pkgconfig} will attempt to use the \code{pkg-config} command-line
-utility to define the compiler/linker flags for the HDF5 system library.
+If the \code{RHDF5LIB_USE_SYSTEM_LIBRARY} environment variable is set to 1
+during or after \pkg{Rhdf5lib} installation, \code{pkgconfig} will attempt
+to use the \code{pkg-config} command-line utility to define the
+compiler/linker flags for the HDF5 system library.
 
 If the \code{RHDF5LIB_<opt>} environment variable is set (where \code{<opt>}
 is any of the options for the \code{opt} argument), the value of the variable

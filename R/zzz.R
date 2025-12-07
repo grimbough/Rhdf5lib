@@ -11,9 +11,10 @@
 #' @return \code{NULL}; prints the corresponding value to stdout.
 #'
 #' @details
-#' If the \code{RHDF5LIB_USE_SYSTEM_LIBRARY} environment variable is set to 1,
-#' \code{pkgconfig} will attempt to use the \code{pkg-config} command-line
-#' utility to define the compiler/linker flags for the HDF5 system library.
+#' If the \code{RHDF5LIB_USE_SYSTEM_LIBRARY} environment variable is set to 1
+#' during or after \pkg{Rhdf5lib} installation, \code{pkgconfig} will attempt
+#' to use the \code{pkg-config} command-line utility to define the
+#' compiler/linker flags for the HDF5 system library.
 #'
 #' If the \code{RHDF5LIB_<opt>} environment variable is set (where \code{<opt>}
 #' is any of the options for the \code{opt} argument), the value of the variable
@@ -146,7 +147,7 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "
 }
 
 .useSystemLibrary <- function() {
-  Sys.getenv("RHDF5LIB_USE_SYSTEM_LIBRARY", "0") == "1"
+  system.file("lib", "libhdf5.a", package="Rhdf5lib") == "" || Sys.getenv("RHDF5LIB_USE_SYSTEM_LIBRARY", "0") == "1"
 }
 
 #' Report the version of HDF5 distributed with this package

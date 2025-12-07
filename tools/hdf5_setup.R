@@ -34,7 +34,7 @@ if (!file.exists(build_path)) {
         HDF5_ENABLE_SZIP_SUPPORT="ON",
         HDF5_USE_LIBAEC_STATIC="ON",
         CMAKE_PREFIX_PATH=install_path,
-        #HDF5_ENABLE_ROS3_VFD="ON",
+        #HDF5_ENABLE_ROS3_VFD="ON", # HDF5 2.0.0 now relies on the aws-c-s3 stack, which is painful to build. If you want it, link to a system library. 
         #HDF5_ENABLE_PLUGIN_SUPPORT="ON", # This should be handled by the rhdf5filters package, so we won't do it here.
         #HDF5_MINGW_STATIC_GCC_LIBS="ON", # ??? probably not necessary, R should be dynamically linking to them anyway if it's built by Rtools.
         NULL

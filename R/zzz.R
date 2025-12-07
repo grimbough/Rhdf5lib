@@ -61,7 +61,22 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "
   )
 
   if(opt == "PKG_CPP_FLAGS") {
-    cat(paste0("-I", file.path(raw_path, "include")))
+    args <- paste0("-I", file.path(raw_path, "include"))
+
+    # If threading is requested, it needs to be supplied at both compile time and link time.
+    # '-pthread' is supported by both GCC and clang, and should work with Rtools on Windows.
+    settings_file <- file.path(raw_path, "lib", 'libhdf5.settings')
+    if (file.exists(settings_file)) {
+      libhdf5_settings <- readLines(settings_file)
+      line <- grep("Extra libraries", x = libhdf5_settings)
+      libstr <- strsplit(libhdf5_settings[line], split = ": ")[[1]][2]
+      libs <- strsplit(libstr, split = ";")[[1]]
+      if (any(libs == "Threads::Threads")) {
+        args <- c(args, "-pthread")
+      }
+    }
+
+    cat(args, sep=" ")
     return(invisible(NULL))
   }
 
@@ -198,13 +213,20 @@ getHdf5Version <- function() {
     libstr <- strsplit(libhdf5_settings[line], split = ": ")[[1]][2]
     libs <- strsplit(libstr, split = ";")[[1]]
 
-    # For some reason, HDF5 reports paths to the dynamic libraries rather than
-    # just the names of the libraries, so we need to do some unpacking.
-    base <- basename(libs)
-    is.path <- grepl("^lib.*\\..*", base)
-    libs[is.path] <- sub("lib([^\\.]+)\\..*", "\\1", base[is.path])
+    has.threads <- any(libs == "Threads::Threads")
+    if (has.threads) {
+      libs <- setdiff(libs, "Threads::Threads")
+    }
 
     links <- sprintf("-l%s", libs)
+    if (has.threads) {
+      # Clang doesn't support '-pthread' in the linker.
+      compiler <- grep("C Compiler", libhdf5_settings) 
+      if (length(compiler) && grep("gcc", libhdf5_settings[compiler])) {
+        links <- c(links, "-pthread")
+      }
+    }
+
     links <- paste(c("", links), collapse=" ")
   }
   return(links)

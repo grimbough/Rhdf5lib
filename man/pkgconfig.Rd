@@ -5,15 +5,16 @@
 \title{Compiler arguments for using Rhdf5lib}
 \usage{
 pkgconfig(
-  opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "PKG_C_HL_LIBS")
+  opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "PKG_C_HL_LIBS",
+    "PKG_CPP_FLAGS")
 )
 }
 \arguments{
 \item{opt}{A scalar character from the list of available options; 
 default is \code{PKG_CXX_LIBS}.  Valid options are \code{PKG_C_LIBS},
-\code{PKG_CXX_LIBS}, \code{PKG_C_HL_LIBS} and \code{PKG_CXX_HL_LIBS}, where
-\code{HL} indicates that you want to include the HDF5 'high-level' API and
-\code{CXX} denotes including the C++ interface.}
+\code{PKG_CXX_LIBS}, \code{PKG_C_HL_LIBS}, \code{PKG_CXX_HL_LIBS} and
+\code{PKG_CPP_FLAGS}, where \code{HL} indicates that you want to include the
+HDF5 'high-level' API and \code{CXX} denotes including the C++ interface.}
 }
 \value{
 \code{NULL}; prints the corresponding value to stdout.
@@ -21,6 +22,17 @@ default is \code{PKG_CXX_LIBS}.  Valid options are \code{PKG_C_LIBS},
 \description{
 This function returns values for \code{PKG_LIBS} variables for use in 
 Makevars files.
+}
+\details{
+If the \code{RHDF5LIB_USE_SYSTEM_LIBRARY} environment variable is set to 1
+during or after \pkg{Rhdf5lib} installation, \code{pkgconfig} will attempt
+to use the \code{pkg-config} command-line utility to define the
+compiler/linker flags for the HDF5 system library.
+
+If the \code{RHDF5LIB_<opt>} environment variable is set (where \code{<opt>}
+is any of the options for the \code{opt} argument), the value of the variable
+will be returned directly. Administrators can use this to override the
+behavior of \code{pkgconfig}.
 }
 \examples{
 pkgconfig("PKG_C_LIBS")

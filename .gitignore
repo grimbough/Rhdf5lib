@@ -3,6 +3,7 @@
 .RData
 .Ruserdata
 *.Rproj
+*.swp
 
 src/*.o
 src/*.so
@@ -10,6 +11,11 @@ src/*.dll
 src/hdf5/*
 src/Makevars
 
+_temp_*
+inst/include
+inst/lib
+
 config.log
 config.status
 configure~
+_build*

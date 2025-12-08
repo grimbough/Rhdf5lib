@@ -12,6 +12,11 @@ This R/Bioconductor package provides a mechanism to install the HDF5 system libr
 
 For bug reports, please register an [issue](https://github.com/grimbough/Rhdf5lib/issues) here on Github. For usage queries please post a question on the [Bioconductor Support Forum](https://support.bioconductor.org/new/post/) with the **Rhdf5lib** tag.
 
+## Sources
+
+The source for the HDF5 library (v1.14.6) was obtained from https://www.hdfgroup.org/download-hdf5/source-code/ on May 1, 2025.
+
+The source for the libaec library (1.1.3) was obtained from https://gitlab.dkrz.de/k202009/libaec/-/releases on May 1, 2025.
 
 ## Funding 
 

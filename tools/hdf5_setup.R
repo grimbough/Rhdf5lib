@@ -31,6 +31,7 @@ if (!file.exists(build_path)) {
         HDF5_BUILD_CPP_LIB="ON",
         HDF5_BUILD_TOOLS="OFF",
         HDF5_BUILD_EXAMPLES="OFF",
+        HDF5_ENABLE_ZLIB_SUPPORT="ON",
         HDF5_ENABLE_SZIP_SUPPORT="ON",
         HDF5_USE_LIBAEC_STATIC="ON",
         CMAKE_PREFIX_PATH=install_path,

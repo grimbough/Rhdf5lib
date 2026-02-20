@@ -1,5 +1,0 @@
-#!/bin/sh
-
-rm -rf src/hdf5
-rm -rf *.o
-rm -rf *.dll

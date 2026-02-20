@@ -13,3 +13,7 @@ src/Makevars
 config.log
 config.status
 configure~
+
+_build_*
+inst/lib/*
+inst/include/*

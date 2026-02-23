@@ -114,10 +114,10 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "
 #' getHdf5Version()
 #' @export
 getHdf5Version <- function() {
-  cReturn <- .Call("Rhdf5lib_hdf5_libversion", 
-        PACKAGE = "Rhdf5lib")
-  versionNum <- paste(cReturn, collapse = ".")
-  return(versionNum)
+  settings_file <- system.file("lib", "libhdf5.settings", package="Rhdf5lib", mustWork=TRUE)
+  libhdf5_settings <- readLines(settings_file)
+  line <- grep("HDF5 Version:", x = libhdf5_settings)
+  strsplit(libhdf5_settings[line], split = ": ")[[1]][2]
 }
 
 #' Return the link flags determined when HDF5 was configured

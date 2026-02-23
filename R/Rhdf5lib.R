@@ -7,7 +7,4 @@
 #' C++ code of their own packages, rather than using a higher level interface.
 #'
 #' @name Rhdf5lib
-#'
-#' @useDynLib Rhdf5lib
-#'
 "_PACKAGE"

@@ -2,6 +2,7 @@
 % Please edit documentation in R/Rhdf5lib.R
 \docType{package}
 \name{Rhdf5lib}
+\alias{Rhdf5lib-package}
 \alias{Rhdf5lib}
 \title{Rhdf5lib: A version of the HDF5 library built into an R package.}
 \description{
@@ -10,4 +11,22 @@ the R package structure.
 It is primarily useful to developers of other R packages who want
 to make use of the capabilities of the HDF5 library directly in the C or 
 C++ code of their own packages, rather than using a higher level interface.
+}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/Huber-group-EMBL/Rhdf5lib}
+  \item Report bugs at \url{https://github.com/Huber-group-EMBL/Rhdf5lib/issues}
+}
+
+}
+\author{
+\strong{Maintainer}: Hugo Gruson \email{hugo.gruson@embl.de} (\href{https://orcid.org/0000-0002-4094-1476}{ORCID})
+
+Other contributors:
+\itemize{
+  \item Mike Smith (\href{https://orcid.org/0000-0002-7800-3848}{ORCID}) [contributor]
+  \item The HDF Group [copyright holder]
+}
+
 }

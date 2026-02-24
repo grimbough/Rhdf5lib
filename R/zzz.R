@@ -9,6 +9,7 @@
 #' \code{HL} indicates that you want to include the HDF5 'high-level' API and
 #' \code{CXX} denotes including the C++ interface. 
 #' @return \code{NULL}; prints the corresponding value to stdout.
+#' 
 #' @examples
 #' pkgconfig("PKG_C_LIBS")
 #' pkgconfig("PKG_CXX_LIBS")
@@ -17,42 +18,29 @@
 #' @export
 #' @rawNamespace if(tools:::.OStype() == "windows") { importFrom(utils, shortPathName) }
 pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "PKG_C_HL_LIBS")) {
-  
+  opt <- match.arg(opt)
+
   path <- Sys.getenv(
     x = "RHDF5LIB_RPATH",
     unset = system.file("lib", package="Rhdf5lib", mustWork=TRUE)
   )
-  
-  if (nzchar(.Platform$r_arch)) {
-    arch <- sprintf("/%s", .Platform$r_arch)
-  } else {
-    arch <- ""
-  }
-  patharch <- paste0(path, arch)
 
   sysname <- Sys.info()['sysname']
   if(sysname == "Windows") {
-    
-    ## add "-ucrt" to the library directory if needed
-    ## this might be removed in the future - 2021-01-20
-    if(!is.null(R.version$crt) && R.version$crt == "ucrt" && R.version$arch == "x86_64") {
-      patharch <- paste0(patharch, "-ucrt")
-    }
-    
     ## for some reason double quotes aren't always sufficient on Windows
     ## so we use the 8+3 form of the path and replace slashes
-    patharch <- gsub(x = utils::shortPathName(patharch),
+    patharch <- gsub(x = utils::shortPathName(path),
                      pattern = "\\",
                      replacement = "/", 
                      fixed = TRUE)
     
-    winlibs <- "-lcurl -lssh2 -lssl -lcrypto -lwldap32 -lws2_32 -lcrypt32 -lszip -lz -lpsapi"
-    if(!is.null(R.version$crt) && R.version$crt == "ucrt") {
-      winlibs <- gsub(pattern = "-lszip", replacement = "-lsz -laec", x = winlibs, fixed = TRUE)
-    }
+    winlibs <- c("curl", "psl", "bcrypt", "zstd", "brotlidec", "brotlicommon", "idn2", "unistring", "nghttp2", "iconv", "ssh2", "gcrypt", "gpgme", "gpg-error", "ssl", "crypto", "wldap32", "ws2_32", "crypt32", "sz", "aec", "z", "psapi")
+    winlibs <- paste(sprintf("-l%s", winlibs), collapse = " ")
+  } else {
+    patharch <- path
   }
   
-  result <- switch(match.arg(opt), 
+  result <- switch(opt,
                    PKG_C_LIBS = {
                      switch(sysname, 
                             Windows = {
@@ -60,7 +48,7 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "
                                       patharch, winlibs)
                             }, {
                               sprintf('"%s/libhdf5.a"%s%s', 
-                                      patharch, .getSzipLoc(patharch), .getDynamicLinks())
+                                      patharch, .getSzipLoc(patharch), .getDynamicLinks(patharch))
                             }
                      )
                    }, 
@@ -71,7 +59,7 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "
                                       patharch, winlibs)
                             }, {
                               sprintf('"%s/libhdf5_cpp.a" "%s/libhdf5.a"%s%s',
-                                      patharch, patharch, .getSzipLoc(patharch), .getDynamicLinks())
+                                      patharch, patharch, .getSzipLoc(patharch), .getDynamicLinks(patharch))
                             }
                      )
                    },
@@ -82,7 +70,7 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "
                                       patharch, winlibs)
                             }, {
                               sprintf('"%s/libhdf5_hl.a" "%s/libhdf5.a"%s%s', 
-                                      patharch, patharch, .getSzipLoc(patharch), .getDynamicLinks())
+                                      patharch, patharch, .getSzipLoc(patharch), .getDynamicLinks(patharch))
                             }
                      )
                    }, 
@@ -93,7 +81,7 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "
                                       patharch, winlibs)
                             }, {
                               sprintf('"%s/libhdf5_hl_cpp.a" "%s/libhdf5_hl.a" "%s/libhdf5_cpp.a" "%s/libhdf5.a"%s%s',
-                                      patharch, patharch, patharch, patharch, .getSzipLoc(patharch), .getDynamicLinks())
+                                      patharch, patharch, patharch, patharch, .getSzipLoc(patharch), .getDynamicLinks(patharch))
                             }
                      )
                    }
@@ -123,16 +111,32 @@ getHdf5Version <- function() {
 #' Return the link flags determined when HDF5 was configured
 #' 
 #' @keywords internal
-.getDynamicLinks <- function() {
-  sysname <- Sys.info()['sysname']
-  if(sysname == "Windows") {
-    links <- "-lz"
-  } else {
-    settings_file <- system.file('include', 'libhdf5.settings', package = "Rhdf5lib", mustWork = TRUE)
-    libhdf5_settings <- readLines(settings_file)
-    line <- grep("Extra libraries", x = libhdf5_settings)
-    links <- strsplit(libhdf5_settings[line], split = ":")[[1]][2]
+.getDynamicLinks <- function(path) {
+  settings_file <- file.path(path, "libhdf5.settings")
+  libhdf5_settings <- readLines(settings_file)
+  libstr <- grep("Extra libraries", x = libhdf5_settings, fixed = TRUE, value = TRUE) |> 
+    gsub("\\s*Extra libraries: ", "", x = _)
+  libs <- strsplit(libstr, split = ";", fixed = TRUE)[[1]]
+
+  has.threads <- any(libs == "Threads::Threads")
+  if (has.threads) {
+    libs <- setdiff(libs, "Threads::Threads")
   }
+
+  ## CMake records full paths (e.g. /usr/lib/libcurl.so) to libs, which we don't want
+  libs <- .getLibShortName(libs)
+  links <- ifelse(startsWith(libs, "/"), libs, paste0("-l", libs))
+
+  if (has.threads) {
+    # Clang doesn't support '-pthread' in the linker.
+    compiler <- grep("C Compiler", libhdf5_settings) 
+    if (length(compiler) && grep("gcc", libhdf5_settings[compiler])) {
+      links <- c(links, "-pthread")
+    }
+  }
+
+  links <- paste(c("", links), collapse=" ")
+
   return(links)
 }
 
@@ -141,12 +145,19 @@ getHdf5Version <- function() {
 #' 
 #' @keywords internal
 .getSzipLoc <- function(path) {
-  
   status <- file.exists(file.path(path, "libsz.a"))
   if(isTRUE(status)) {
-    ldflags <- sprintf(' -L"%s"', path)
+    ldflags <- sprintf(' -L"%s" -lsz', path)
   } else {
     ldflags <- ""
   }
   return(ldflags)
+}
+
+.getLibShortName <- function(libs) {
+  base <- basename(libs)
+  is.path <- grepl("^lib.*\\..*", base)
+  libs[is.path] <- sub("lib([^\\.]+)\\..*", "\\1", base[is.path])
+
+  return(libs)
 }

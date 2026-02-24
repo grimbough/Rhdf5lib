@@ -5,15 +5,16 @@
 \title{Compiler arguments for using Rhdf5lib}
 \usage{
 pkgconfig(
-  opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "PKG_C_HL_LIBS")
+  opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "PKG_C_HL_LIBS",
+    "PKG_CPP_FLAGS")
 )
 }
 \arguments{
 \item{opt}{A scalar character from the list of available options; 
 default is \code{PKG_CXX_LIBS}.  Valid options are \code{PKG_C_LIBS},
-\code{PKG_CXX_LIBS}, \code{PKG_C_HL_LIBS} and \code{PKG_CXX_HL_LIBS}, where
-\code{HL} indicates that you want to include the HDF5 'high-level' API and
-\code{CXX} denotes including the C++ interface.}
+\code{PKG_CXX_LIBS}, \code{PKG_C_HL_LIBS}, \code{PKG_CXX_HL_LIBS} and
+\code{PKG_CPP_FLAGS}, where \code{HL} indicates that you want to include the
+HDF5 'high-level' API and \code{CXX} denotes including the C++ interface.}
 }
 \value{
 \code{NULL}; prints the corresponding value to stdout.

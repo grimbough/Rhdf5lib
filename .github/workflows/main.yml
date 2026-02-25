@@ -21,11 +21,13 @@ jobs:
       fail-fast: false
       matrix:
         config:
-        - { os: windows-2022, bioc-version: 'devel', Ncpus: 4}
-        - { os: macOS-13,     bioc-version: 'devel', Ncpus: 4}
-        - { os: macOS-14,     bioc-version: 'devel', Ncpus: 3}
-        - { os: ubuntu-20.04, bioc-version: 'devel', Ncpus: 4, system-libs: 'libcurl4-gnutls-dev libaec-dev'}
-        - { os: ubuntu-22.04, bioc-version: 'devel', Ncpus: 4, system-libs: 'libcurl4-openssl-dev'}
+        - { os: windows-2022,     bioc-version: 'devel', Ncpus: 4}
+        - { os: windows-11-arm,   bioc-version: 'devel', Ncpus: 4}
+        - { os: macOS-15-intel,   bioc-version: 'devel', Ncpus: 4}
+        - { os: macOS-15,         bioc-version: 'devel', Ncpus: 3}
+        - { os: ubuntu-24.04,     bioc-version: 'devel', Ncpus: 4, system-libs: 'libcurl4-gnutls-dev libaec-dev'}
+        - { os: ubuntu-24.04,     bioc-version: 'devel', Ncpus: 4, system-libs: 'libcurl4-openssl-dev'}
+        - { os: ubuntu-24.04-arm, bioc-version: 'devel', Ncpus: 4}
 
     steps:
       - name: Configure git

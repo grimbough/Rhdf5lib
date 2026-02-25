@@ -30,21 +30,10 @@ jobs:
         - { os: ubuntu-24.04-arm, bioc-version: 'devel', Ncpus: 4}
 
     steps:
-      - name: Configure git
-        run: |
-          git config --global core.autocrlf false
-
       - name: Install Linux system libraries
         if: ${{ runner.os == 'Linux' }}
         run: |
           sudo apt-get update && sudo apt-get install ${{ matrix.config.system-libs }}
-          
-      - name: Install Mac system libraries
-        if: ${{ matrix.config.os == 'macOS-latest' }}
-        run: |
-          source("https://mac.R-project.org/bin/install.R")
-          install.libs("openssl")
-        shell: Rscript {0}
         
       - uses: actions/checkout@v4
           
@@ -73,11 +62,6 @@ jobs:
         with:
           error-on: 'never'
           arguments: '--no-check-bioc-help' 
-      
-      - name: Session info
-        run: |
-          sessionInfo()
-        shell: Rscript {0}
         
       - name: Upload check results
         if: always()

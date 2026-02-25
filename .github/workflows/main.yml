@@ -1,5 +1,8 @@
 on:
+  workflow_dispatch:
   push:
+    branches:
+      - devel
   pull_request:
     branches:
       - devel

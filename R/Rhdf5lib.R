@@ -6,9 +6,8 @@
 #' to make use of the capabilities of the HDF5 library directly in the C or 
 #' C++ code of their own packages, rather than using a higher level interface.
 #'
-#' @docType package
 #' @name Rhdf5lib
 #'
 #' @useDynLib Rhdf5lib
 #'
-NULL
+"_PACKAGE"

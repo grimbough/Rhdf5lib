@@ -1,7 +1,5 @@
 on:
   push:
-    branches-ignore:
-      - mac-conda
   pull_request:
     branches:
       - devel
@@ -35,7 +33,7 @@ jobs:
         run: |
           sudo apt-get update && sudo apt-get install ${{ matrix.config.system-libs }}
         
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
           
       - name: Setup R and Bioconductor
         uses: grimbough/bioc-actions/setup-bioc@v1

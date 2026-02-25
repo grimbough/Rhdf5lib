@@ -55,6 +55,9 @@ jobs:
           cache-version: ${{ matrix.config.cache }}
           extra-packages: |
             bioc::BiocCheck
+      
+      - name: Work around https://github.com/grimbough/bioc-actions/issues/18
+        uses: r-lib/actions/setup-tinytex@v2
         
       - name: Bioc - Build, Install, Check
         id: build-install-check

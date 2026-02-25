@@ -21,7 +21,7 @@ Authors@R: c(
   )
 Description: Provides C and C++ hdf5 libraries.
 License: Artistic-2.0
-Copyright: src/hdf5/COPYING
+Copyright: vendor/hdf5/COPYING
 LazyLoad: true
 VignetteBuilder: knitr
 Depends: R (>= 4.2.0)

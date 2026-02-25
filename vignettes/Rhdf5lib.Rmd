@@ -33,11 +33,17 @@ Add the following lines to both `src/Makevars` and `src/Makevars.win`
         'Rhdf5lib::pkgconfig("PKG_C_LIBS")') 
     PKG_LIBS=$(RHDF5_LIBS)
 
+    RHDF5_CPPFLAGS  = $(shell "$(R_HOME)/bin${R_ARCH_BIN}/Rscript" -e 'Rhdf5lib::pkgconfig("PKG_CPP_FLAGS")')
+    PKG_CPPFLAGS = $(RHDF5_CPPFLAGS)
+
 Alternatively if using the C++ interface, please add the following lines instead:
 
     RHDF5_LIBS=$(shell "${R_HOME}/bin${R_ARCH_BIN}/Rscript" -e \ 
         'Rhdf5lib::pkgconfig("PKG_CXX_LIBS")') 
     PKG_LIBS=$(RHDF5_LIBS)
+
+    RHDF5_CPPFLAGS  = $(shell "$(R_HOME)/bin${R_ARCH_BIN}/Rscript" -e 'Rhdf5lib::pkgconfig("PKG_CPP_FLAGS")')
+    PKG_CPPFLAGS = $(RHDF5_CPPFLAGS)
 
 The statement for each platform modifies the `$PKG_LIBS` variable. If your package needs to add additional information to the `$PKG_LIBS` variable, do so by adding to the `PKG_LIBS=$(RHDF5_LIBS)` line, e.g.,
 
@@ -47,9 +53,9 @@ The statement for each platform modifies the `$PKG_LIBS` variable. If your packa
 
     SystemRequirements: GNU make
     
-The default behaviour of `Rhdf5lib::pkgconfig` is to report the location of the shared library as the result of `system.file("lib", package="Rhdf5lib")`.  If this is inappropriate for your system e.g. a cluster with a shared file system, use the environment variable `RHDF5LIB_RPATH` to override this and set an appropriate location for your infrastructure.
+The default behaviour of `Rhdf5lib::pkgconfig()` is to report the location of the shared library as the result of `system.file("lib", package="Rhdf5lib")`.  If this is inappropriate for your system e.g. a cluster with a shared file system, use the environment variable `RHDF5LIB_RPATH` to override this and set an appropriate location for your infrastructure.
 
-Valid options to provide to `pkgconfig()`  are: `PKG_C_LIBS`, `PKG_CXX_LIBS`, `PKG_C_HL_LIBS` and `PKG_CXX_HL_LIBS`.  Choose the most appropriate depending upon whether your linking code requires the C++ API (`C` vs `CXX`) and/or the HDF5 'high-level' API (`HL`).  Choosing options that you don't require should not harm performance, but will result in a larger library and potentially greater memory usage for your application, so it is good practice to select only the features you need.
+Valid options to provide to `pkgconfig()`  are: `PKG_C_LIBS`, `PKG_CXX_LIBS`, `PKG_C_HL_LIBS` and `PKG_CXX_HL_LIBS` and `PKG_CPP_FLAGS`.  Choose the most appropriate depending upon whether your linking code requires the C++ API (`C` vs `CXX`) and/or the HDF5 'high-level' API (`HL`).  Choosing options that you don't require should not harm performance, but will result in a larger library and potentially greater memory usage for your application, so it is good practice to select only the features you need.
 
 ## Locating the library headers
 
@@ -65,33 +71,7 @@ system.file(package="Rhdf5lib", "include")
 
 # Configuration arguments for non-standard system setups
 
-## Non-standard ZLIB location
-
-*Rhdf5lib* requires the ZLIB compression library to be installed on non-Windows platforms.  If installation fails  with a message reporting that **zlib.h** can not be found, it is possible to provide the appropriate path explicitly during installation via the `configure.args` argument e.g. 
-
-```{r, zlib-path, eval = FALSE}
-BiocManager::install('Rhdf5lib', configure.args = "--with-zlib='/path/to/zlib/'")
-```
-
-Here `/path/to/zlib` should be the directory that contains both `include/zlib.h` and `lib/libz.a`.  For example, on a typical Ubuntu installation this may be `/usr/` while for libraries installed via **miniconda** this location could be `/home/<USER>/miniconda3/`.
-
-## Disabling link time optimisation (LTO)
-
-If you have configured R with link-time optimisation enabled (see [here](https://cran.r-project.org/doc/manuals/r-devel/R-admin.html#Link_002dTime-Optimization)), but wish to turn it off for the installation of **Rhdf5lib**, you need to set both the `configure.args` and `INSTALL_opts` arguments e.g.
-
-```{r, disable-lto, eval = FALSE}
-BiocManager::install('Rhdf5lib', INSTALL_opts="--no-use-LTO", configure.args = "--disable-lto")
-```
-
-This is because building **Rhdf5lib** involves first compiling the HDF5 library, and then compiling and linking the R interface against that.  The `INSTALL_opts` argument affects the latter part, but we need to use `configure.args` to ensure the HDF5 library is built with the same settings. ^[Using `"--enable-lto"` here will have no effect.  To enable link-time optimisation you must have already configured R with `--enable-lto` (see [here](https://cran.r-project.org/doc/manuals/r-devel/R-admin.html#Link_002dTime-Optimization)).]
-
-## Disabling setting rpath
-
-If you encounter problems checking whether to use `-Wl,-rpath` to "*link shared libs in nondefault directories*" you can disable the test by passing the option `"--disable-sharedlib-rath"` to the configuration script.
-
-```{r, disable-rpath, eval = FALSE}
-BiocManager::install('Rhdf5lib', configure.args = "--disable-sharedlib-rath")
-```
+Because potential issues are likely to be different with the switch to a CMake build system, we start from a clean slate and have not implemented any of the configuration options that were available in the previous version of **Rhdf5lib**.  If you have a non-standard system setup and would like to see support for it, please open an issue on the GitHub repository for this package.
 
 # Funding
 

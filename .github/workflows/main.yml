@@ -73,7 +73,8 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.config.os }}-results
+          # Avoid name clashes when running multiple checks with the same os
+          name: ${{ matrix.config.os }}-${{ job.check_run_id }}-hdf5_config.log
           path: ${{ steps.build-install-check.outputs.check-dir }}
 
       - name: Upload check results

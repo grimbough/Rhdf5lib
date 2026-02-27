@@ -44,6 +44,13 @@ jobs:
           bioc-version: ${{ matrix.config.bioc-version }}
           bioc-mirror: https://ftp.gwdg.de/pub/misc/bioconductor
           Ncpus: ${{ matrix.config.Ncpus }}
+
+      - name: Install Mac system libraries
+        if: ${{ matrix.config.os == 'macOS-15' }}
+        run: |
+          source("https://mac.R-project.org/bin/install.R")
+          install.libs("openssl")
+        shell: Rscript {0}
           
       - uses: r-lib/actions/setup-pandoc@v2
 

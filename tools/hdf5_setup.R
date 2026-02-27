@@ -26,10 +26,6 @@ h5.raw.options <- c(
     NULL
 )
 
-if (.Platform$OS.type == "windows") {
-    h5.raw.options[["CMAKE_C_FLAGS"]] <- paste(h5.raw.options[["CMAKE_C_FLAGS"]], "-DCURL_STATICLIB")
-}
-
 h5.options <- biocmake::formatArguments(h5.raw.options)
 if (system2(cmake, c("-S", source_path, "-B", build_path, h5.options)) != 0) {
     stop("failed to configure the HDF5 library with CMake")

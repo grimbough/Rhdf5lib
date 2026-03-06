@@ -3,16 +3,13 @@
 
 set(CMAKE_COMPILER_VENDOR "intel")
 
-if(USE_SANITIZER)
-  set(CMAKE_C_COMPILER icl)
-  set(CMAKE_CXX_COMPILER icl++)
-  set(CMAKE_Fortran_COMPILER ifort)
-  set(INTEL_CLANG ON)
-else ()
-  set(CMAKE_C_COMPILER icc)
-  set(CMAKE_CXX_COMPILER icpc)
-  set(CMAKE_Fortran_COMPILER ifort)
-endif ()
+set(CMAKE_C_COMPILER icx)
+if(WIN32)
+ set(CMAKE_CXX_COMPILER icx)
+else()
+  set(CMAKE_CXX_COMPILER icpx)
+endif()
+set(CMAKE_Fortran_COMPILER ifx)
 
 # the following is used if cross-compiling
 set(CMAKE_CROSSCOMPILING_EMULATOR "")

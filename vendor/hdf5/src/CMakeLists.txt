@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.12)
+cmake_minimum_required (VERSION 3.18)
 project (HDF5_SRC C)
 
 #-----------------------------------------------------------------------------
@@ -6,6 +6,7 @@ project (HDF5_SRC C)
 #-----------------------------------------------------------------------------
 set (H5_SOURCES
     ${HDF5_SRC_DIR}/H5.c
+    ${HDF5_SRC_BINARY_DIR}/H5build_settings.c
     ${HDF5_SRC_DIR}/H5checksum.c
     ${HDF5_SRC_DIR}/H5dbg.c
     ${HDF5_SRC_DIR}/H5mpi.c
@@ -17,6 +18,7 @@ set (H5_SOURCES
 set (H5_HDRS
     ${HDF5_SRC_DIR}/hdf5.h
     ${HDF5_SRC_DIR}/H5api_adpt.h
+    ${HDF5_SRC_DIR}/H5encode.h
     ${HDF5_SRC_DIR}/H5public.h
     #${HDF5_SRC_DIR}/H5version.h
     #${HDF5_SRC_DIR}/H5overflow.h
@@ -78,8 +80,10 @@ IDE_GENERATED_PROPERTIES ("H5B2" "${H5B2_HDRS}" "${H5B2_SOURCES}" )
 set (H5C_SOURCES
     ${HDF5_SRC_DIR}/H5C.c
     ${HDF5_SRC_DIR}/H5Cdbg.c
+    ${HDF5_SRC_DIR}/H5Centry.c
     ${HDF5_SRC_DIR}/H5Cepoch.c
     ${HDF5_SRC_DIR}/H5Cimage.c
+    ${HDF5_SRC_DIR}/H5Cint.c
     ${HDF5_SRC_DIR}/H5Clog.c
     ${HDF5_SRC_DIR}/H5Clog_json.c
     ${HDF5_SRC_DIR}/H5Clog_trace.c
@@ -93,14 +97,6 @@ set (H5C_HDRS
     ${HDF5_SRC_DIR}/H5Cpublic.h
 )
 IDE_GENERATED_PROPERTIES ("H5C" "${H5C_HDRS}" "${H5C_SOURCES}" )
-
-
-set (H5CS_SOURCES
-    ${HDF5_SRC_DIR}/H5CS.c
-)
-set (H5CS_HDRS
-)
-IDE_GENERATED_PROPERTIES ("H5CS" "${H5CS_HDRS}" "${H5CS_SOURCES}" )
 
 
 set (H5CX_SOURCES
@@ -173,6 +169,19 @@ set (H5EA_HDRS
 IDE_GENERATED_PROPERTIES ("H5EA" "${H5EA_HDRS}" "${H5EA_SOURCES}" )
 
 
+set (H5ES_SOURCES
+    ${HDF5_SRC_DIR}/H5ES.c
+    ${HDF5_SRC_DIR}/H5ESevent.c
+    ${HDF5_SRC_DIR}/H5ESint.c
+    ${HDF5_SRC_DIR}/H5ESlist.c
+)
+set (H5ES_HDRS
+    ${HDF5_SRC_DIR}/H5ESdevelop.h
+    ${HDF5_SRC_DIR}/H5ESpublic.h
+)
+IDE_GENERATED_PROPERTIES ("H5ES" "${H5ES_HDRS}" "${H5ES_SOURCES}" )
+
+
 set (H5F_SOURCES
     ${HDF5_SRC_DIR}/H5F.c
     ${HDF5_SRC_DIR}/H5Faccum.c
@@ -227,6 +236,11 @@ set (H5FD_SOURCES
     ${HDF5_SRC_DIR}/H5FDmpi.c
     ${HDF5_SRC_DIR}/H5FDmpio.c
     ${HDF5_SRC_DIR}/H5FDmulti.c
+    ${HDF5_SRC_DIR}/H5FDonion.c
+    ${HDF5_SRC_DIR}/H5FDonion_header.c
+    ${HDF5_SRC_DIR}/H5FDonion_history.c
+    ${HDF5_SRC_DIR}/H5FDonion_index.c
+    ${HDF5_SRC_DIR}/H5FDperform.c
     ${HDF5_SRC_DIR}/H5FDros3.c
     ${HDF5_SRC_DIR}/H5FDs3comms.c
     ${HDF5_SRC_DIR}/H5FDsec2.c
@@ -239,6 +253,7 @@ set (H5FD_SOURCES
 
 set (H5FD_HDRS
     ${HDF5_SRC_DIR}/H5FDcore.h
+    ${HDF5_SRC_DIR}/H5FDdevelop.h
     ${HDF5_SRC_DIR}/H5FDdirect.h
     ${HDF5_SRC_DIR}/H5FDfamily.h
     ${HDF5_SRC_DIR}/H5FDhdfs.h
@@ -247,6 +262,7 @@ set (H5FD_HDRS
     ${HDF5_SRC_DIR}/H5FDmpi.h
     ${HDF5_SRC_DIR}/H5FDmpio.h
     ${HDF5_SRC_DIR}/H5FDmulti.h
+    ${HDF5_SRC_DIR}/H5FDonion.h
     ${HDF5_SRC_DIR}/H5FDpublic.h
     ${HDF5_SRC_DIR}/H5FDros3.h
     ${HDF5_SRC_DIR}/H5FDs3comms.h
@@ -255,6 +271,12 @@ set (H5FD_HDRS
     ${HDF5_SRC_DIR}/H5FDstdio.h
     ${HDF5_SRC_DIR}/H5FDwindows.h
 )
+
+# Append Subfiling VFD and Mercury sources to H5FD
+# interface if Subfiling VFD is built. Append Subfiling
+# VFD public headers to H5FD_HDRS regardless.
+add_subdirectory (${H5FD_SUBFILING_DIR})
+
 IDE_GENERATED_PROPERTIES ("H5FD" "${H5FD_HDRS}" "${H5FD_SOURCES}" )
 
 
@@ -362,19 +384,14 @@ set (H5HL_HDRS
 IDE_GENERATED_PROPERTIES ("H5HL" "${H5HL_HDRS}" "${H5HL_SOURCES}" )
 
 
-set (H5HP_SOURCES
-    ${HDF5_SRC_DIR}/H5HP.c
-)
-set (H5HP_HDRS
-)
-IDE_GENERATED_PROPERTIES ("H5HP" "${H5HP_HDRS}" "${H5HP_SOURCES}" )
-
-
 set (H5I_SOURCES
     ${HDF5_SRC_DIR}/H5I.c
+    ${HDF5_SRC_DIR}/H5Idbg.c
+    ${HDF5_SRC_DIR}/H5Iint.c
     ${HDF5_SRC_DIR}/H5Itest.c
 )
 set (H5I_HDRS
+    ${HDF5_SRC_DIR}/H5Idevelop.h
     ${HDF5_SRC_DIR}/H5Ipublic.h
 )
 IDE_GENERATED_PROPERTIES ("H5I" "${H5I_HDRS}" "${H5I_SOURCES}" )
@@ -382,12 +399,24 @@ IDE_GENERATED_PROPERTIES ("H5I" "${H5I_HDRS}" "${H5I_SOURCES}" )
 
 set (H5L_SOURCES
     ${HDF5_SRC_DIR}/H5L.c
+    ${HDF5_SRC_DIR}/H5Ldeprec.c
     ${HDF5_SRC_DIR}/H5Lexternal.c
+    ${HDF5_SRC_DIR}/H5Lint.c
 )
 set (H5L_HDRS
+    ${HDF5_SRC_DIR}/H5Ldevelop.h
     ${HDF5_SRC_DIR}/H5Lpublic.h
 )
 IDE_GENERATED_PROPERTIES ("H5L" "${H5L_HDRS}" "${H5L_SOURCES}" )
+
+
+set (H5M_SOURCES
+    ${HDF5_SRC_DIR}/H5M.c
+)
+set (H5M_HDRS
+    ${HDF5_SRC_DIR}/H5Mpublic.h
+)
+IDE_GENERATED_PROPERTIES ("H5M" "${H5M_HDRS}" "${H5M_SOURCES}")
 
 
 set (H5MF_SOURCES
@@ -411,15 +440,6 @@ set (H5MM_HDRS
 IDE_GENERATED_PROPERTIES ("H5MM" "${H5MM_HDRS}" "${H5MM_SOURCES}" )
 
 
-set (H5MP_SOURCES
-    ${HDF5_SRC_DIR}/H5MP.c
-    ${HDF5_SRC_DIR}/H5MPtest.c
-)
-
-set (H5MP_HDRS
-)
-IDE_GENERATED_PROPERTIES ("H5MP" "${H5MP_HDRS}" "${H5MP_SOURCES}" )
-
 set (H5O_SOURCES
     ${HDF5_SRC_DIR}/H5O.c
     ${HDF5_SRC_DIR}/H5Oainfo.c
@@ -433,6 +453,7 @@ set (H5O_SOURCES
     ${HDF5_SRC_DIR}/H5Ochunk.c
     ${HDF5_SRC_DIR}/H5Ocont.c
     ${HDF5_SRC_DIR}/H5Ocopy.c
+    ${HDF5_SRC_DIR}/H5Ocopy_ref.c
     ${HDF5_SRC_DIR}/H5Odbg.c
     ${HDF5_SRC_DIR}/H5Odeprec.c
     ${HDF5_SRC_DIR}/H5Odrvinfo.c
@@ -480,6 +501,8 @@ set (H5P_SOURCES
     ${HDF5_SRC_DIR}/H5Pint.c
     ${HDF5_SRC_DIR}/H5Plapl.c
     ${HDF5_SRC_DIR}/H5Plcpl.c
+    ${HDF5_SRC_DIR}/H5Pmapl.c
+    ${HDF5_SRC_DIR}/H5Pmcpl.c
     ${HDF5_SRC_DIR}/H5Pocpl.c
     ${HDF5_SRC_DIR}/H5Pocpypl.c
     ${HDF5_SRC_DIR}/H5Pstrcpl.c
@@ -536,6 +559,7 @@ set (H5S_SOURCES
     ${HDF5_SRC_DIR}/H5S.c
     ${HDF5_SRC_DIR}/H5Sall.c
     ${HDF5_SRC_DIR}/H5Sdbg.c
+    ${HDF5_SRC_DIR}/H5Sdeprec.c
     ${HDF5_SRC_DIR}/H5Shyper.c
     ${HDF5_SRC_DIR}/H5Smpio.c
     ${HDF5_SRC_DIR}/H5Snone.c
@@ -571,14 +595,6 @@ set (H5SM_HDRS
 IDE_GENERATED_PROPERTIES ("H5SM" "${H5SM_HDRS}" "${H5SM_SOURCES}" )
 
 
-set (H5ST_SOURCES
-    ${HDF5_SRC_DIR}/H5ST.c
-)
-set (H5ST_HDRS
-)
-IDE_GENERATED_PROPERTIES ("H5ST" "${H5ST_HDRS}" "${H5ST_SOURCES}" )
-
-
 set (H5T_SOURCES
     ${HDF5_SRC_DIR}/H5T.c
     ${HDF5_SRC_DIR}/H5Tarray.c
@@ -586,6 +602,15 @@ set (H5T_SOURCES
     ${HDF5_SRC_DIR}/H5Tcommit.c
     ${HDF5_SRC_DIR}/H5Tcompound.c
     ${HDF5_SRC_DIR}/H5Tconv.c
+    ${HDF5_SRC_DIR}/H5Tconv_integer.c
+    ${HDF5_SRC_DIR}/H5Tconv_float.c
+    ${HDF5_SRC_DIR}/H5Tconv_string.c
+    ${HDF5_SRC_DIR}/H5Tconv_bitfield.c
+    ${HDF5_SRC_DIR}/H5Tconv_compound.c
+    ${HDF5_SRC_DIR}/H5Tconv_reference.c
+    ${HDF5_SRC_DIR}/H5Tconv_enum.c
+    ${HDF5_SRC_DIR}/H5Tconv_vlen.c
+    ${HDF5_SRC_DIR}/H5Tconv_array.c
     ${HDF5_SRC_DIR}/H5Tcset.c
     ${HDF5_SRC_DIR}/H5Tdbg.c
     ${HDF5_SRC_DIR}/H5Tdeprec.c
@@ -593,6 +618,7 @@ set (H5T_SOURCES
     ${HDF5_SRC_DIR}/H5Tfields.c
     ${HDF5_SRC_DIR}/H5Tfixed.c
     ${HDF5_SRC_DIR}/H5Tfloat.c
+    ${HDF5_SRC_DIR}/H5Tinit_float.c
     ${HDF5_SRC_DIR}/H5Tnative.c
     ${HDF5_SRC_DIR}/H5Toffset.c
     ${HDF5_SRC_DIR}/H5Toh.c
@@ -600,12 +626,14 @@ set (H5T_SOURCES
     ${HDF5_SRC_DIR}/H5Torder.c
     ${HDF5_SRC_DIR}/H5Tpad.c
     ${HDF5_SRC_DIR}/H5Tprecis.c
+    ${HDF5_SRC_DIR}/H5Tref.c
     ${HDF5_SRC_DIR}/H5Tstrpad.c
     ${HDF5_SRC_DIR}/H5Tvisit.c
     ${HDF5_SRC_DIR}/H5Tvlen.c
 )
 
 set (H5T_HDRS
+    ${HDF5_SRC_DIR}/H5Tdevelop.h
     ${HDF5_SRC_DIR}/H5Tpublic.h
 )
 IDE_GENERATED_PROPERTIES ("H5T" "${H5T_HDRS}" "${H5T_SOURCES}" )
@@ -615,6 +643,7 @@ set (H5TS_SOURCES
     ${HDF5_SRC_DIR}/H5TS.c
 )
 set (H5TS_HDRS
+    ${HDF5_SRC_DIR}/H5TSdevelop.h
 )
 IDE_GENERATED_PROPERTIES ("H5TS" "${H5TS_HDRS}" "${H5TS_SOURCES}" )
 
@@ -626,6 +655,34 @@ set (H5UC_HDRS
 )
 IDE_GENERATED_PROPERTIES ("H5UC" "${H5UC_HDRS}" "${H5UC_SOURCES}" )
 
+
+set (H5VL_SOURCES
+    ${HDF5_SRC_DIR}/H5VL.c
+    ${HDF5_SRC_DIR}/H5VLcallback.c
+    ${HDF5_SRC_DIR}/H5VLdyn_ops.c
+    ${HDF5_SRC_DIR}/H5VLint.c
+    ${HDF5_SRC_DIR}/H5VLnative.c
+    ${HDF5_SRC_DIR}/H5VLnative_attr.c
+    ${HDF5_SRC_DIR}/H5VLnative_blob.c
+    ${HDF5_SRC_DIR}/H5VLnative_dataset.c
+    ${HDF5_SRC_DIR}/H5VLnative_datatype.c
+    ${HDF5_SRC_DIR}/H5VLnative_file.c
+    ${HDF5_SRC_DIR}/H5VLnative_group.c
+    ${HDF5_SRC_DIR}/H5VLnative_link.c
+    ${HDF5_SRC_DIR}/H5VLnative_introspect.c
+    ${HDF5_SRC_DIR}/H5VLnative_object.c
+    ${HDF5_SRC_DIR}/H5VLnative_token.c
+    ${HDF5_SRC_DIR}/H5VLpassthru.c
+    ${HDF5_SRC_DIR}/H5VLtest.c
+)
+set (H5VL_HDRS
+    ${HDF5_SRC_DIR}/H5VLconnector.h
+    ${HDF5_SRC_DIR}/H5VLconnector_passthru.h
+    ${HDF5_SRC_DIR}/H5VLnative.h
+    ${HDF5_SRC_DIR}/H5VLpassthru.h
+    ${HDF5_SRC_DIR}/H5VLpublic.h
+)
+IDE_GENERATED_PROPERTIES ("H5VL" "${H5VL_HDRS}" "${H5VL_SOURCES}" )
 
 set (H5VM_SOURCES
     ${HDF5_SRC_DIR}/H5VM.c
@@ -654,15 +711,58 @@ set (H5Z_SOURCES
     ${HDF5_SRC_DIR}/H5Ztrans.c
 )
 if (H5_ZLIB_HEADER)
-  SET_PROPERTY(SOURCE ${HDF5_SRC_DIR}/H5Zdeflate.c PROPERTY
-      COMPILE_DEFINITIONS H5_ZLIB_HEADER="${H5_ZLIB_HEADER}")
+  message(VERBOSE "H5_ZLIB_HEADER for library=${H5_ZLIB_HEADER}")
+  set_source_files_properties(${HDF5_SRC_DIR}/H5Zdeflate.c
+               PROPERTIES COMPILE_DEFINITIONS H5_ZLIB_HEADER="${H5_ZLIB_HEADER}"
+  )
 endif ()
 
 
 set (H5Z_HDRS
+    ${HDF5_SRC_DIR}/H5Zdevelop.h
     ${HDF5_SRC_DIR}/H5Zpublic.h
 )
 IDE_GENERATED_PROPERTIES ("H5Z" "${H5Z_HDRS}" "${H5Z_SOURCES}" )
+
+set (H5_MODULE_HEADERS
+    ${HDF5_SRC_DIR}/H5module.h
+    ${HDF5_SRC_DIR}/H5Amodule.h
+    ${HDF5_SRC_DIR}/H5ACmodule.h
+    ${HDF5_SRC_DIR}/H5Bmodule.h
+    ${HDF5_SRC_DIR}/H5B2module.h
+    ${HDF5_SRC_DIR}/H5Cmodule.h
+    ${HDF5_SRC_DIR}/H5CXmodule.h
+    ${HDF5_SRC_DIR}/H5Dmodule.h
+    ${HDF5_SRC_DIR}/H5Emodule.h
+    ${HDF5_SRC_DIR}/H5EAmodule.h
+    ${HDF5_SRC_DIR}/H5ESmodule.h
+    ${HDF5_SRC_DIR}/H5Fmodule.h
+    ${HDF5_SRC_DIR}/H5FAmodule.h
+    ${HDF5_SRC_DIR}/H5FDdrvr_module.h
+    ${HDF5_SRC_DIR}/H5FDmodule.h
+    ${HDF5_SRC_DIR}/H5FLmodule.h
+    ${HDF5_SRC_DIR}/H5FSmodule.h
+    ${HDF5_SRC_DIR}/H5Gmodule.h
+    ${HDF5_SRC_DIR}/H5HFmodule.h
+    ${HDF5_SRC_DIR}/H5HGmodule.h
+    ${HDF5_SRC_DIR}/H5HLmodule.h
+    ${HDF5_SRC_DIR}/H5Imodule.h
+    ${HDF5_SRC_DIR}/H5Lmodule.h
+    ${HDF5_SRC_DIR}/H5Mmodule.h
+    ${HDF5_SRC_DIR}/H5MFmodule.h
+    ${HDF5_SRC_DIR}/H5Omodule.h
+    ${HDF5_SRC_DIR}/H5Pmodule.h
+    ${HDF5_SRC_DIR}/H5PBmodule.h
+    ${HDF5_SRC_DIR}/H5PLmodule.h
+    ${HDF5_SRC_DIR}/H5Rmodule.h
+    ${HDF5_SRC_DIR}/H5RSmodule.h
+    ${HDF5_SRC_DIR}/H5Smodule.h
+    ${HDF5_SRC_DIR}/H5SLmodule.h
+    ${HDF5_SRC_DIR}/H5SMmodule.h
+    ${HDF5_SRC_DIR}/H5Tmodule.h
+    ${HDF5_SRC_DIR}/H5VLmodule.h
+    ${HDF5_SRC_DIR}/H5Zmodule.h
+)
 
 set (common_SRCS
     ${H5_SOURCES}
@@ -671,11 +771,11 @@ set (common_SRCS
     ${H5B_SOURCES}
     ${H5B2_SOURCES}
     ${H5C_SOURCES}
-    ${H5CS_SOURCES}
     ${H5CX_SOURCES}
     ${H5D_SOURCES}
     ${H5E_SOURCES}
     ${H5EA_SOURCES}
+    ${H5ES_SOURCES}
     ${H5F_SOURCES}
     ${H5FA_SOURCES}
     ${H5FD_SOURCES}
@@ -686,12 +786,11 @@ set (common_SRCS
     ${H5HF_SOURCES}
     ${H5HG_SOURCES}
     ${H5HL_SOURCES}
-    ${H5HP_SOURCES}
     ${H5I_SOURCES}
     ${H5L_SOURCES}
+    ${H5M_SOURCES}
     ${H5MF_SOURCES}
     ${H5MM_SOURCES}
-    ${H5MP_SOURCES}
     ${H5O_SOURCES}
     ${H5P_SOURCES}
     ${H5PB_SOURCES}
@@ -702,9 +801,9 @@ set (common_SRCS
     ${H5S_SOURCES}
     ${H5SL_SOURCES}
     ${H5SM_SOURCES}
-    ${H5ST_SOURCES}
     ${H5T_SOURCES}
     ${H5TS_SOURCES}
+    ${H5VL_SOURCES}
     ${H5VM_SOURCES}
     ${H5WB_SOURCES}
     ${H5Z_SOURCES}
@@ -720,6 +819,7 @@ set (H5_PUBLIC_HEADERS
     ${H5D_HDRS}
     ${H5E_HDRS}
     ${H5EA_HDRS}
+    ${H5ES_HDRS}
     ${H5F_HDRS}
     ${H5FA_HDRS}
     ${H5FD_HDRS}
@@ -730,9 +830,9 @@ set (H5_PUBLIC_HEADERS
     ${H5HL_HDRS}
     ${H5I_HDRS}
     ${H5L_HDRS}
+    ${H5M_HDRS}
     ${H5MF_HDRS}
     ${H5MM_HDRS}
-    ${H5MP_HDRS}
     ${H5O_HDRS}
     ${H5P_HDRS}
     ${H5PB_HDRS}
@@ -741,6 +841,8 @@ set (H5_PUBLIC_HEADERS
     ${H5S_HDRS}
     ${H5SM_HDRS}
     ${H5T_HDRS}
+    ${H5TS_HDRS}
+    ${H5VL_HDRS}
     ${H5Z_HDRS}
 )
 
@@ -763,8 +865,6 @@ set (H5_PRIVATE_HEADERS
     ${HDF5_SRC_DIR}/H5Cpkg.h
     ${HDF5_SRC_DIR}/H5Cprivate.h
 
-    ${HDF5_SRC_DIR}/H5CSprivate.h
-
     ${HDF5_SRC_DIR}/H5CXprivate.h
 
     ${HDF5_SRC_DIR}/H5Dpkg.h
@@ -772,12 +872,17 @@ set (H5_PRIVATE_HEADERS
 
     ${HDF5_SRC_DIR}/H5Edefin.h
     ${HDF5_SRC_DIR}/H5Einit.h
+    ${HDF5_SRC_DIR}/H5Emajdef.h
+    ${HDF5_SRC_DIR}/H5Emindef.h
     ${HDF5_SRC_DIR}/H5Epkg.h
     ${HDF5_SRC_DIR}/H5Eprivate.h
     ${HDF5_SRC_DIR}/H5Eterm.h
 
     ${HDF5_SRC_DIR}/H5EApkg.h
     ${HDF5_SRC_DIR}/H5EAprivate.h
+
+    ${HDF5_SRC_DIR}/H5ESpkg.h
+    ${HDF5_SRC_DIR}/H5ESprivate.h
 
     ${HDF5_SRC_DIR}/H5Fpkg.h
     ${HDF5_SRC_DIR}/H5Fprivate.h
@@ -786,6 +891,10 @@ set (H5_PRIVATE_HEADERS
     ${HDF5_SRC_DIR}/H5FAprivate.h
 
     ${HDF5_SRC_DIR}/H5FDmirror_priv.h
+    ${HDF5_SRC_DIR}/H5FDonion_header.h
+    ${HDF5_SRC_DIR}/H5FDonion_history.h
+    ${HDF5_SRC_DIR}/H5FDonion_index.h
+    ${HDF5_SRC_DIR}/H5FDonion_priv.h
     ${HDF5_SRC_DIR}/H5FDpkg.h
     ${HDF5_SRC_DIR}/H5FDprivate.h
 
@@ -808,20 +917,19 @@ set (H5_PRIVATE_HEADERS
     ${HDF5_SRC_DIR}/H5HLpkg.h
     ${HDF5_SRC_DIR}/H5HLprivate.h
 
-    ${HDF5_SRC_DIR}/H5HPprivate.h
-
     ${HDF5_SRC_DIR}/H5Ipkg.h
     ${HDF5_SRC_DIR}/H5Iprivate.h
 
     ${HDF5_SRC_DIR}/H5Lpkg.h
     ${HDF5_SRC_DIR}/H5Lprivate.h
 
+    ${HDF5_SRC_DIR}/H5Mpkg.h
+    ${HDF5_SRC_DIR}/H5Mprivate.h
+
+    ${HDF5_SRC_DIR}/H5MFpkg.h
     ${HDF5_SRC_DIR}/H5MFprivate.h
 
     ${HDF5_SRC_DIR}/H5MMprivate.h
-
-    ${HDF5_SRC_DIR}/H5MPpkg.h
-    ${HDF5_SRC_DIR}/H5MPprivate.h
 
     ${HDF5_SRC_DIR}/H5Opkg.h
     ${HDF5_SRC_DIR}/H5Oprivate.h
@@ -849,14 +957,27 @@ set (H5_PRIVATE_HEADERS
     ${HDF5_SRC_DIR}/H5SMpkg.h
     ${HDF5_SRC_DIR}/H5SMprivate.h
 
-    ${HDF5_SRC_DIR}/H5STprivate.h
-
+    ${HDF5_SRC_DIR}/H5Tconv.h
+    ${HDF5_SRC_DIR}/H5Tconv_array.h
+    ${HDF5_SRC_DIR}/H5Tconv_bitfield.h
+    ${HDF5_SRC_DIR}/H5Tconv_compound.h
+    ${HDF5_SRC_DIR}/H5Tconv_enum.h
+    ${HDF5_SRC_DIR}/H5Tconv_float.h
+    ${HDF5_SRC_DIR}/H5Tconv_integer.h
+    ${HDF5_SRC_DIR}/H5Tconv_macros.h
+    ${HDF5_SRC_DIR}/H5Tconv_reference.h
+    ${HDF5_SRC_DIR}/H5Tconv_string.h
+    ${HDF5_SRC_DIR}/H5Tconv_vlen.h
     ${HDF5_SRC_DIR}/H5Tpkg.h
     ${HDF5_SRC_DIR}/H5Tprivate.h
 
     ${HDF5_SRC_DIR}/H5TSprivate.h
 
     ${HDF5_SRC_DIR}/H5UCprivate.h
+
+    ${HDF5_SRC_DIR}/H5VLnative_private.h
+    ${HDF5_SRC_DIR}/H5VLpkg.h
+    ${HDF5_SRC_DIR}/H5VLprivate.h
 
     ${HDF5_SRC_DIR}/H5VMprivate.h
 
@@ -866,6 +987,8 @@ set (H5_PRIVATE_HEADERS
     ${HDF5_SRC_DIR}/H5Zprivate.h
 
     ${HDF5_SRC_DIR}/H5win32defs.h
+
+    ${HDF5_SRC_DIR}/uthash.h
 )
 
 set (H5_GENERATED_HEADERS
@@ -886,8 +1009,7 @@ set (H5_PUBLIC_GENERATED_HEADERS
 option (HDF5_GENERATE_HEADERS "Rebuild Generated Files" OFF)
 if (HDF5_GENERATE_HEADERS)
   set_source_files_properties(${H5_GENERATED_HEADERS} PROPERTIES GENERATED TRUE)
-  find_package (Perl)
-  if (PERL_FOUND)
+  if (H5_PERL_FOUND)
     execute_process (
         COMMAND ${PERL_EXECUTABLE} ${HDF5_SOURCE_DIR}/bin/make_err ${HDF5_SRC_DIR}/H5err.txt OUTPUT_VARIABLE SCRIPT_OUTPUT
     )
@@ -901,25 +1023,28 @@ if (HDF5_GENERATE_HEADERS)
     )
     message(STATUS ${SCRIPT_OUTPUT})
   else ()
-    message (STATUS "Cannot generate headers - perl not found")
+    message (WARNING "Cannot generate headers - perl not found")
   endif ()
 endif ()
 
 #-----------------------------------------------------------------------------
-# Setup the H5detect utility which generates H5Tinit with platform
-# specific type checks inside
+# Generate the H5build_settings.c file
 #-----------------------------------------------------------------------------
-if (HDF5_USE_PREGEN)
-  set (HDF5_GENERATED_SOURCE_DIR ${HDF5_USE_PREGEN_DIR})
-else ()
-  set (HDF5_GENERATED_SOURCE_DIR ${HDF5_BINARY_DIR})
-endif ()
+configure_file (${HDF5_SOURCE_DIR}/src/H5build_settings.cmake.c.in ${HDF5_SRC_BINARY_DIR}/H5build_settings.c @ONLY)
 
 if (BUILD_SHARED_LIBS)
-  file (MAKE_DIRECTORY "${HDF5_BINARY_DIR}/shared")
+  file (MAKE_DIRECTORY "${HDF5_SRC_BINARY_DIR}/shared")
 endif ()
 
 if (LOCAL_BATCH_TEST)
+    configure_file (
+      ${HDF5_SOURCE_DIR}/bin/batch/ctest_serial.cmake.in
+      ${HDF5_BINARY_DIR}/ctest_serial.cmake ESCAPE_QUOTES @ONLY
+    )
+    configure_file (
+      ${HDF5_SOURCE_DIR}/bin/batch/ctest_parallel.cmake.in
+      ${HDF5_BINARY_DIR}/ctest_parallel.cmake ESCAPE_QUOTES @ONLY
+    )
   if (LOCAL_BATCH_SCRIPT_COMMAND STREQUAL "raybsub")
     configure_file (
         ${HDF5_SOURCE_DIR}/bin/batch/${LOCAL_BATCH_SCRIPT_COMMAND}
@@ -940,206 +1065,80 @@ if (LOCAL_BATCH_TEST)
   endif ()
 endif ()
 
-if (NOT EXISTS "${HDF5_GENERATED_SOURCE_DIR}/H5Tinit.c")
-  add_executable (H5detect ${HDF5_SRC_DIR}/H5detect.c)
-  target_include_directories (H5detect PRIVATE "${HDF5_SRC_DIR};${HDF5_BINARY_DIR};$<$<BOOL:${HDF5_ENABLE_PARALLEL}>:${MPI_C_INCLUDE_DIRS}>")
-  target_compile_definitions(H5detect PUBLIC ${HDF_EXTRA_C_FLAGS} ${HDF_EXTRA_FLAGS})
-  TARGET_C_PROPERTIES (H5detect STATIC)
-  target_link_libraries (H5detect
-      PRIVATE "$<$<BOOL:${HDF5_ENABLE_PARALLEL}>:${MPI_C_LIBRARIES}>" $<$<OR:$<PLATFORM_ID:Windows>,$<PLATFORM_ID:MinGW>>:ws2_32.lib>
-      PRIVATE $<$<PLATFORM_ID:Emscripten>:"-O0">
-  )
-
-  if (HDF5_BATCH_H5DETECT)
-    configure_file (
-        ${HDF5_SOURCE_DIR}/bin/batch/${HDF5_BATCH_H5DETECT_SCRIPT}.in.cmake
-        ${HDF5_BINARY_DIR}/${HDF5_BATCH_H5DETECT_SCRIPT} ESCAPE_QUOTES @ONLY
-    )
-    add_custom_command (
-        OUTPUT ${HDF5_GENERATED_SOURCE_DIR}/H5Tinit.c
-               ${HDF5_GENERATED_SOURCE_DIR}/gen_SRCS.stamp1
-        COMMAND ${HDF5_BATCH_CMD}
-        ARGS ${HDF5_BINARY_DIR}/${HDF5_BATCH_H5DETECT_SCRIPT}
-        COMMAND ${CMAKE_COMMAND}
-        ARGS -E echo "Executed batch command to create H5Tinit.c"
-        COMMAND    ${CMAKE_COMMAND}
-        ARGS       -E touch ${HDF5_GENERATED_SOURCE_DIR}/gen_SRCS.stamp1
-        DEPENDS H5detect
-        WORKING_DIRECTORY ${HDF5_GENERATED_SOURCE_DIR}
-    )
-    add_custom_target (gen_H5Tinit
-        COMMAND ${CMAKE_COMMAND} -P ${HDF5_SOURCE_DIR}/config/cmake/wait_H5Tinit.cmake
-    )
-    if (BUILD_SHARED_LIBS)
-      add_custom_command (
-          OUTPUT     ${HDF5_GENERATED_SOURCE_DIR}/shared/H5Tinit.c
-                     ${HDF5_GENERATED_SOURCE_DIR}/shared/shared_gen_SRCS.stamp1
-          COMMAND    ${CMAKE_COMMAND}
-          ARGS       -E copy_if_different "${HDF5_GENERATED_SOURCE_DIR}/H5Tinit.c" "${HDF5_GENERATED_SOURCE_DIR}/shared/H5Tinit.c"
-          COMMAND    ${CMAKE_COMMAND}
-          ARGS       -E touch ${HDF5_GENERATED_SOURCE_DIR}/shared/shared_gen_SRCS.stamp1
-          DEPENDS    gen_H5Tinit ${HDF5_GENERATED_SOURCE_DIR}/H5Tinit_created
-          WORKING_DIRECTORY ${HDF5_GENERATED_SOURCE_DIR}
-      )
-      set_source_files_properties (${HDF5_GENERATED_SOURCE_DIR}/shared/H5Tinit.c PROPERTIES GENERATED TRUE)
-    endif ()
-  else ()
-    add_custom_command (
-        OUTPUT ${HDF5_GENERATED_SOURCE_DIR}/H5Tinit.c
-               ${HDF5_GENERATED_SOURCE_DIR}/gen_SRCS.stamp1
-        COMMAND ${CMAKE_CROSSCOMPILING_EMULATOR} $<TARGET_FILE:H5detect>
-        ARGS ${HDF5_GENERATED_SOURCE_DIR}/H5Tinit.c
-        COMMAND    ${CMAKE_COMMAND}
-        ARGS       -E touch ${HDF5_GENERATED_SOURCE_DIR}/gen_SRCS.stamp1
-        DEPENDS H5detect
-        WORKING_DIRECTORY ${HDF5_GENERATED_SOURCE_DIR}
-    )
-    if (BUILD_SHARED_LIBS)
-      add_custom_command (
-          OUTPUT     ${HDF5_GENERATED_SOURCE_DIR}/shared/H5Tinit.c
-                     ${HDF5_GENERATED_SOURCE_DIR}/shared/shared_gen_SRCS.stamp1
-          COMMAND    ${CMAKE_COMMAND}
-          ARGS       -E copy_if_different "${HDF5_GENERATED_SOURCE_DIR}/H5Tinit.c" "${HDF5_GENERATED_SOURCE_DIR}/shared/H5Tinit.c"
-          COMMAND    ${CMAKE_COMMAND}
-          ARGS       -E touch ${HDF5_GENERATED_SOURCE_DIR}/shared/shared_gen_SRCS.stamp1
-          DEPENDS    ${HDF5_GENERATED_SOURCE_DIR}/H5Tinit.c
-          WORKING_DIRECTORY ${HDF5_GENERATED_SOURCE_DIR}
-      )
-      set_source_files_properties (${HDF5_GENERATED_SOURCE_DIR}/shared/H5Tinit.c PROPERTIES GENERATED TRUE)
-    endif ()
-  endif ()
-  set_source_files_properties (${HDF5_GENERATED_SOURCE_DIR}/H5Tinit.c PROPERTIES GENERATED TRUE)
-else ()
-  add_custom_command (
-      OUTPUT ${HDF5_GENERATED_SOURCE_DIR}/gen_SRCS.stamp1
-      COMMAND    ${CMAKE_COMMAND}
-      ARGS       -E touch ${HDF5_GENERATED_SOURCE_DIR}/gen_SRCS.stamp1
-      DEPENDS    ${HDF5_GENERATED_SOURCE_DIR}/H5Tinit.c
-      WORKING_DIRECTORY ${HDF5_GENERATED_SOURCE_DIR}
-  )
-  if (BUILD_SHARED_LIBS)
-    add_custom_command (
-        OUTPUT     ${HDF5_GENERATED_SOURCE_DIR}/shared/shared_gen_SRCS.stamp1
-        COMMAND    ${CMAKE_COMMAND}
-        ARGS       -E copy_if_different "${HDF5_GENERATED_SOURCE_DIR}/H5Tinit.c" "${HDF5_GENERATED_SOURCE_DIR}/shared/H5Tinit.c"
-        COMMAND    ${CMAKE_COMMAND}
-        ARGS       -E touch ${HDF5_GENERATED_SOURCE_DIR}/shared/shared_gen_SRCS.stamp1
-        DEPENDS    ${HDF5_GENERATED_SOURCE_DIR}/H5Tinit.c
-        WORKING_DIRECTORY ${HDF5_GENERATED_SOURCE_DIR}
-    )
-    set_source_files_properties (${HDF5_GENERATED_SOURCE_DIR}/shared/H5Tinit.c PROPERTIES GENERATED TRUE)
-  endif ()
-endif ()
-
-add_executable (H5make_libsettings ${HDF5_SRC_DIR}/H5make_libsettings.c)
-target_include_directories (H5make_libsettings PRIVATE "${HDF5_SRC_DIR};${HDF5_BINARY_DIR};$<$<BOOL:${HDF5_ENABLE_PARALLEL}>:${MPI_C_INCLUDE_DIRS}>")
-target_compile_definitions(H5make_libsettings PUBLIC ${HDF_EXTRA_C_FLAGS} ${HDF_EXTRA_FLAGS})
-TARGET_C_PROPERTIES (H5make_libsettings STATIC)
-target_link_libraries (H5make_libsettings
-    PRIVATE "$<$<BOOL:${HDF5_ENABLE_PARALLEL}>:${MPI_C_LIBRARIES}>" $<$<OR:$<PLATFORM_ID:Windows>,$<PLATFORM_ID:MinGW>>:ws2_32.lib>
-    PRIVATE $<$<PLATFORM_ID:Emscripten>:"-O0">
-)
-
-add_custom_command (
-    OUTPUT ${HDF5_BINARY_DIR}/H5lib_settings.c
-           ${HDF5_BINARY_DIR}/gen_SRCS.stamp2
-    COMMAND ${CMAKE_CROSSCOMPILING_EMULATOR} $<TARGET_FILE:H5make_libsettings>
-    ARGS ${HDF5_BINARY_DIR}/H5lib_settings.c
-    COMMAND    ${CMAKE_COMMAND}
-    ARGS       -E touch ${HDF5_GENERATED_SOURCE_DIR}/gen_SRCS.stamp2
-    DEPENDS H5make_libsettings
-    WORKING_DIRECTORY ${HDF5_BINARY_DIR}
-)
-set_source_files_properties (${HDF5_BINARY_DIR}/H5lib_settings.c PROPERTIES GENERATED TRUE)
-if (BUILD_SHARED_LIBS)
-  add_custom_command (
-      OUTPUT ${HDF5_BINARY_DIR}/shared/H5lib_settings.c
-             ${HDF5_BINARY_DIR}/shared/shared_gen_SRCS.stamp2
-      COMMAND    ${CMAKE_COMMAND}
-      ARGS       -E copy_if_different "${HDF5_BINARY_DIR}/H5lib_settings.c" "${HDF5_BINARY_DIR}/shared/H5lib_settings.c"
-      COMMAND    ${CMAKE_COMMAND}
-      ARGS       -E touch ${HDF5_GENERATED_SOURCE_DIR}/shared/shared_gen_SRCS.stamp2
-      DEPENDS    ${HDF5_BINARY_DIR}/H5lib_settings.c
-      WORKING_DIRECTORY ${HDF5_BINARY_DIR}
-  )
-  set_source_files_properties (${HDF5_BINARY_DIR}/shared/H5lib_settings.c PROPERTIES GENERATED TRUE)
-endif ()
-
-## all_packages="AC,B,B2,D,F,FA,FL,FS,HL,I,O,S,ST,T,Z"
-#all_packages="AC,B2,CX,D,F,HL,I,O,S,ST,T,Z"
-option (HDF5_ENABLE_DEBUG_APIS "Turn on extra debug output in all packages" OFF)
-
 #-----------------------------------------------------------------------------
-# Add H5Tinit source to build - generated by H5detect/CMake at configure time
+# Set up library builds
 #-----------------------------------------------------------------------------
-if (NOT ONLY_SHARED_LIBS)
-  set (gen_SRCS ${HDF5_GENERATED_SOURCE_DIR}/H5Tinit.c ${HDF5_BINARY_DIR}/H5lib_settings.c)
-  add_custom_target (gen_${HDF5_LIB_TARGET} ALL DEPENDS ${HDF5_GENERATED_SOURCE_DIR}/gen_SRCS.stamp1 ${HDF5_GENERATED_SOURCE_DIR}/gen_SRCS.stamp2)
-
-  add_library (${HDF5_LIB_TARGET} STATIC ${common_SRCS} ${gen_SRCS} ${H5_PUBLIC_HEADERS} ${H5_PRIVATE_HEADERS} ${H5_GENERATED_HEADERS})
+if (BUILD_STATIC_LIBS)
+  add_library (${HDF5_LIB_TARGET} STATIC ${common_SRCS} H5build_settings.c ${H5_PUBLIC_HEADERS} ${H5_PRIVATE_HEADERS} ${H5_GENERATED_HEADERS} ${H5_MODULE_HEADERS})
   target_include_directories (${HDF5_LIB_TARGET}
-      PRIVATE "${HDF5_SRC_DIR};${HDF5_BINARY_DIR};$<$<BOOL:${HDF5_ENABLE_PARALLEL}>:${MPI_C_INCLUDE_DIRS}>"
-      INTERFACE "$<INSTALL_INTERFACE:$<INSTALL_PREFIX>/include>;$<BUILD_INTERFACE:${HDF5_BINARY_DIR}>"
+      PRIVATE "${HDF5_SRC_INCLUDE_DIRS};${HDF5_SRC_BINARY_DIR};${HDF5_COMP_INCLUDE_DIRECTORIES};$<$<BOOL:${HDF5_ENABLE_PARALLEL}>:${MPI_C_INCLUDE_DIRS}>"
+      INTERFACE "$<INSTALL_INTERFACE:$<INSTALL_PREFIX>/include>;$<BUILD_INTERFACE:${HDF5_SRC_INCLUDE_DIRS};${HDF5_SRC_BINARY_DIR}>"
   )
   target_compile_options(${HDF5_LIB_TARGET} PRIVATE "${HDF5_CMAKE_C_FLAGS}")
   target_compile_definitions(${HDF5_LIB_TARGET}
       PUBLIC
           ${HDF_EXTRA_C_FLAGS}
-          ${HDF_EXTRA_FLAGS}
       PRIVATE
-          $<$<BOOL:${HDF5_ENABLE_TRACE}>:H5_DEBUG_API>  # Enable tracing of the API
-          $<$<BOOL:${HDF5_ENABLE_DEBUG_APIS}>:H5Z_DEBUG;H5T_DEBUG;H5ST_DEBUG;H5S_DEBUG;H5O_DEBUG;H5I_DEBUG;H5HL_DEBUG;H5F_DEBUG;H5D_DEBUG;H5B2_DEBUG;H5AC_DEBUG>
+          "$<$<BOOL:${HDF5_ENABLE_TRACE}>:H5_DEBUG_API>" # Enable tracing of the API
+          "$<$<BOOL:${HDF5_ENABLE_DEBUG_APIS}>:${HDF5_DEBUG_APIS}>"
+          "$<$<CONFIG:Developer>:${HDF5_DEVELOPER_DEFS}>"
   )
   TARGET_C_PROPERTIES (${HDF5_LIB_TARGET} STATIC)
   target_link_libraries (${HDF5_LIB_TARGET}
-      PRIVATE ${LINK_LIBS} ${LINK_COMP_LIBS} "$<$<BOOL:${HDF5_ENABLE_PARALLEL}>:${MPI_C_LIBRARIES}>"
-      PUBLIC $<$<NOT:$<PLATFORM_ID:Windows>>:${CMAKE_DL_LIBS}>
+      PRIVATE ${LINK_LIBS} ${LINK_COMP_LIBS}
+      PUBLIC "$<$<PLATFORM_ID:Windows>:${LINK_PUB_LIBS}>" "$<$<NOT:$<PLATFORM_ID:Windows>>:${CMAKE_DL_LIBS}>" "$<$<BOOL:${HDF5_ENABLE_PARALLEL}>:MPI::MPI_C>"
   )
   if (NOT WIN32)
     target_link_libraries (${HDF5_LIB_TARGET}
-      PRIVATE $<$<BOOL:${HDF5_ENABLE_THREADSAFE}>:Threads::Threads>
+      PRIVATE "$<$<OR:$<BOOL:${HDF5_ENABLE_THREADSAFE}>,$<BOOL:${HDF5_ENABLE_SUBFILING_VFD}>>:Threads::Threads>"
     )
   endif ()
   set_global_variable (HDF5_LIBRARIES_TO_EXPORT ${HDF5_LIB_TARGET})
   H5_SET_LIB_OPTIONS (${HDF5_LIB_TARGET} ${HDF5_LIB_NAME} STATIC 0)
   set_target_properties (${HDF5_LIB_TARGET} PROPERTIES FOLDER libraries)
-  add_dependencies (${HDF5_LIB_TARGET} gen_${HDF5_LIB_TARGET})
 
   set (install_targets ${HDF5_LIB_TARGET})
 endif ()
 
 if (BUILD_SHARED_LIBS)
-  set (shared_gen_SRCS ${HDF5_GENERATED_SOURCE_DIR}/shared/H5Tinit.c ${HDF5_BINARY_DIR}/shared/H5lib_settings.c)
-  add_custom_target (gen_${HDF5_LIBSH_TARGET} ALL DEPENDS ${HDF5_GENERATED_SOURCE_DIR}/shared/shared_gen_SRCS.stamp1 ${HDF5_GENERATED_SOURCE_DIR}/shared/shared_gen_SRCS.stamp2)
-
-  add_library (${HDF5_LIBSH_TARGET} SHARED ${common_SRCS} ${shared_gen_SRCS} ${H5_PUBLIC_HEADERS} ${H5_PRIVATE_HEADERS} ${H5_GENERATED_HEADERS})
+  add_library (${HDF5_LIBSH_TARGET} SHARED ${common_SRCS} H5build_settings.c ${H5_PUBLIC_HEADERS} ${H5_PRIVATE_HEADERS} ${H5_GENERATED_HEADERS} ${H5_MODULE_HEADERS})
   target_include_directories (${HDF5_LIBSH_TARGET}
-      PRIVATE "${HDF5_SRC_DIR};${HDF5_BINARY_DIR};$<$<BOOL:${HDF5_ENABLE_PARALLEL}>:${MPI_C_INCLUDE_DIRS}>"
+      PRIVATE "${HDF5_SRC_INCLUDE_DIRS};${HDF5_SRC_BINARY_DIR};${HDF5_COMP_INCLUDE_DIRECTORIES};$<$<BOOL:${HDF5_ENABLE_PARALLEL}>:${MPI_C_INCLUDE_DIRS}>"
       PUBLIC "$<$<BOOL:${HDF5_ENABLE_HDFS}>:${HDFS_INCLUDE_DIR}>"
-      INTERFACE "$<INSTALL_INTERFACE:$<INSTALL_PREFIX>/include>;$<BUILD_INTERFACE:${HDF5_BINARY_DIR}>"
+      INTERFACE "$<INSTALL_INTERFACE:$<INSTALL_PREFIX>/include>;$<BUILD_INTERFACE:${HDF5_SRC_INCLUDE_DIRS};${HDF5_SRC_BINARY_DIR}>"
   )
   target_compile_options(${HDF5_LIBSH_TARGET} PRIVATE "${HDF5_CMAKE_C_FLAGS}")
   target_compile_definitions(${HDF5_LIBSH_TARGET}
       PUBLIC
           "H5_BUILT_AS_DYNAMIC_LIB"
           ${HDF_EXTRA_C_FLAGS}
-          ${HDF_EXTRA_FLAGS}
       PRIVATE
-          $<$<BOOL:${HDF5_ENABLE_THREADSAFE}>:H5_HAVE_THREADSAFE>
-          $<$<BOOL:${HDF5_ENABLE_TRACE}>:H5_DEBUG_API>  # Enable tracing of the API
-          $<$<BOOL:${HDF5_ENABLE_DEBUG_APIS}>:H5Z_DEBUG;H5T_DEBUG;H5ST_DEBUG;H5S_DEBUG;H5O_DEBUG;H5I_DEBUG;H5HL_DEBUG;H5F_DEBUG;H5D_DEBUG;H5B2_DEBUG;H5AC_DEBUG>
+          "$<$<BOOL:${HDF5_ENABLE_THREADSAFE}>:H5_HAVE_THREADSAFE>"
+          "$<$<BOOL:${HDF5_ENABLE_TRACE}>:H5_DEBUG_API>"  # Enable tracing of the API
+          "$<$<BOOL:${HDF5_ENABLE_DEBUG_APIS}>:${HDF5_DEBUG_APIS}>"
+          "$<$<CONFIG:Developer>:${HDF5_DEVELOPER_DEFS}>"
   )
   TARGET_C_PROPERTIES (${HDF5_LIBSH_TARGET} SHARED)
   target_link_libraries (${HDF5_LIBSH_TARGET}
-      PRIVATE ${LINK_LIBS} ${LINK_COMP_LIBS} "$<$<BOOL:${HDF5_ENABLE_PARALLEL}>:${MPI_C_LIBRARIES}>" $<$<BOOL:${HDF5_ENABLE_THREADSAFE}>:Threads::Threads>
-      PUBLIC $<$<NOT:$<PLATFORM_ID:Windows>>:${CMAKE_DL_LIBS}>
+      PRIVATE ${LINK_LIBS} ${LINK_COMP_LIBS}
+      PUBLIC "$<$<PLATFORM_ID:Windows>:${LINK_PUB_LIBS}>" "$<$<NOT:$<PLATFORM_ID:Windows>>:${CMAKE_DL_LIBS}>" "$<$<BOOL:${HDF5_ENABLE_PARALLEL}>:MPI::MPI_C>" "$<$<OR:$<BOOL:${HDF5_ENABLE_THREADS}>,$<BOOL:${HDF5_ENABLE_SUBFILING_VFD}>>:Threads::Threads>"
   )
   set_global_variable (HDF5_LIBRARIES_TO_EXPORT "${HDF5_LIBRARIES_TO_EXPORT};${HDF5_LIBSH_TARGET}")
   H5_SET_LIB_OPTIONS (${HDF5_LIBSH_TARGET} ${HDF5_LIB_NAME} SHARED "LIB")
   set_target_properties (${HDF5_LIBSH_TARGET} PROPERTIES FOLDER libraries)
-  add_dependencies (${HDF5_LIBSH_TARGET} gen_${HDF5_LIBSH_TARGET})
 
   set (install_targets ${install_targets} ${HDF5_LIBSH_TARGET})
+endif ()
+
+#-----------------------------------------------------------------------------
+# Add Target to clang-format
+#-----------------------------------------------------------------------------
+if (HDF5_ENABLE_FORMATTERS)
+  if (BUILD_STATIC_LIBS)
+    clang_format (HDF5_SRC_FORMAT ${HDF5_LIB_TARGET})
+  else ()
+    clang_format (HDF5_SRC_FORMAT ${HDF5_LIBSH_TARGET})
+  endif ()
 endif ()
 
 #-----------------------------------------------------------------------------
@@ -1150,7 +1149,7 @@ if (NOT HDF5_INSTALL_NO_DEVELOPMENT)
       FILES
           ${H5_PUBLIC_HEADERS}
           ${H5_PUBLIC_GENERATED_HEADERS}
-          ${HDF5_BINARY_DIR}/H5pubconf.h
+          ${HDF5_SRC_BINARY_DIR}/H5pubconf.h
       DESTINATION
           ${HDF5_INSTALL_INCLUDE_DIR}
       COMPONENT
@@ -1165,7 +1164,7 @@ if (HDF5_EXPORTED_TARGETS)
   if (BUILD_SHARED_LIBS)
     INSTALL_TARGET_PDB (${HDF5_LIBSH_TARGET} ${HDF5_INSTALL_BIN_DIR} libraries)
   endif ()
-  if (NOT ONLY_SHARED_LIBS)
+  if (BUILD_STATIC_LIBS)
     INSTALL_TARGET_PDB (${HDF5_LIB_TARGET} ${HDF5_INSTALL_LIB_DIR} libraries)
   endif ()
 
@@ -1187,38 +1186,53 @@ endif ()
 #-----------------------------------------------------------------------------
 set (_PKG_CONFIG_PREFIX ${CMAKE_INSTALL_PREFIX})
 set (_PKG_CONFIG_EXEC_PREFIX \${prefix})
-set (_PKG_CONFIG_LIBDIR \${exec_prefix}/lib)
-set (_PKG_CONFIG_INCLUDEDIR \${prefix}/include)
-set (_PKG_CONFIG_LIBNAME "${HDF5_LIB_CORENAME}")
+set (_PKG_CONFIG_LIBDIR \${exec_prefix}/${HDF5_INSTALL_LIB_DIR})
+set (_PKG_CONFIG_INCLUDEDIR \${prefix}/${HDF5_INSTALL_INCLUDE_DIR})
+set (_PKG_CONFIG_LIBNAME "${HDF5_LIB_NAME}")
 set (_PKG_CONFIG_VERSION "${HDF5_PACKAGE_VERSION}")
+set (PKGCONFIG_LIBNAME "${HDF5_LIB_NAME}")
+if (${HDF_CFG_NAME} MATCHES "Debug" OR ${HDF_CFG_NAME} MATCHES "Developer")
+  set (PKGCONFIG_LIBNAME "${PKGCONFIG_LIBNAME}${CMAKE_DEBUG_POSTFIX}")
+endif ()
 
-foreach (libs ${LINK_LIBS} ${LINK_COMP_LIBS})
-  set (_PKG_CONFIG_LIBS_PRIVATE "${_PKG_CONFIG_LIBS_PRIVATE} -l${libs}")
+#foreach (libs ${LINK_LIBS})
+#  set (_PKG_CONFIG_LIBS_PRIVATE "${_PKG_CONFIG_LIBS_PRIVATE} -l${libs}")
+#endforeach ()
+
+# The settings for the compression libs depends on if they have pkconfig support
+# Assuming they don't
+foreach (libs ${LINK_COMP_LIBS})
+#  set (_PKG_CONFIG_REQUIRES_PRIVATE "${_PKG_CONFIG_REQUIRES_PRIVATE} -l${libs}")
+  get_target_property (libname ${libs} OUTPUT_NAME)
+  set (_PKG_CONFIG_LIBS_PRIVATE "${_PKG_CONFIG_LIBS_PRIVATE} -l${libname}")
 endforeach ()
 
-if (NOT ONLY_SHARED_LIBS)
-  set (_PKG_CONFIG_LIBS "${_PKG_CONFIG_LIBS} -l${HDF5_LIB_CORENAME}")
-endif ()
+#if (BUILD_STATIC_LIBS)
+#  set (_PKG_CONFIG_LIBS "${_PKG_CONFIG_LIBS} -l${PKGCONFIG_LIBNAME}")
+#endif ()
 if (BUILD_SHARED_LIBS)
-  set (_PKG_CONFIG_SH_LIBS "${_PKG_CONFIG_SH_LIBS} -l${HDF5_LIB_CORENAME}")
+  set (_PKG_CONFIG_SH_LIBS "${_PKG_CONFIG_SH_LIBS} -l${PKGCONFIG_LIBNAME}")
 endif ()
 
 set (_PKG_CONFIG_REQUIRES)
-set (_PKG_CONFIG_REQUIRES_PRIVATE)
 
 configure_file (
-    ${HDF_RESOURCES_DIR}/libhdf5.pc.in
-    ${HDF5_BINARY_DIR}/CMakeFiles/${HDF5_LIB_CORENAME}-${HDF5_PACKAGE_VERSION}.pc
+    ${HDF_CONFIG_DIR}/libhdf5.pc.in
+    ${HDF5_BINARY_DIR}/CMakeFiles/${HDF5_LIB_CORENAME}.pc
     @ONLY
 )
 install (
-    FILES ${HDF5_BINARY_DIR}/CMakeFiles/${HDF5_LIB_CORENAME}-${HDF5_PACKAGE_VERSION}.pc
+    FILES ${HDF5_BINARY_DIR}/CMakeFiles/${HDF5_LIB_CORENAME}.pc
     DESTINATION ${HDF5_INSTALL_LIB_DIR}/pkgconfig
     COMPONENT libraries
 )
 
 if (NOT WIN32)
-  set (_PKG_CONFIG_COMPILER ${CMAKE_C_COMPILER})
+  if (HDF5_ENABLE_PARALLEL AND MPI_C_FOUND)
+    set (_PKG_CONFIG_COMPILER ${MPI_C_COMPILER})
+  else ()
+    set (_PKG_CONFIG_COMPILER ${CMAKE_C_COMPILER})
+  endif ()
   configure_file (
       ${HDF_RESOURCES_DIR}/libh5cc.in
       ${HDF5_BINARY_DIR}/CMakeFiles/h5cc
@@ -1230,4 +1244,39 @@ if (NOT WIN32)
       PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
       COMPONENT libraries
   )
+  if (HDF5_ENABLE_PARALLEL AND MPI_C_FOUND)
+    #legacy requires a different name
+    configure_file (
+        ${HDF_RESOURCES_DIR}/libh5cc.in
+        ${HDF5_BINARY_DIR}/CMakeFiles/h5pcc
+        @ONLY
+    )
+    install (
+        FILES ${HDF5_BINARY_DIR}/CMakeFiles/h5pcc
+        DESTINATION ${HDF5_INSTALL_BIN_DIR}
+        PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
+        COMPONENT libraries
+    )
+  endif ()
+endif ()
+
+#-----------------------------------------------------------------------------
+# Option to build documentation
+#-----------------------------------------------------------------------------
+if (DOXYGEN_FOUND)
+  # This custom target and doxygen/configure work together
+  # Replace variables inside @@ with the current values
+  add_custom_target (hdf5lib_doc ALL
+        COMMAND ${DOXYGEN_EXECUTABLE} ${HDF5_BINARY_DIR}/Doxyfile
+        DEPENDS ${HDF5_SRC_BINARY_DIR}/H5build_settings.c
+        WORKING_DIRECTORY ${HDF5_SRC_DIR}
+        COMMENT "Generating HDF5 library Source API documentation with Doxygen"
+        VERBATIM )
+
+  if (NOT TARGET doxygen)
+    add_custom_target (doxygen)
+  endif ()
+
+  add_dependencies (doxygen hdf5lib_doc)
+
 endif ()

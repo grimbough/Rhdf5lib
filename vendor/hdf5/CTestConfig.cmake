@@ -5,37 +5,29 @@
 # This file is part of HDF5.  The full HDF5 copyright notice, including
 # terms governing use, modification, and redistribution, is contained in
 # the COPYING file, which can be found at the root of the source code
-# distribution tree, or in https://support.hdfgroup.org/ftp/HDF5/releases.
+# distribution tree, or in https://www.hdfgroup.org/licenses.
 # If you do not have access to either file, you may request a copy from
 # help@hdfgroup.org.
 #
 ## This file should be placed in the root directory of your project.
 ## Then modify the CMakeLists.txt file in the root directory of your
 ## project to incorporate the testing dashboard.
-## # The following are required to uses Dart and the Cdash dashboard
+## # The following are required to use Dart and the CDash dashboard
 ##   ENABLE_TESTING()
 ##   INCLUDE(CTest)
 set (CTEST_PROJECT_NAME "HDF5")
 set (CTEST_NIGHTLY_START_TIME "18:00:00 CST")
 
-set (CTEST_DROP_METHOD "http")
+set (CTEST_DROP_METHOD "https")
 if (CTEST_DROP_SITE_INIT)
   set (CTEST_DROP_SITE "${CTEST_DROP_SITE_INIT}")
 else ()
-  if (CDASH_LOCAL)
-    set (CTEST_DROP_SITE "cdash-internal.hdfgroup.org")
-  else ()
-    set (CTEST_DROP_SITE "cdash.hdfgroup.org")
-  endif ()
+  set (CTEST_DROP_SITE "cdash.hdfgroup.org")
 endif ()
 if (CTEST_DROP_LOCATION_INIT)
   set (CTEST_DROP_LOCATION "${CTEST_DROP_LOCATION_INIT}")
 else ()
-  if (CDASH_LOCAL)
-    set (CTEST_DROP_LOCATION "/submit.php?project=HDF5110")
-  else ()
-    set (CTEST_DROP_LOCATION "/submit.php?project=HDF5")
-  endif ()
+  set (CTEST_DROP_LOCATION "/submit.php?project=HDF5114")
 endif ()
 set (CTEST_DROP_SITE_CDASH TRUE)
 

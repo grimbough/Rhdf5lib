@@ -5,7 +5,7 @@
 # This file is part of HDF5.  The full HDF5 copyright notice, including
 # terms governing use, modification, and redistribution, is contained in
 # the COPYING file, which can be found at the root of the source code
-# distribution tree, or in https://support.hdfgroup.org/ftp/HDF5/releases.
+# distribution tree, or in https://www.hdfgroup.org/licenses.
 # If you do not have access to either file, you may request a copy from
 # help@hdfgroup.org.
 #
@@ -102,7 +102,7 @@ if (TEST_CHECKUB STREQUAL "YES")
 
   # now compare the outputs
   execute_process (
-      COMMAND ${CMAKE_COMMAND} -E compare_files ${CMAKE_IGNORE_EOL} ${TEST_HFILE}-ub.cmp ${TEST_HFILE}.cmp
+      COMMAND ${CMAKE_COMMAND} -E compare_files --ignore-eol ${TEST_HFILE}-ub.cmp ${TEST_HFILE}.cmp
       RESULT_VARIABLE TEST_RESULT
   )
 

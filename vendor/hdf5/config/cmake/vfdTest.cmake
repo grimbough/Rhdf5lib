@@ -5,7 +5,7 @@
 # This file is part of HDF5.  The full HDF5 copyright notice, including
 # terms governing use, modification, and redistribution, is contained in
 # the COPYING file, which can be found at the root of the source code
-# distribution tree, or in https://support.hdfgroup.org/ftp/HDF5/releases.
+# distribution tree, or in https://www.hdfgroup.org/licenses.
 # If you do not have access to either file, you may request a copy from
 # help@hdfgroup.org.
 #
@@ -71,6 +71,22 @@ if (NOT TEST_RESULT EQUAL TEST_EXPECT)
 endif ()
 
 message (STATUS "COMMAND Error: ${TEST_ERROR}")
+
+if (NOT DEFINED ENV{HDF5_NOCLEANUP})
+  if (EXISTS "${TEST_FOLDER}/${TEST_OUTPUT}")
+    file (REMOVE ${TEST_FOLDER}/${TEST_OUTPUT})
+  endif ()
+
+  if (EXISTS "${TEST_FOLDER}/${TEST_OUTPUT}.err")
+    file (REMOVE ${TEST_FOLDER}/${TEST_OUTPUT}.err)
+  endif ()
+
+  if (TEST_DELETE_LIST)
+    foreach (dfile in ${TEST_DELETE_LIST})
+      file (REMOVE ${dfile})
+    endforeach ()
+  endif ()
+endif ()
 
 # everything went fine...
 message (STATUS "Passed: The ${TEST_PROGRAM} program used vfd ${TEST_VFD}")

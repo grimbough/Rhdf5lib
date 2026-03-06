@@ -1,12 +1,11 @@
 #
 # Copyright by The HDF Group.
-# Copyright by the Board of Trustees of the University of Illinois.
 # All rights reserved.
 #
 # This file is part of HDF5.  The full HDF5 copyright notice, including
 # terms governing use, modification, and redistribution, is contained in
 # the COPYING file, which can be found at the root of the source code
-# distribution tree, or in https://support.hdfgroup.org/ftp/HDF5/releases.
+# distribution tree, or in https://www.hdfgroup.org/licenses.
 # If you do not have access to either file, you may request a copy from
 # help@hdfgroup.org.
 ##
@@ -35,13 +34,12 @@
 
 include $(top_srcdir)/config/commence.am
 
+# include Doxygen rules (requires autoconf-archive >2016-03-20)
+@DX_RULES@
+
 # Define subdirectories to build.
 ## Automake understands that `make distclean' should recurse into
 ## conditional subdirectories even if `make all' does not.
-## We need to list the examples directory in the DIST_SUBDIRS variable
-## so that it will be visited by `make distclean'
-# Add this directory to SUBDIRS so that examples get built after tools
-# but before examples in extra interfaces (c++ and fortran).
 # Since we're explicitly listing DIST_SUBDIRS, we also need to list
 # directories that are only conditionally built (so that their Makefiles
 # are cleaned as well).
@@ -85,9 +83,9 @@ else
    TOOLS_DIR=
 endif
 
-SUBDIRS = src $(TESTSERIAL_DIR) $(TESTPARALLEL_DIR) bin utils $(TOOLS_DIR) . \
+SUBDIRS = src $(TESTSERIAL_DIR) $(TESTPARALLEL_DIR) bin $(TOOLS_DIR) utils . \
           $(CXX_DIR) $(FORTRAN_DIR) $(JAVA_DIR) $(HDF5_HL_DIR)
-DIST_SUBDIRS = src test testpar utils tools . c++ fortran hl examples java
+DIST_SUBDIRS = src test testpar bin tools utils . c++ fortran hl java
 
 # Some files generated during configure that should be cleaned
 DISTCLEANFILES=config/stamp1 config/stamp2
@@ -114,14 +112,6 @@ tests:
 	  fi;                                                           \
 	  done
 
-# Check-clean also recurses into examples directory
-check-clean:
-	for d in $(SUBDIRS) examples; do               \
-	  if test $$d != .; then                                        \
-	   (cd $$d && $(MAKE) $(AM_MAKEFLAGS) $@) || exit 1;            \
-	  fi;                                                           \
-	done
-	$(RM) -rf prefix-tmp destdir-tmp
 
 # Some C++ compilers/linkers will create a directory named ii_files in
 # the root directory, which should be cleaned.
@@ -130,37 +120,15 @@ mostlyclean-local:
 	  $(RM) -rf ii_files;                                           \
 	fi
 
-# 'make install' will now install examples, the same as 'make install-all'.
 # 'make-install-all' will be redundant but will still work.
-install: install-recursive install-examples
-uninstall: uninstall-recursive uninstall-examples
+install: install-recursive
+uninstall: uninstall-recursive
 
-# 'make install-all' also installs examples
 install-all:
 	@$(MAKE) $(AM_MAKEFLAGS) install
 uninstall-all:
 	@$(MAKE) $(AM_MAKEFLAGS) uninstall
 
-# Install examples in this directory and recursively
-install-examples uninstall-examples:
-	for d in examples $(HDF5_INTERFACES) $(HL); do               \
-	    (cd $$d && $(MAKE) $(AM_MAKEFLAGS) $@) || exit 1;           \
-	done
-
-# Placeholder to remind users that docs are now in a separate repository.
-install-doc:
-	@echo "docs no longer live in this tree.  Use install-examples to install examples."
-
-uninstall-doc:
-	@echo "docs no longer live in this tree.  Use install-examples to install examples."
-
-# `make check-install' or `make installcheck' checks that examples can
-#  be successfully built
-installcheck-local:
-	if test -n "${DESTDIR}"; then                                  \
-          (cd ${DESTDIR}$(bindir) && pwd && ./h5redeploy -force);     \
-        fi
-	@(cd examples && $(MAKE) $(AM_MAKEFLAGS) $@) || exit 1;
 
 # check-install is just a synonym for installcheck
 check-install: installcheck
@@ -187,6 +155,11 @@ check-all-install:
 trace:
 	@(cd src && $(MAKE) $(AM_MAKEFLAGS) $@) || exit 1;
 
+# doxygen support
+if BUILD_DOXYGEN_CONDITIONAL
+doxygen: doxygen-doc
+endif
+
 # Run tests with different Virtual File Drivers.
 # Currently, only invoke check-vfd in the test directory.
 check-vfd:
@@ -194,6 +167,16 @@ check-vfd:
 	  if test $$d != .; then                                        \
 	    (cd $$d && $(MAKE) $(AM_MAKEFLAGS) $@) || exit 1;           \
 	  fi;                                                           \
+	done
+
+# Run tests with different passthrough Virtual Object Layer Connectors.
+# NOTE: Will only succeed with passthrough VOL connectors that use
+#       the native VOL connector as the terminal connector.
+check-passthrough-vol:
+	for d in $(SUBDIRS); do                                \
+	  if test $$d != .; then                                       \
+	    (cd $$d && $(MAKE) $(AM_MAKEFLAGS) $@) || exit 1;          \
+	  fi;                                                          \
 	done
 
 # Automake wants to make config.status depend on configure.  This

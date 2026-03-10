@@ -23,8 +23,7 @@ h5.raw.options <- c(
     HDF5_BUILD_EXAMPLES="OFF",
     HDF5_ENABLE_Z_LIB_SUPPORT="ON",
     HDF5_ENABLE_SZIP_SUPPORT="ON",
-    # Re-enable this ASAP
-    HDF5_ENABLE_ROS3_VFD="OFF",
+    HDF5_ENABLE_ROS3_VFD="ON",
     NULL
 )
 

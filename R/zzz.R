@@ -110,6 +110,7 @@ getHdf5Version <- function() {
 
 #' Return the link flags determined when HDF5 was configured
 #' 
+#' @noRd
 #' @keywords internal
 .getDynamicLinks <- function(path) {
   settings_file <- file.path(path, "libhdf5.settings")
@@ -143,6 +144,7 @@ getHdf5Version <- function() {
 #' If we compiled our own version of SZIP this returns the link path
 #' Otherwise it returns an empty string.
 #' 
+#' @noRd
 #' @keywords internal
 .getSzipLoc <- function(path) {
   status <- file.exists(file.path(path, "libsz.a"))

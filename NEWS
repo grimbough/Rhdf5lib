@@ -1,11 +1,13 @@
 Version 1.34
 =============
 
-New features:
+Breaking changes:
 
   o Build system has been changed from Make to CMake, via the biocmake
   Bioconductor package. Thanks to Aaron Lun (@LTLA) for the initial work 
   on the migration.
+  o The HDF5 version bundled by Rhdf5lib has been upgraded from 1.10.7 
+  to 1.14.6.
 
 Version 1.26
 =============

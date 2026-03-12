@@ -3,8 +3,6 @@ name: Test R-universe
 
 on:
   workflow_dispatch:
-  push:
-  pull_request:
 
 jobs:
   build:

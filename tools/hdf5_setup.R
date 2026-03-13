@@ -47,12 +47,3 @@ status <- system2(cmake, c("--install", build_path), stderr=FALSE)
 if (status != 0) {
     stop("failed to install the HDF5 library with CMake")
 }
-
-# Remove this once h5testLock uses H5Pget_file_locking()
-private_header_src <- c(
-    file.path("vendor", "hdf5", "src", "H5private.h"),
-    file.path("vendor", "hdf5", "src", "H5win32defs.h"),
-    file.path("vendor", "hdf5", "src", "H5TSprivate.h")
-)
-dir.create(file.path(install_path, "include"), recursive=TRUE, showWarnings=FALSE)
-file.copy(private_header_src, file.path(install_path, "include"), overwrite=TRUE)

@@ -34,7 +34,7 @@ pkgconfig <- function(opt = c("PKG_CXX_LIBS", "PKG_C_LIBS", "PKG_CXX_HL_LIBS", "
                      replacement = "/", 
                      fixed = TRUE)
     
-    winlibs <- c("curl", "psl", "bcrypt", "zstd", "brotlidec", "brotlicommon", "idn2", "unistring", "nghttp2", "iconv", "ssh2", "gcrypt", "gpgme", "gpg-error", "secur32", "ssl", "crypto", "wldap32", "ws2_32", "crypt32", "sz", "aec", "z", "psapi")
+    winlibs <- c("curl", "psl", "bcrypt", "zstd", "brotlidec", "brotlicommon", "idn2", "unistring", "nghttp2", "iconv", "ssh2", "gcrypt", "gpgme", "gpg-error", "secur32", "ssl", "crypto", "wldap32", "ws2_32", "crypt32", "sz", "aec", "z", "psapi", "secur32")
     winlibs <- paste(sprintf("-l%s", winlibs), collapse = " ")
   } else {
     patharch <- path

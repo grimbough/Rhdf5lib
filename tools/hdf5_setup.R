@@ -2,10 +2,10 @@ install_path <- file.path(getwd(), "inst")
 
 cmake <- biocmake::find()
 
-raw.options <- biocmake::configure(fortran.compiler=FALSE)
+raw_options <- biocmake::configure(fortran.compiler=FALSE)
 
-raw.options <- c(
-    raw.options, 
+raw_options <- c(
+    raw_options, 
     BUILD_TESTING="OFF",
     BUILD_SHARED_LIBS="OFF",
     CMAKE_INSTALL_PREFIX=install_path,
@@ -16,8 +16,8 @@ raw.options <- c(
 build_path <- "_build_hdf5"
 
 source_path <- "vendor/hdf5"
-h5.raw.options <- c(
-    raw.options,
+h5_raw_options <- c(
+    raw_options,
     HDF5_BUILD_CPP_LIB="ON",
     HDF5_BUILD_TOOLS="OFF",
     HDF5_BUILD_EXAMPLES="OFF",
@@ -29,11 +29,11 @@ h5.raw.options <- c(
 )
 
 if (.Platform$OS.type == "windows") {
-    h5.raw.options[["CMAKE_C_FLAGS"]] <- paste(h5.raw.options[["CMAKE_C_FLAGS"]], "-DCURL_STATICLIB")
+    h5_raw_options[["CMAKE_C_FLAGS"]] <- paste(h5_raw_options[["CMAKE_C_FLAGS"]], "-DCURL_STATICLIB")
 }
 
-h5.options <- biocmake::formatArguments(h5.raw.options)
-if (system2(cmake, c("-S", source_path, "-B", build_path, h5.options)) != 0) {
+h5_options <- biocmake::formatArguments(h5_raw_options)
+if (system2(cmake, c("-S", source_path, "-B", build_path, h5_options)) != 0) {
     stop("failed to configure the HDF5 library with CMake")
 }
 

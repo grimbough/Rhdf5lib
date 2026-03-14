@@ -2,21 +2,30 @@ install_path <- file.path(getwd(), "inst")
 
 cmake <- biocmake::find()
 
-raw.options <- biocmake::configure(fortran.compiler=FALSE)
+raw_options <- biocmake::configure(fortran.compiler=FALSE)
 
-raw.options <- c(
-    raw.options, 
+raw_options <- c(
+    raw_options, 
     BUILD_TESTING="OFF",
     BUILD_SHARED_LIBS="OFF",
     CMAKE_INSTALL_PREFIX=install_path,
+    # Some systems (e.g., Fedora) will install to lib64 instead of lib, 
+    # so we need to ensure that the libraries are always installed to inst/lib
+    CMAKE_INSTALL_LIBDIR=file.path(install_path, "lib"),
     NULL
 )
 
 build_path <- "_build_libaec"
 
 source_path <- "vendor/libaec"
-aec.options <- biocmake::formatArguments(raw.options)
-if (system2(cmake, c("-S", source_path, "-B", build_path, aec.options), stderr=FALSE) != 0) {
+aec_raw_options <- c(
+    raw_options,
+    LIBAEC_BUILD_TOOLS="OFF",
+    NULL
+)
+
+aec_options <- biocmake::formatArguments(aec_raw_options)
+if (system2(cmake, c("-S", source_path, "-B", build_path, aec_options), stderr=FALSE) != 0) {
     stop("failed to configure the libaec library with CMake")
 }
 

@@ -15,6 +15,7 @@ rm -rf vendor/hdf5/doc
 rm -rf vendor/hdf5/doxygen
 rm -rf vendor/hdf5/examples
 rm -rf vendor/hdf5/fortran
+rm -rf vendor/hdf5/HDF5Examples
 rm -rf vendor/hdf5/java
 rm -rf vendor/hdf5/m4
 rm -rf vendor/hdf5/release_docs
